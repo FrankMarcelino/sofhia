@@ -37,8 +37,8 @@ export default async function DashboardLayout({
       {/* Sidebar - Always visible (desktop/tablet only) */}
       <Sidebar />
 
-      {/* Main Content - Always with left margin for sidebar */}
-      <div className="flex-1 flex flex-col ml-64">
+      {/* Main Content - Flex grows to fill remaining space */}
+      <div className="flex-1 flex flex-col min-w-0">
         {/* Topbar */}
         <Topbar user={user} empresa={empresa} />
 

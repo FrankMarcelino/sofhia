@@ -110,9 +110,9 @@ export function Sidebar({ className }: SidebarProps) {
   return (
     <aside
       className={cn(
-        'fixed top-0 left-0 h-screen w-64 flex flex-col',
+        'flex-shrink-0 w-64 h-screen flex flex-col',
         'bg-[#1e293b] border-r border-[#334155]',
-        'z-40', // Z-index para sidebar sempre visível
+        'overflow-y-auto',
         className
       )}
     >
