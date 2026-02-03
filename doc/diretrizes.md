@@ -4,6 +4,32 @@ Este documento estabelece os princípios, padrões e práticas que devem ser seg
 
 ---
 
+## 🖥️ Plataformas Suportadas
+
+**⚠️ IMPORTANTE - Desktop/Tablet Only:**
+
+A aplicação SOFHIA Enterprise é projetada **exclusivamente** para:
+- ✅ **Desktops** (Windows, macOS, Linux)
+- ✅ **Notebooks** (1366px+ recomendado)
+- ✅ **Tablets** em landscape (768px mínimo)
+
+**NÃO é suportado:**
+- ❌ Smartphones (mobile)
+- ❌ Tablets em portrait mode
+
+**Implicações de Design:**
+- Sidebar **sempre visível** (sem menu hamburguer)
+- Sem overlays ou drawers mobile
+- Alta densidade de informação permitida
+- Layout fixo com sidebar de 256px
+- Breakpoint mínimo: `768px` (md)
+- Z-index simplificado (sem camadas mobile)
+
+**Justificativa:**
+SOFHIA é uma ferramenta enterprise para gestão operacional que requer telas grandes para visualização de dados, dashboards complexos e múltiplas informações simultâneas.
+
+---
+
 ## 🎯 Princípios Fundamentais
 
 ### 1. Simplicidade e Pragmatismo
