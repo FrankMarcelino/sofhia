@@ -1,17 +1,17 @@
 # Status do Projeto — SOFHIA Enterprise
 
 > **Última Atualização:** 03/02/2026  
-> **Versão Atual:** 0.1.0 (Setup Completo)  
-> **Fase:** Fase 1 - MVP (Setup Concluído)
+> **Versão Atual:** 0.2.0 (Auth Completo)  
+> **Fase:** Fase 1 - MVP (Fundação Completa)
 
 ---
 
 ## 📊 Progresso Geral
 
 ```
-██████░░░░░░░░░░░░░░░ 15%
+█████████░░░░░░░░░░░░ 40%
 
-MVP: 1/12 módulos completos
+MVP: 3/12 módulos completos
 ```
 
 ### Fases do Projeto
@@ -108,6 +108,47 @@ MVP: 1/12 módulos completos
 
 ---
 
+### 🔐 Autenticação (03/02/2026) - TODO #3 ✅
+
+- ✅ Componentes UI base criados (Button, Input, Label, Card)
+- ✅ Página de Login (`/login`) implementada
+- ✅ Página de Cadastro (`/cadastro`) implementada
+- ✅ Validações de formulário (senha, confirmação, etc.)
+- ✅ Integração com Supabase Auth
+- ✅ Feedback visual (loading, success, error)
+- ✅ Redirecionamento automático pós-login
+- ✅ Design system SOFHIA aplicado (cores, tipografia)
+
+**Componentes criados:**
+- `components/ui/button.tsx` - Botão com variantes
+- `components/ui/input.tsx` - Input estilizado
+- `components/ui/label.tsx` - Label acessível
+- `components/ui/card.tsx` - Card container
+- `app/(auth)/login/page.tsx` - Tela de login
+- `app/(auth)/cadastro/page.tsx` - Tela de cadastro
+
+**Funcionalidades:**
+- Login com e-mail e senha
+- Cadastro de novo usuário
+- Validação client-side
+- Estados de loading e erro
+- Tela de sucesso após cadastro
+- Links entre login/cadastro
+
+**Próximos passos (após config Supabase):**
+- Criar trigger para inserir usuário em `usuarios_sofhia`
+- Criar empresa automaticamente no cadastro
+- Implementar reset de senha
+- Adicionar autenticação social (Google, opcional)
+
+**Observações:**
+- ESLint passando sem erros
+- Build de produção OK
+- Rotas protegidas pelo middleware
+- UI totalmente responsiva
+
+---
+
 ## 🔄 Em Andamento
 
 *Nenhuma tarefa em andamento no momento.*
@@ -116,10 +157,10 @@ MVP: 1/12 módulos completos
 
 ## 📋 Próximas Tarefas (Backlog Imediato)
 
-### Todo #3: Implementar Autenticação
+### Todo #4: Layout Principal (Sidebar + Topbar)
 **Status:** Próximo
 **Prioridade:** 🔴 Alta  
-**Descrição:** Criar telas de Login, Cadastro e integração com Supabase Auth.
+**Descrição:** Criar layout base com sidebar de navegação e topbar com dados do usuário.
 
 **Sub-tarefas:**
 - [ ] Criar projeto Next.js 14+ com App Router
