@@ -228,6 +228,20 @@ MVP: 5/12 módulos completos + UI modernizada ✨
 
 ---
 
+## ✅ Concluído Recentemente
+
+### 🔧 Correções de Layout v0.5.1 (03/02/2026)
+**Problemas Corrigidos:**
+- ✅ Sidebar sobrepondo conteúdo → Adicionado `ml-0 lg:ml-64` no main content
+- ✅ Elementos colados no topo → Adicionado padding interno `p-6 lg:p-8`
+- ✅ Espaçamento inconsistente → Ajustado gaps responsivos (4/6)
+- ✅ Botão mobile menu ausente → Adicionado na Topbar
+- ✅ Topbar não sticky → Adicionado `sticky top-0 z-30`
+
+**Build Status:** ✅ 22s - Sucesso
+
+---
+
 ### 🎨 Melhorias de UI v0.5.0 (03/02/2026) - COMPLETO ✅
 
 **Componentes UI Base Criados:**
