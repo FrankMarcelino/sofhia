@@ -36,28 +36,7 @@ export default async function DashboardPage() {
   const { user, empresa } = await getDashboardData();
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header Temporário */}
-      <header className="border-b bg-card">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-black text-primary">SOFHIA</h1>
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-muted-foreground">
-                {user?.nome}
-              </span>
-              <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                <span className="text-xs font-bold text-primary">
-                  {user?.nome?.charAt(0).toUpperCase()}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Conteúdo Principal */}
-      <main className="container mx-auto px-6 py-8">
+    <div className="container mx-auto px-6 py-8">
         <div className="mb-8">
           <h2 className="text-3xl font-bold text-foreground mb-2">
             Bem-vindo, {user?.nome?.split(' ')[0]}! 👋
@@ -217,7 +196,6 @@ export default async function DashboardPage() {
             </div>
           </CardContent>
         </Card>
-      </main>
-    </div>
+      </div>
   );
 }
