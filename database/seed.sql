@@ -267,11 +267,7 @@ SELECT
   p.id_pessoa,
   a.id_agente,
   CASE WHEN random() < 0.3 THEN 'conversando'::"CONVERSA_STATUS" ELSE 'encerrada'::"CONVERSA_STATUS" END,
-  CASE 
-    WHEN random() < 0.3 THEN 'SUPORTE'::"MOTIVO_CONVERSA"
-    WHEN random() < 0.6 THEN 'VENDA'::"MOTIVO_CONVERSA"
-    ELSE 'NAO_IDENTIFICADO'::"MOTIVO_CONVERSA"
-  END,
+  'NAO_IDENTIFICADO'::"MOTIVO_CONVERSA",
   random() > 0.3,
   NOW() - (random() * interval '7 days'),
   NOW() - (random() * interval '7 days')
