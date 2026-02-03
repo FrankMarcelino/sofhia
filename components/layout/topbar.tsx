@@ -2,7 +2,7 @@
 
 import { useRouter, usePathname } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { Bell, LogOut, Wallet, Search, ChevronRight, Menu } from 'lucide-react';
+import { Bell, LogOut, Wallet, Search, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { formatCurrency } from '@/lib/utils';
@@ -64,19 +64,10 @@ export function Topbar({ user, empresa }: TopbarProps) {
   }));
 
   return (
-    <header className="sticky top-0 z-30 h-16 bg-white border-b border-border px-4 lg:px-6 flex items-center justify-between shadow-sm">
-      {/* Left: Mobile Menu + Breadcrumbs */}
+    <header className="sticky top-0 z-20 h-16 bg-white border-b border-border px-6 flex items-center justify-between shadow-sm">
+      {/* Left: Breadcrumbs */}
       <div className="flex items-center gap-3 flex-1">
-        {/* Mobile Menu Button */}
-        <button 
-          className="lg:hidden p-2 hover:bg-muted rounded-lg transition-colors"
-          aria-label="Toggle menu"
-        >
-          <Menu className="h-5 w-5 text-foreground" />
-        </button>
-
-        {/* Breadcrumbs (Desktop only) */}
-        <nav className="hidden lg:flex items-center gap-2 text-sm">
+        <nav className="flex items-center gap-2 text-sm">
           {breadcrumbs.map((crumb, index) => (
             <div key={crumb.href} className="flex items-center gap-2">
               {index > 0 && <ChevronRight className="h-4 w-4 text-muted-foreground" />}
@@ -108,9 +99,9 @@ export function Topbar({ user, empresa }: TopbarProps) {
 
       {/* Right: Actions */}
       <div className="flex items-center gap-3 ml-auto">
-        {/* Saldo (Desktop) */}
+        {/* Saldo */}
         {empresa && (
-          <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-50 border border-emerald-200">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-50 border border-emerald-200">
             <Wallet className="h-4 w-4 text-emerald-600" />
             <div className="text-sm">
               <div className="text-[10px] text-emerald-600 font-medium uppercase tracking-wide">Saldo</div>

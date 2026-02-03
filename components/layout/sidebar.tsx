@@ -15,10 +15,7 @@ import {
   BarChart3,
   FileText,
   Headphones,
-  Menu,
-  X,
 } from 'lucide-react';
-import { useState } from 'react';
 
 interface SidebarProps {
   className?: string;
@@ -109,43 +106,16 @@ const menuItems = [
 
 export function Sidebar({ className }: SidebarProps) {
   const pathname = usePathname();
-  const [isOpen, setIsOpen] = useState(false);
-
-  const toggleSidebar = () => setIsOpen(!isOpen);
 
   return (
-    <>
-      {/* Mobile Menu Button */}
-      <button
-        onClick={toggleSidebar}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-card border border-border shadow-sm"
-        aria-label="Toggle menu"
-      >
-        {isOpen ? (
-          <X className="h-5 w-5 text-foreground" />
-        ) : (
-          <Menu className="h-5 w-5 text-foreground" />
-        )}
-      </button>
-
-      {/* Overlay (Mobile) */}
-      {isOpen && (
-        <div
-          className="lg:hidden fixed inset-0 bg-black/50 z-40"
-          onClick={toggleSidebar}
-        />
+    <aside
+      className={cn(
+        'fixed top-0 left-0 h-screen w-64 flex flex-col',
+        'bg-[#1e293b] border-r border-[#334155]',
+        'z-10', // Baixo z-index - não sobrepõe conteúdo principal
+        className
       )}
-
-      {/* Sidebar */}
-      <aside
-        className={cn(
-          'fixed top-0 left-0 h-screen bg-[#1e293b] border-r border-[#334155] z-40 transition-transform duration-300',
-          'lg:translate-x-0',
-          isOpen ? 'translate-x-0' : '-translate-x-full',
-          'w-64 flex flex-col',
-          className
-        )}
-      >
+    >
         {/* Logo */}
         <div className="h-16 flex items-center justify-center border-b border-[#334155] px-6">
           <Link href="/dashboard" className="flex items-center gap-2">
@@ -176,7 +146,6 @@ export function Sidebar({ className }: SidebarProps) {
                       <Link
                         key={item.href}
                         href={item.href}
-                        onClick={() => setIsOpen(false)}
                         className={cn(
                           'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200',
                           isActive
@@ -220,6 +189,5 @@ export function Sidebar({ className }: SidebarProps) {
           </div>
         </div>
       </aside>
-    </>
   );
 }
