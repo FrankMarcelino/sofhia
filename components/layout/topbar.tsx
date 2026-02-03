@@ -2,7 +2,7 @@
 
 import { useRouter, usePathname } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { Bell, LogOut, Wallet, Search, ChevronRight } from 'lucide-react';
+import { Bell, LogOut, Wallet, Search, ChevronRight, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { formatCurrency } from '@/lib/utils';
@@ -64,10 +64,18 @@ export function Topbar({ user, empresa }: TopbarProps) {
   }));
 
   return (
-    <header className="h-16 bg-white border-b border-border px-6 flex items-center justify-between shadow-sm">
-      {/* Left: Breadcrumbs (Desktop) / Empty (Mobile) */}
-      <div className="flex items-center gap-2 flex-1">
-        <div className="lg:hidden w-10" />
+    <header className="sticky top-0 z-30 h-16 bg-white border-b border-border px-4 lg:px-6 flex items-center justify-between shadow-sm">
+      {/* Left: Mobile Menu + Breadcrumbs */}
+      <div className="flex items-center gap-3 flex-1">
+        {/* Mobile Menu Button */}
+        <button 
+          className="lg:hidden p-2 hover:bg-muted rounded-lg transition-colors"
+          aria-label="Toggle menu"
+        >
+          <Menu className="h-5 w-5 text-foreground" />
+        </button>
+
+        {/* Breadcrumbs (Desktop only) */}
         <nav className="hidden lg:flex items-center gap-2 text-sm">
           {breadcrumbs.map((crumb, index) => (
             <div key={crumb.href} className="flex items-center gap-2">

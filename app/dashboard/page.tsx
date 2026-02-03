@@ -89,9 +89,9 @@ export default async function DashboardPage() {
   ];
 
   return (
-    <div className="container mx-auto px-6 py-8">
+    <div className="w-full max-w-7xl mx-auto">
       {/* Header */}
-      <div className="mb-8 flex items-start justify-between">
+      <div className="mb-6 flex items-start justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-3xl font-bold text-foreground mb-1">
             Welcome back, {user?.nome?.split(' ')[0]}!
@@ -162,7 +162,7 @@ export default async function DashboardPage() {
       )}
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6 mb-6">
         {/* Left Column - 2/3 width */}
         <div className="lg:col-span-2 space-y-6">
           {/* Sales Funnel */}
@@ -176,7 +176,7 @@ export default async function DashboardPage() {
         </div>
 
         {/* Right Column - 1/3 width */}
-        <div className="space-y-6">
+        <div className="space-y-4 lg:space-y-6">
           {/* Live Sales Feed */}
           <AtividadesFeed 
             atividades={atividades.map((a, i) => ({

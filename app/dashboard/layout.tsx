@@ -38,12 +38,12 @@ export default async function DashboardLayout({
       <Sidebar />
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col lg:ml-64">
+      <div className="flex-1 flex flex-col ml-0 lg:ml-64 transition-all duration-300">
         {/* Topbar */}
         <Topbar user={user} empresa={empresa} />
 
         {/* Content Area */}
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto p-6 lg:p-8">
           {children}
         </main>
       </div>
