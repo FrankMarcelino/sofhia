@@ -230,6 +230,33 @@ MVP: 5/12 módulos completos + UI modernizada ✨
 
 ## ✅ Concluído Recentemente
 
+### 🖥️ Refatoração Desktop-Only v0.6.0 (03/02/2026)
+**Mudança Estratégica:** Aplicação agora é **exclusivamente** para desktops e tablets (768px+)
+
+**Diretriz Adicionada:**
+- ✅ Documentado suporte apenas para desktop/notebook/tablet
+- ✅ NÃO suporta smartphones (mobile)
+- ✅ Sidebar sempre visível, sem menu hamburguer
+- ✅ Breakpoint mínimo: 768px
+
+**Código Simplificado:**
+- ✅ Removida toda lógica mobile da Sidebar (-30 linhas)
+- ✅ Removidos botões mobile menu, overlay, toggle state
+- ✅ Simplificado z-index: sidebar z-10 (não sobrepõe conteúdo)
+- ✅ Layout fixo: `ml-64` sempre (não mais responsivo)
+- ✅ Topbar sem elementos mobile
+- ✅ Dashboard sem breakpoints mobile (grid-cols fixos)
+
+**Problemas Resolvidos:**
+- ✅ **Sidebar NÃO sobrepõe mais conteúdo** (z-index corrigido)
+- ✅ Layout mais limpo e performático
+- ✅ Código mais simples de manter
+
+**Build Status:** ✅ 21.4s - Sucesso  
+**Arquivos:** `doc/diretrizes.md` atualizado com nova diretriz
+
+---
+
 ### 🔧 Correções de Layout v0.5.1 (03/02/2026)
 **Problemas Corrigidos:**
 - ✅ Sidebar sobrepondo conteúdo → Adicionado `ml-0 lg:ml-64` no main content
