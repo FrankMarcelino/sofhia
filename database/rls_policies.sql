@@ -63,10 +63,11 @@ ALTER TABLE public.historico_experimentos_ab ENABLE ROW LEVEL SECURITY;
 -- PARTE 2: FUNÇÃO AUXILIAR PARA OBTER ID DA EMPRESA DO USUÁRIO LOGADO
 -- ============================================================================
 
-CREATE OR REPLACE FUNCTION auth.user_empresa_id()
+CREATE OR REPLACE FUNCTION public.user_empresa_id()
 RETURNS uuid
 LANGUAGE sql
 STABLE
+SECURITY DEFINER
 AS $$
   SELECT id_empresa FROM public.usuarios_sofhia WHERE id = auth.uid();
 $$;
@@ -78,17 +79,17 @@ $$;
 -- Empresa: Usuário só vê sua própria empresa
 CREATE POLICY "usuarios_veem_propria_empresa" ON public.empresa
   FOR SELECT
-  USING (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id());
 
 -- Usuários: Usuário vê apenas usuários da mesma empresa
 CREATE POLICY "usuarios_veem_colegas" ON public.usuarios_sofhia
   FOR SELECT
-  USING (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id());
 
 -- Agentes: Usuário vê apenas agentes da sua empresa
 CREATE POLICY "usuarios_veem_agentes_empresa" ON public.agentes
   FOR SELECT
-  USING (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id());
 
 -- Extrações de agentes
 CREATE POLICY "usuarios_veem_extracoes_empresa" ON public.agente_extracoes
@@ -97,46 +98,46 @@ CREATE POLICY "usuarios_veem_extracoes_empresa" ON public.agente_extracoes
     EXISTS (
       SELECT 1 FROM public.agentes
       WHERE agentes.id_agente = agente_extracoes.id_agente
-      AND agentes.id_empresa = auth.user_empresa_id()
+      AND agentes.id_empresa = public.user_empresa_id()
     )
   );
 
 -- Guardrails
 CREATE POLICY "usuarios_veem_guardrails_empresa" ON public.agentes_guardrails
   FOR SELECT
-  USING (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id());
 
 -- Treinamento inicial
 CREATE POLICY "usuarios_veem_treinamento_empresa" ON public.agentes_treinamento_inicial
   FOR SELECT
-  USING (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id());
 
 -- Base de conhecimento
 CREATE POLICY "usuarios_veem_dominios_empresa" ON public.conhecimento_dominios
   FOR SELECT
-  USING (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id());
 
 CREATE POLICY "usuarios_veem_conhecimento_empresa" ON public.base_conhecimento_geral
   FOR SELECT
-  USING (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id());
 
 CREATE POLICY "usuarios_veem_cobertura_empresa" ON public.conhecimento_cobertura
   FOR SELECT
-  USING (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id());
 
 -- Pessoas
 CREATE POLICY "usuarios_veem_pessoas_empresa" ON public.pessoas
   FOR SELECT
-  USING (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id());
 
 CREATE POLICY "usuarios_veem_dados_qualificacao_empresa" ON public.pessoas_dados_qualificacao
   FOR SELECT
-  USING (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id());
 
 -- Conversas
 CREATE POLICY "usuarios_veem_conversas_empresa" ON public.conversas
   FOR SELECT
-  USING (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id());
 
 CREATE POLICY "usuarios_veem_interacoes_empresa" ON public.interacoes
   FOR SELECT
@@ -144,13 +145,13 @@ CREATE POLICY "usuarios_veem_interacoes_empresa" ON public.interacoes
     EXISTS (
       SELECT 1 FROM public.conversas
       WHERE conversas.id_conversa = interacoes.id_conversa
-      AND conversas.id_empresa = auth.user_empresa_id()
+      AND conversas.id_empresa = public.user_empresa_id()
     )
   );
 
 CREATE POLICY "usuarios_veem_tags_empresa" ON public.tags
   FOR SELECT
-  USING (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id());
 
 CREATE POLICY "usuarios_veem_conversas_tags_empresa" ON public.conversas_tags
   FOR SELECT
@@ -158,7 +159,7 @@ CREATE POLICY "usuarios_veem_conversas_tags_empresa" ON public.conversas_tags
     EXISTS (
       SELECT 1 FROM public.conversas
       WHERE conversas.id_conversa = conversas_tags.id_conversa
-      AND conversas.id_empresa = auth.user_empresa_id()
+      AND conversas.id_empresa = public.user_empresa_id()
     )
   );
 
@@ -169,61 +170,61 @@ CREATE POLICY "usuarios_veem_feedback_empresa" ON public.feedback_mensagens
       SELECT 1 FROM public.interacoes
       JOIN public.conversas ON conversas.id_conversa = interacoes.id_conversa
       WHERE interacoes.id_interacao = feedback_mensagens.id_interacao
-      AND conversas.id_empresa = auth.user_empresa_id()
+      AND conversas.id_empresa = public.user_empresa_id()
     )
   );
 
 -- Vendas
 CREATE POLICY "usuarios_veem_vendas_empresa" ON public.vendas_contratos
   FOR SELECT
-  USING (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id());
 
 -- Financeiro
 CREATE POLICY "usuarios_veem_carteira_empresa" ON public.carteiras
   FOR SELECT
-  USING (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id());
 
 CREATE POLICY "usuarios_veem_movimentacoes_empresa" ON public.carteiras_movimentacoes
   FOR SELECT
-  USING (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id());
 
 CREATE POLICY "usuarios_veem_usos_ia_empresa" ON public.usos_ia
   FOR SELECT
-  USING (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id());
 
 CREATE POLICY "usuarios_veem_notificacoes_empresa" ON public.financeiro_notificacoes
   FOR SELECT
-  USING (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id());
 
 -- Integrações
 CREATE POLICY "usuarios_veem_integracoes_empresa" ON public.empresa_integracoes
   FOR SELECT
-  USING (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id());
 
 CREATE POLICY "usuarios_veem_gatilhos_empresa" ON public.tags_gatilhos
   FOR SELECT
-  USING (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id());
 
 CREATE POLICY "usuarios_veem_config_upchat_empresa" ON public.configuracoes_upchat
   FOR SELECT
-  USING (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id());
 
 CREATE POLICY "usuarios_veem_preferencias_ia_empresa" ON public.empresa_preferencias_ia
   FOR SELECT
-  USING (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id());
 
 CREATE POLICY "usuarios_veem_regras_reativacao_empresa" ON public.regras_reativacao
   FOR SELECT
-  USING (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id());
 
 -- Experimentos
 CREATE POLICY "usuarios_veem_experimentos_empresa" ON public.experimentos_ab
   FOR SELECT
-  USING (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id());
 
 CREATE POLICY "usuarios_veem_historico_experimentos_empresa" ON public.historico_experimentos_ab
   FOR SELECT
-  USING (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id());
 
 -- ============================================================================
 -- PARTE 4: POLÍTICAS DE INSERT (Criação)
@@ -232,7 +233,7 @@ CREATE POLICY "usuarios_veem_historico_experimentos_empresa" ON public.historico
 -- Agentes: Usuário pode criar agentes na sua empresa
 CREATE POLICY "usuarios_criam_agentes_empresa" ON public.agentes
   FOR INSERT
-  WITH CHECK (id_empresa = auth.user_empresa_id());
+  WITH CHECK (id_empresa = public.user_empresa_id());
 
 -- Extrações
 CREATE POLICY "usuarios_criam_extracoes_empresa" ON public.agente_extracoes
@@ -241,72 +242,72 @@ CREATE POLICY "usuarios_criam_extracoes_empresa" ON public.agente_extracoes
     EXISTS (
       SELECT 1 FROM public.agentes
       WHERE agentes.id_agente = agente_extracoes.id_agente
-      AND agentes.id_empresa = auth.user_empresa_id()
+      AND agentes.id_empresa = public.user_empresa_id()
     )
   );
 
 -- Guardrails
 CREATE POLICY "usuarios_criam_guardrails_empresa" ON public.agentes_guardrails
   FOR INSERT
-  WITH CHECK (id_empresa = auth.user_empresa_id());
+  WITH CHECK (id_empresa = public.user_empresa_id());
 
 -- Treinamento
 CREATE POLICY "usuarios_criam_treinamento_empresa" ON public.agentes_treinamento_inicial
   FOR INSERT
-  WITH CHECK (id_empresa = auth.user_empresa_id());
+  WITH CHECK (id_empresa = public.user_empresa_id());
 
 -- Base de conhecimento
 CREATE POLICY "usuarios_criam_dominios_empresa" ON public.conhecimento_dominios
   FOR INSERT
-  WITH CHECK (id_empresa = auth.user_empresa_id());
+  WITH CHECK (id_empresa = public.user_empresa_id());
 
 CREATE POLICY "usuarios_criam_conhecimento_empresa" ON public.base_conhecimento_geral
   FOR INSERT
-  WITH CHECK (id_empresa = auth.user_empresa_id());
+  WITH CHECK (id_empresa = public.user_empresa_id());
 
 CREATE POLICY "usuarios_criam_cobertura_empresa" ON public.conhecimento_cobertura
   FOR INSERT
-  WITH CHECK (id_empresa = auth.user_empresa_id());
+  WITH CHECK (id_empresa = public.user_empresa_id());
 
 -- Pessoas
 CREATE POLICY "usuarios_criam_pessoas_empresa" ON public.pessoas
   FOR INSERT
-  WITH CHECK (id_empresa = auth.user_empresa_id());
+  WITH CHECK (id_empresa = public.user_empresa_id());
 
 CREATE POLICY "usuarios_criam_dados_qualificacao_empresa" ON public.pessoas_dados_qualificacao
   FOR INSERT
-  WITH CHECK (id_empresa = auth.user_empresa_id());
+  WITH CHECK (id_empresa = public.user_empresa_id());
 
 -- Tags
 CREATE POLICY "usuarios_criam_tags_empresa" ON public.tags
   FOR INSERT
-  WITH CHECK (id_empresa = auth.user_empresa_id());
+  WITH CHECK (id_empresa = public.user_empresa_id());
 
 -- Integrações
 CREATE POLICY "usuarios_criam_integracoes_empresa" ON public.empresa_integracoes
   FOR INSERT
-  WITH CHECK (id_empresa = auth.user_empresa_id());
+  WITH CHECK (id_empresa = public.user_empresa_id());
 
 CREATE POLICY "usuarios_criam_gatilhos_empresa" ON public.tags_gatilhos
   FOR INSERT
-  WITH CHECK (id_empresa = auth.user_empresa_id());
+  WITH CHECK (id_empresa = public.user_empresa_id());
 
 CREATE POLICY "usuarios_criam_config_upchat_empresa" ON public.configuracoes_upchat
   FOR INSERT
-  WITH CHECK (id_empresa = auth.user_empresa_id());
+  WITH CHECK (id_empresa = public.user_empresa_id());
 
 CREATE POLICY "usuarios_criam_preferencias_ia_empresa" ON public.empresa_preferencias_ia
   FOR INSERT
-  WITH CHECK (id_empresa = auth.user_empresa_id());
+  WITH CHECK (id_empresa = public.user_empresa_id());
 
 CREATE POLICY "usuarios_criam_regras_reativacao_empresa" ON public.regras_reativacao
   FOR INSERT
-  WITH CHECK (id_empresa = auth.user_empresa_id());
+  WITH CHECK (id_empresa = public.user_empresa_id());
 
 -- Experimentos
 CREATE POLICY "usuarios_criam_experimentos_empresa" ON public.experimentos_ab
   FOR INSERT
-  WITH CHECK (id_empresa = auth.user_empresa_id());
+  WITH CHECK (id_empresa = public.user_empresa_id());
 
 -- ============================================================================
 -- PARTE 5: POLÍTICAS DE UPDATE (Atualização)
@@ -315,8 +316,8 @@ CREATE POLICY "usuarios_criam_experimentos_empresa" ON public.experimentos_ab
 -- Empresa: Usuário pode atualizar dados da própria empresa
 CREATE POLICY "usuarios_atualizam_propria_empresa" ON public.empresa
   FOR UPDATE
-  USING (id_empresa = auth.user_empresa_id())
-  WITH CHECK (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id())
+  WITH CHECK (id_empresa = public.user_empresa_id());
 
 -- Usuários: Usuário pode atualizar próprio perfil
 CREATE POLICY "usuarios_atualizam_proprio_perfil" ON public.usuarios_sofhia
@@ -327,49 +328,49 @@ CREATE POLICY "usuarios_atualizam_proprio_perfil" ON public.usuarios_sofhia
 -- Agentes: Usuário pode atualizar agentes da empresa
 CREATE POLICY "usuarios_atualizam_agentes_empresa" ON public.agentes
   FOR UPDATE
-  USING (id_empresa = auth.user_empresa_id())
-  WITH CHECK (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id())
+  WITH CHECK (id_empresa = public.user_empresa_id());
 
 -- Treinamento
 CREATE POLICY "usuarios_atualizam_treinamento_empresa" ON public.agentes_treinamento_inicial
   FOR UPDATE
-  USING (id_empresa = auth.user_empresa_id())
-  WITH CHECK (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id())
+  WITH CHECK (id_empresa = public.user_empresa_id());
 
 -- Base de conhecimento
 CREATE POLICY "usuarios_atualizam_conhecimento_empresa" ON public.base_conhecimento_geral
   FOR UPDATE
-  USING (id_empresa = auth.user_empresa_id())
-  WITH CHECK (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id())
+  WITH CHECK (id_empresa = public.user_empresa_id());
 
 -- Pessoas
 CREATE POLICY "usuarios_atualizam_pessoas_empresa" ON public.pessoas
   FOR UPDATE
-  USING (id_empresa = auth.user_empresa_id())
-  WITH CHECK (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id())
+  WITH CHECK (id_empresa = public.user_empresa_id());
 
 -- Tags
 CREATE POLICY "usuarios_atualizam_tags_empresa" ON public.tags
   FOR UPDATE
-  USING (id_empresa = auth.user_empresa_id())
-  WITH CHECK (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id())
+  WITH CHECK (id_empresa = public.user_empresa_id());
 
 -- Vendas
 CREATE POLICY "usuarios_atualizam_vendas_empresa" ON public.vendas_contratos
   FOR UPDATE
-  USING (id_empresa = auth.user_empresa_id())
-  WITH CHECK (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id())
+  WITH CHECK (id_empresa = public.user_empresa_id());
 
 -- Configurações
 CREATE POLICY "usuarios_atualizam_config_upchat_empresa" ON public.configuracoes_upchat
   FOR UPDATE
-  USING (id_empresa = auth.user_empresa_id())
-  WITH CHECK (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id())
+  WITH CHECK (id_empresa = public.user_empresa_id());
 
 CREATE POLICY "usuarios_atualizam_preferencias_ia_empresa" ON public.empresa_preferencias_ia
   FOR UPDATE
-  USING (id_empresa = auth.user_empresa_id())
-  WITH CHECK (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id())
+  WITH CHECK (id_empresa = public.user_empresa_id());
 
 -- ============================================================================
 -- PARTE 6: POLÍTICAS DE DELETE (Exclusão)
@@ -378,7 +379,7 @@ CREATE POLICY "usuarios_atualizam_preferencias_ia_empresa" ON public.empresa_pre
 -- Agentes: Usuário pode deletar agentes da empresa
 CREATE POLICY "usuarios_deletam_agentes_empresa" ON public.agentes
   FOR DELETE
-  USING (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id());
 
 -- Extrações
 CREATE POLICY "usuarios_deletam_extracoes_empresa" ON public.agente_extracoes
@@ -387,40 +388,40 @@ CREATE POLICY "usuarios_deletam_extracoes_empresa" ON public.agente_extracoes
     EXISTS (
       SELECT 1 FROM public.agentes
       WHERE agentes.id_agente = agente_extracoes.id_agente
-      AND agentes.id_empresa = auth.user_empresa_id()
+      AND agentes.id_empresa = public.user_empresa_id()
     )
   );
 
 -- Base de conhecimento
 CREATE POLICY "usuarios_deletam_dominios_empresa" ON public.conhecimento_dominios
   FOR DELETE
-  USING (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id());
 
 CREATE POLICY "usuarios_deletam_conhecimento_empresa" ON public.base_conhecimento_geral
   FOR DELETE
-  USING (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id());
 
 CREATE POLICY "usuarios_deletam_cobertura_empresa" ON public.conhecimento_cobertura
   FOR DELETE
-  USING (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id());
 
 -- Tags
 CREATE POLICY "usuarios_deletam_tags_empresa" ON public.tags
   FOR DELETE
-  USING (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id());
 
 -- Integrações
 CREATE POLICY "usuarios_deletam_integracoes_empresa" ON public.empresa_integracoes
   FOR DELETE
-  USING (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id());
 
 CREATE POLICY "usuarios_deletam_gatilhos_empresa" ON public.tags_gatilhos
   FOR DELETE
-  USING (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id());
 
 CREATE POLICY "usuarios_deletam_regras_reativacao_empresa" ON public.regras_reativacao
   FOR DELETE
-  USING (id_empresa = auth.user_empresa_id());
+  USING (id_empresa = public.user_empresa_id());
 
 -- ============================================================================
 -- PARTE 7: TABELAS PÚBLICAS (SEM RLS)
