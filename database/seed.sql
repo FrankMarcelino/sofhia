@@ -19,7 +19,7 @@ INSERT INTO neurocores (
   n8n_workflow_id_mestre,
   ativo
 ) VALUES (
-  'nc-default-001',
+  '11111111-1111-1111-1111-111111111111',
   'Neurocore ISP Telecom',
   'Neurocore configurado para provedor de internet',
   'wf_isp_telecom_master',
@@ -39,7 +39,7 @@ INSERT INTO planos (
   valor_mensalidade,
   ativo
 ) VALUES (
-  'plano-startup-001',
+  '22222222-2222-2222-2222-222222222222',
   'Plano Startup',
   'MENSAL_FIXO',
   10000.00,
@@ -76,8 +76,8 @@ INSERT INTO empresa (
   '@isptelecom',
   'contato@isptelecom.com.br',
   'ATIVO',
-  'plano-startup-001',
-  'nc-default-001'
+  '22222222-2222-2222-2222-222222222222',
+  '11111111-1111-1111-1111-111111111111'
 ) ON CONFLICT (id_empresa) DO UPDATE SET
   nome = EXCLUDED.nome,
   email = EXCLUDED.email;
@@ -160,24 +160,15 @@ ON CONFLICT (id_modelo) DO NOTHING;
 -- ============================================================
 
 INSERT INTO agentes_tipos (id_agentes_tipos, id_neurocore, tipo_agente, display) VALUES
-  (gen_random_uuid(), 'nc-default-001', 'atendimento', 'Atendimento'),
-  (gen_random_uuid(), 'nc-default-001', 'vendas', 'Vendas'),
-  (gen_random_uuid(), 'nc-default-001', 'suporte', 'Suporte Técnico')
+  ('33333333-3333-3333-3333-333333333333', '11111111-1111-1111-1111-111111111111', 'atendimento', 'Atendimento'),
+  ('44444444-4444-4444-4444-444444444444', '11111111-1111-1111-1111-111111111111', 'vendas', 'Vendas'),
+  ('55555555-5555-5555-5555-555555555555', '11111111-1111-1111-1111-111111111111', 'suporte', 'Suporte Técnico')
 ON CONFLICT (id_agentes_tipos) DO NOTHING;
 
 -- ============================================================
 -- 9. AGENTES IA
 -- ============================================================
 
-WITH tipo_atendimento AS (
-  SELECT id_agentes_tipos FROM agentes_tipos WHERE tipo_agente = 'atendimento' LIMIT 1
-),
-tipo_vendas AS (
-  SELECT id_agentes_tipos FROM agentes_tipos WHERE tipo_agente = 'vendas' LIMIT 1
-),
-tipo_suporte AS (
-  SELECT id_agentes_tipos FROM agentes_tipos WHERE tipo_agente = 'suporte' LIMIT 1
-)
 INSERT INTO agentes (
   id_agente,
   id_empresa,
@@ -190,12 +181,12 @@ INSERT INTO agentes (
   instrucoes,
   id_modelo_ia,
   ativo
-)
-SELECT
+) VALUES
+(
   gen_random_uuid(),
   'e1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6',
-  'nc-default-001',
-  (SELECT id_agentes_tipos FROM tipo_atendimento),
+  '11111111-1111-1111-1111-111111111111',
+  '33333333-3333-3333-3333-333333333333',
   'Atendente Virtual ISP',
   'Você é um atendente virtual cordial e profissional da ISP Telecom',
   'Amigável, profissional e prestativo',
@@ -208,12 +199,12 @@ SELECT
   ),
   'gpt-4o',
   true
-UNION ALL
-SELECT
+),
+(
   gen_random_uuid(),
   'e1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6',
-  'nc-default-001',
-  (SELECT id_agentes_tipos FROM tipo_vendas),
+  '11111111-1111-1111-1111-111111111111',
+  '44444444-4444-4444-4444-444444444444',
   'Vendedor Virtual',
   'Você é um vendedor especializado em internet fibra óptica',
   'Persuasivo, confiante e consultivo',
@@ -226,12 +217,12 @@ SELECT
   ),
   'gpt-4o',
   true
-UNION ALL
-SELECT
+),
+(
   gen_random_uuid(),
   'e1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6',
-  'nc-default-001',
-  (SELECT id_agentes_tipos FROM tipo_suporte),
+  '11111111-1111-1111-1111-111111111111',
+  '55555555-5555-5555-5555-555555555555',
   'Suporte Técnico IA',
   'Você é um técnico de suporte especializado em internet',
   'Paciente, técnico e didático',
@@ -242,7 +233,8 @@ SELECT
     'Escale se necessário'
   ),
   'gpt-4o',
-  true;
+  true
+);
 
 -- ============================================================
 -- 10. CONVERSAS (últimos 7 dias)
