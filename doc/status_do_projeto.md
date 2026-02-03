@@ -1,17 +1,17 @@
 # Status do Projeto — SOFHIA Enterprise
 
 > **Última Atualização:** 03/02/2026  
-> **Versão Atual:** 0.2.0 (Auth Completo)  
-> **Fase:** Fase 1 - MVP (Fundação Completa)
+> **Versão Atual:** 0.3.0 (Layout Completo)  
+> **Fase:** Fase 1 - MVP (Fundação + Layout)
 
 ---
 
 ## 📊 Progresso Geral
 
 ```
-█████████░░░░░░░░░░░░ 40%
+████████████░░░░░░░░░ 50%
 
-MVP: 3/12 módulos completos
+MVP: 4/12 módulos completos
 ```
 
 ### Fases do Projeto
@@ -149,37 +149,56 @@ MVP: 3/12 módulos completos
 
 ---
 
+### 🎨 Layout Principal (03/02/2026) - TODO #4 ✅
+
+- ✅ Componente Sidebar criado com navegação completa
+- ✅ Componente Topbar com user info, saldo e logout
+- ✅ Layout do Dashboard com auth guard
+- ✅ Menu responsivo (mobile + desktop overlay)
+- ✅ Sistema de navegação por ícones (Lucide React)
+- ✅ Highlight de rota ativa
+- ✅ Design system SOFHIA aplicado
+- ✅ Página Dashboard básica criada
+
+**Módulos disponíveis na navegação:**
+- **Principal:** Dashboard, Atendimento, Monitoramento
+- **Neurocore (IA):** Editor de Agente, Base de Conhecimento, Simulador
+- **Gestão:** Clientes, Conversas, Relatórios
+- **Financeiro:** Carteira
+- **Configurações:** Parâmetros
+
+**Arquivos criados:**
+- `components/layout/sidebar.tsx` - Navegação lateral com menu colapsável
+- `components/layout/topbar.tsx` - Barra superior com user menu
+- `app/dashboard/layout.tsx` - Layout wrapper com auth e data fetching
+- `app/dashboard/page.tsx` - Página inicial do dashboard
+
+**Funcionalidades:**
+- Toggle mobile menu (hamburger icon)
+- Overlay para fechar menu ao clicar fora
+- Exibição de saldo em tempo real
+- Botão de logout funcional
+- Navegação entre módulos
+- Logo e branding SOFHIA
+
+**Observações:**
+- ESLint passando sem erros
+- Build de produção OK (16.2s)
+- Layout totalmente responsivo
+- Todas as rotas protegidas por auth
+
+---
+
 ## 🔄 Em Andamento
 
-*Nenhuma tarefa em andamento no momento.*
+### Todo #5: Dashboard com KPIs e Gráficos
+**Status:** Em Progresso
+**Prioridade:** 🔴 Alta
+**Descrição:** Implementar dashboard completo com métricas em tempo real, gráficos e live feed de atividades.
 
 ---
 
 ## 📋 Próximas Tarefas (Backlog Imediato)
-
-### Todo #4: Layout Principal (Sidebar + Topbar)
-**Status:** Próximo
-**Prioridade:** 🔴 Alta  
-**Descrição:** Criar layout base com sidebar de navegação e topbar com dados do usuário.
-
-**Sub-tarefas:**
-- [ ] Criar projeto Next.js 14+ com App Router
-- [ ] Configurar TypeScript strict mode
-- [ ] Instalar Tailwind CSS e configurar paleta customizada
-- [ ] Instalar Shadcn/UI via CLI
-- [ ] Instalar dependências: React Query, Lucide Icons, Supabase client
-- [ ] Configurar ESLint e Prettier
-- [ ] Criar estrutura de diretórios base
-- [ ] Configurar variáveis de ambiente (`.env.local`)
-- [ ] Executar build de teste
-
-**Arquivos a serem criados:**
-- `package.json`
-- `tsconfig.json`
-- `tailwind.config.ts`
-- `next.config.js`
-- `.env.local.example`
-- `.eslintrc.json`
 
 ---
 
