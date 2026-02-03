@@ -12,16 +12,41 @@ async function getLayoutData() {
     redirect('/login');
   }
 
-  // Buscar dados do usuário e empresa
+  // Buscar dados do usuário
   const { data: userData } = await supabase
-    .from('usuarios')
-    .select('*, empresa:empresas(*)')
+    .from('usuarios_sofhia')
+    .select('id, id_empresa, nome_usuario, ativo')
     .eq('id', user.id)
     .single();
 
+  // Buscar dados da empresa e carteira
+  const { data: empresaData } = userData?.id_empresa
+    ? await supabase
+        .from('empresa')
+        .select('id_empresa, nome')
+        .eq('id_empresa', userData.id_empresa)
+        .single()
+    : { data: null };
+
+  const { data: carteiraData } = userData?.id_empresa
+    ? await supabase
+        .from('carteiras')
+        .select('saldo_creditos')
+        .eq('id_empresa', userData.id_empresa)
+        .single()
+    : { data: null };
+
   return {
-    user: userData,
-    empresa: userData?.empresa,
+    user: userData ? {
+      id: userData.id,
+      nome: userData.nome_usuario,
+      email: user.email || '',
+    } : undefined,
+    empresa: empresaData ? {
+      id: empresaData.id_empresa,
+      nome_fantasia: empresaData.nome,
+      saldo: carteiraData?.saldo_creditos || 0,
+    } : undefined,
   };
 }
 

@@ -1,4 +1,4 @@
-# Status do Projeto — SOFHIA Enterprise
+image.png# Status do Projeto — SOFHIA Enterprise
 
 > **Última Atualização:** 03/02/2026  
 > **Versão Atual:** 0.6.1 (UI Polish + Spacing)  
