@@ -38,11 +38,11 @@ export async function getDashboardKPIs(
 ): Promise<DashboardKPIs> {
   const supabase = await createClient();
 
-  // Buscar saldo da empresa
-  const { data: empresa } = await supabase
-    .from('empresas')
-    .select('saldo')
-    .eq('id', empresaId)
+  // Buscar saldo da carteira da empresa
+  const { data: carteira } = await supabase
+    .from('carteiras')
+    .select('saldo_creditos')
+    .eq('id_empresa', empresaId)
     .single();
 
   // Conversas ativas (hoje)
@@ -50,14 +50,14 @@ export async function getDashboardKPIs(
     .from('conversas')
     .select('*', { count: 'exact', head: true })
     .eq('id_empresa', empresaId)
-    .eq('status', 'ativa');
+    .eq('status_conversa', 'conversando')
+    .eq('encerrada', false);
 
-  // Clientes ativos (com conversas nos últimos 30 dias)
+  // Clientes ativos (total de pessoas cadastradas)
   const { count: clientesAtivos } = await supabase
     .from('pessoas')
     .select('*', { count: 'exact', head: true })
-    .eq('id_empresa', empresaId)
-    .eq('status', 'ativo');
+    .eq('id_empresa', empresaId);
 
   // Agentes ativos
   const { count: agentesAtivos } = await supabase
@@ -80,7 +80,7 @@ export async function getDashboardKPIs(
     clientesAtivos: clientesAtivos || 0,
     agentesAtivos: agentesAtivos || 0,
     taxaConversao: taxaData || 0,
-    saldo: empresa?.saldo || 0,
+    saldo: carteira?.saldo_creditos || 0,
     statusSistema: 'online',
   };
 }
