@@ -64,7 +64,7 @@ export function Topbar({ user, empresa }: TopbarProps) {
   }));
 
   return (
-    <header className="sticky top-0 z-20 h-16 bg-white border-b border-border px-6 flex items-center justify-between shadow-sm">
+    <header className="sticky top-0 z-30 h-16 bg-white border-b border-border px-6 flex items-center justify-between shadow-sm">
       {/* Left: Breadcrumbs */}
       <div className="flex items-center gap-3 flex-1">
         <nav className="flex items-center gap-2 text-sm">

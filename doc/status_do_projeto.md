@@ -1,7 +1,7 @@
 # Status do Projeto — SOFHIA Enterprise
 
 > **Última Atualização:** 03/02/2026  
-> **Versão Atual:** 0.5.0 (UI Modernization Completa)  
+> **Versão Atual:** 0.6.0 (Desktop-Only Refactor)  
 > **Fase:** Fase 1 - MVP (Core + UI Modernizada)
 
 ---
@@ -9,9 +9,9 @@
 ## 📊 Progresso Geral
 
 ```
-█████████████████░░░░ 70%
+██████████████████░░░ 75%
 
-MVP: 5/12 módulos completos + UI modernizada ✨
+MVP: 5/12 módulos completos + UI modernizada + Layout desktop-only ✨
 ```
 
 ### Fases do Projeto
