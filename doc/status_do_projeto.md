@@ -1,17 +1,17 @@
 # Status do Projeto — SOFHIA Enterprise
 
 > **Última Atualização:** 03/02/2026  
-> **Versão Atual:** 0.3.0 (Layout Completo)  
-> **Fase:** Fase 1 - MVP (Fundação + Layout)
+> **Versão Atual:** 0.4.0 (Dashboard + Analytics)  
+> **Fase:** Fase 1 - MVP (Core Completo)
 
 ---
 
 ## 📊 Progresso Geral
 
 ```
-████████████░░░░░░░░░ 50%
+██████████████░░░░░░░ 60%
 
-MVP: 4/12 módulos completos
+MVP: 5/12 módulos completos
 ```
 
 ### Fases do Projeto
@@ -189,12 +189,46 @@ MVP: 4/12 módulos completos
 
 ---
 
+### 📊 Dashboard com Analytics (03/02/2026) - TODO #5 ✅
+
+- ✅ Componente KPICard reutilizável para métricas
+- ✅ Gráfico de vendas (LineChart) - últimos 7 dias
+- ✅ Gráfico de funil (BarChart horizontal) - últimos 30 dias
+- ✅ Feed de atividades recentes em tempo real
+- ✅ Integração com RPC Functions do Supabase
+- ✅ Queries otimizadas para performance
+
+**Componentes criados:**
+- `components/dashboard/kpi-card.tsx` - Card de métricas com ícone
+- `components/dashboard/vendas-chart.tsx` - Gráfico de linha (Recharts)
+- `components/dashboard/funil-chart.tsx` - Gráfico de barras horizontal
+- `components/dashboard/atividades-feed.tsx` - Feed de atividades
+- `lib/queries/dashboard.ts` - Queries do dashboard
+
+**Métricas implementadas:**
+- Conversas ativas (contador em tempo real)
+- Clientes ativos (total cadastrado)
+- Agentes IA ativos (configurados)
+- Taxa de conversão (últimos 30 dias)
+- Saldo da carteira (formatado)
+- Status do sistema (online/offline/manutenção)
+
+**Gráficos e Análises:**
+- Tendência de vendas vs leads (7 dias)
+- Funil de vendas por etapa (30 dias)
+- Feed de atividades com timestamps relativos (date-fns)
+
+**Observações:**
+- ESLint passando sem erros
+- Build de produção OK (24.9s)
+- Gráficos interativos e responsivos
+- Dependência `date-fns@4.1.0` adicionada para formatação de datas em pt-BR
+
+---
+
 ## 🔄 Em Andamento
 
-### Todo #5: Dashboard com KPIs e Gráficos
-**Status:** Em Progresso
-**Prioridade:** 🔴 Alta
-**Descrição:** Implementar dashboard completo com métricas em tempo real, gráficos e live feed de atividades.
+*Nenhuma tarefa em andamento no momento.*
 
 ---
 
