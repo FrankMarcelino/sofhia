@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -49,12 +50,39 @@ const motivoConfig: Record<string, string> = {
   OUTRO: 'Outro',
 };
 
+type StatusFilter = 'todas' | 'conversando' | 'aguardando_humano' | 'encerrado';
+
 export function ConversasList({
   conversas,
   conversaSelecionada,
   onSelectConversa,
   className,
 }: ConversasListProps) {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('todas');
+
+  // Filtrar conversas baseado em busca e status
+  const conversasFiltradas = useMemo(() => {
+    let resultado = conversas;
+
+    // Filtrar por status
+    if (statusFilter !== 'todas') {
+      resultado = resultado.filter(c => c.status_conversa === statusFilter);
+    }
+
+    // Filtrar por busca (nome ou telefone)
+    if (searchTerm.trim()) {
+      const termoBusca = searchTerm.toLowerCase().trim();
+      resultado = resultado.filter(c => {
+        const nome = c.pessoa?.nome?.toLowerCase() || '';
+        const telefone = c.pessoa?.telefone?.toLowerCase() || '';
+        return nome.includes(termoBusca) || telefone.includes(termoBusca);
+      });
+    }
+
+    return resultado;
+  }, [conversas, statusFilter, searchTerm]);
+
   return (
     <Card className={cn('shadow-sm h-full flex flex-col', className)}>
       <CardHeader className="pb-3">
@@ -63,7 +91,7 @@ export function ConversasList({
             <MessageSquare className="h-5 w-5" />
             Conversas
           </CardTitle>
-          <Badge variant="info">{conversas.length}</Badge>
+          <Badge variant="info">{conversasFiltradas.length}</Badge>
         </div>
 
         {/* Search */}
@@ -72,38 +100,75 @@ export function ConversasList({
           <Input
             placeholder="Buscar por nome ou telefone..."
             className="pl-9"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
 
         {/* Filtros rápidos */}
         <div className="flex gap-2 mt-3">
-          <Button variant="outline" size="sm" className="gap-1 text-xs">
+          <Button
+            variant={statusFilter === 'todas' ? 'outline' : 'ghost'}
+            size="sm"
+            className="gap-1 text-xs"
+            onClick={() => setStatusFilter('todas')}
+          >
             <Filter className="h-3 w-3" />
             Todas
           </Button>
-          <Button variant="ghost" size="sm" className="text-xs">
+          <Button
+            variant={statusFilter === 'conversando' ? 'outline' : 'ghost'}
+            size="sm"
+            className="text-xs"
+            onClick={() => setStatusFilter('conversando')}
+          >
             Ativas
           </Button>
-          <Button variant="ghost" size="sm" className="text-xs">
+          <Button
+            variant={statusFilter === 'aguardando_humano' ? 'outline' : 'ghost'}
+            size="sm"
+            className="text-xs"
+            onClick={() => setStatusFilter('aguardando_humano')}
+          >
             Aguardando
           </Button>
-          <Button variant="ghost" size="sm" className="text-xs">
+          <Button
+            variant={statusFilter === 'encerrado' ? 'outline' : 'ghost'}
+            size="sm"
+            className="text-xs"
+            onClick={() => setStatusFilter('encerrado')}
+          >
             Encerradas
           </Button>
         </div>
       </CardHeader>
 
       <CardContent className="flex-1 overflow-y-auto p-0">
-        {conversas.length === 0 ? (
+        {conversasFiltradas.length === 0 ? (
           <div className="text-center py-12 px-6">
             <MessageSquare className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
             <p className="text-sm text-muted-foreground">
-              Nenhuma conversa encontrada.
+              {searchTerm || statusFilter !== 'todas'
+                ? 'Nenhuma conversa encontrada com os filtros aplicados.'
+                : 'Nenhuma conversa encontrada.'}
             </p>
+            {(searchTerm || statusFilter !== 'todas') && (
+              <Button
+                variant="link"
+                size="sm"
+                className="mt-2"
+                onClick={() => {
+                  setSearchTerm('');
+                  setStatusFilter('todas');
+                }}
+              >
+                Limpar filtros
+              </Button>
+            )}
           </div>
         ) : (
           <div className="divide-y divide-border">
-            {conversas.map((conversa) => {
+            {conversasFiltradas.map((conversa) => {
               const status = statusConfig[conversa.status_conversa] || statusConfig.conversando;
               const isSelected = conversaSelecionada === conversa.id_conversa;
 

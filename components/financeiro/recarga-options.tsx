@@ -33,7 +33,7 @@ export function RecargaOptions({ className }: RecargaOptionsProps) {
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Valores Predefinidos */}
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
           {VALORES_PREDEFINIDOS.map((valor) => (
             <button
               key={valor}
@@ -42,17 +42,17 @@ export function RecargaOptions({ className }: RecargaOptionsProps) {
                 setValorCustom('');
               }}
               className={cn(
-                'relative p-4 rounded-lg border-2 transition-all duration-200',
+                'relative px-2 py-3 sm:px-3 sm:py-4 rounded-lg border-2 transition-all duration-200 min-h-[56px] flex items-center justify-center',
                 valorSelecionado === valor
                   ? 'border-primary bg-primary/5 shadow-sm'
                   : 'border-border hover:border-primary/50 hover:bg-muted/50'
               )}
             >
-              <p className="text-lg font-bold text-foreground">
+              <p className="text-sm sm:text-base font-semibold text-foreground whitespace-nowrap">
                 {formatCurrency(valor)}
               </p>
               {valor === 200 && (
-                <span className="absolute -top-2 -right-2 bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                <span className="absolute -top-2 -right-2 bg-amber-500 text-white text-[9px] font-semibold px-1.5 py-0.5 rounded-full whitespace-nowrap">
                   Popular
                 </span>
               )}
@@ -104,21 +104,21 @@ export function RecargaOptions({ className }: RecargaOptionsProps) {
           <div className="grid grid-cols-2 gap-3">
             <Button
               variant="outline"
-              className="h-auto py-4 flex-col gap-2"
+              className="h-auto py-3 sm:py-4 flex-col gap-1 sm:gap-2"
               disabled={valorFinal <= 0}
             >
-              <QrCode className="h-6 w-6 text-primary" />
-              <span className="text-sm font-medium">PIX</span>
-              <span className="text-xs text-muted-foreground">Instantâneo</span>
+              <QrCode className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
+              <span className="text-xs sm:text-sm font-medium">PIX</span>
+              <span className="text-[10px] sm:text-xs text-muted-foreground">Instantâneo</span>
             </Button>
             <Button
               variant="outline"
-              className="h-auto py-4 flex-col gap-2"
+              className="h-auto py-3 sm:py-4 flex-col gap-1 sm:gap-2"
               disabled={valorFinal <= 0}
             >
-              <CreditCard className="h-6 w-6 text-primary" />
-              <span className="text-sm font-medium">Cartão</span>
-              <span className="text-xs text-muted-foreground">Crédito/Débito</span>
+              <CreditCard className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
+              <span className="text-xs sm:text-sm font-medium">Cartão</span>
+              <span className="text-[10px] sm:text-xs text-muted-foreground">Crédito/Débito</span>
             </Button>
           </div>
         </div>

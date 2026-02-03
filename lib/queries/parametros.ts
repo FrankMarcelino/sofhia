@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { logSupabaseWarning } from '@/lib/utils';
 
 export interface Empresa {
   id_empresa: string;
@@ -56,7 +57,12 @@ export async function getEmpresa(empresaId: string): Promise<Empresa | null> {
     .eq('id_empresa', empresaId)
     .single();
 
-  if (error || !data) {
+  if (error) {
+    logSupabaseWarning(error, 'buscar empresa');
+    return null;
+  }
+
+  if (!data) {
     return null;
   }
 

@@ -502,6 +502,136 @@ END;
 $$;
 
 -- ============================================================================
+-- PARTE 9: FUNÇÕES ADICIONAIS PARA DASHBOARD
+-- ============================================================================
+
+-- Calcular taxa de conversão para um período específico
+DROP FUNCTION IF EXISTS public.calcular_taxa_conversao_periodo(uuid, integer);
+CREATE OR REPLACE FUNCTION public.calcular_taxa_conversao_periodo(
+  p_empresa_id uuid, 
+  p_dias integer
+)
+RETURNS numeric
+LANGUAGE plpgsql
+STABLE
+SECURITY DEFINER
+AS $$
+DECLARE
+  v_total_leads integer;
+  v_total_vendas integer;
+  v_taxa numeric;
+BEGIN
+  -- Conta leads (pessoas) criados nos últimos N dias
+  SELECT COUNT(*)
+  INTO v_total_leads
+  FROM public.pessoas
+  WHERE id_empresa = p_empresa_id
+  AND created_at >= CURRENT_DATE - (p_dias || ' days')::interval;
+  
+  -- Conta vendas nos últimos N dias
+  SELECT COUNT(*)
+  INTO v_total_vendas
+  FROM public.vendas_contratos
+  WHERE id_empresa = p_empresa_id
+  AND created_at >= CURRENT_DATE - (p_dias || ' days')::interval;
+  
+  -- Calcula taxa de conversão
+  IF v_total_leads > 0 THEN
+    v_taxa := (v_total_vendas::numeric / v_total_leads * 100);
+  ELSE
+    v_taxa := 0;
+  END IF;
+  
+  RETURN ROUND(v_taxa, 2);
+END;
+$$;
+
+-- Analisar funil de vendas com dados agregados
+DROP FUNCTION IF EXISTS public.analisar_funil_vendas(uuid, integer);
+CREATE OR REPLACE FUNCTION public.analisar_funil_vendas(
+  p_empresa_id uuid,
+  p_dias integer
+)
+RETURNS TABLE (
+  etapa text,
+  quantidade bigint,
+  percentual numeric
+)
+LANGUAGE plpgsql
+STABLE
+SECURITY DEFINER
+AS $$
+DECLARE
+  v_total_inicio bigint;
+  v_total_leads bigint;
+  v_total_contato bigint;
+  v_total_negociacao bigint;
+  v_total_fechamento bigint;
+BEGIN
+  -- Total de conversas iniciadas (etapa inicial)
+  SELECT COUNT(*)
+  INTO v_total_inicio
+  FROM public.conversas
+  WHERE id_empresa = p_empresa_id
+  AND created_at >= CURRENT_DATE - (p_dias || ' days')::interval;
+
+  -- Total com tag "lead"
+  SELECT COUNT(DISTINCT ct.id_conversa)
+  INTO v_total_leads
+  FROM public.conversas_tags ct
+  JOIN public.tags t ON t.id_tag = ct.id_tag
+  JOIN public.conversas c ON c.id_conversa = ct.id_conversa
+  WHERE c.id_empresa = p_empresa_id
+  AND LOWER(t.nome) LIKE '%lead%'
+  AND ct.created_at >= CURRENT_DATE - (p_dias || ' days')::interval;
+
+  -- Total com tag "contato" ou "proposta"
+  SELECT COUNT(DISTINCT ct.id_conversa)
+  INTO v_total_contato
+  FROM public.conversas_tags ct
+  JOIN public.tags t ON t.id_tag = ct.id_tag
+  JOIN public.conversas c ON c.id_conversa = ct.id_conversa
+  WHERE c.id_empresa = p_empresa_id
+  AND (LOWER(t.nome) LIKE '%contato%' OR LOWER(t.nome) LIKE '%proposta%')
+  AND ct.created_at >= CURRENT_DATE - (p_dias || ' days')::interval;
+
+  -- Total com tag "negociacao"
+  SELECT COUNT(DISTINCT ct.id_conversa)
+  INTO v_total_negociacao
+  FROM public.conversas_tags ct
+  JOIN public.tags t ON t.id_tag = ct.id_tag
+  JOIN public.conversas c ON c.id_conversa = ct.id_conversa
+  WHERE c.id_empresa = p_empresa_id
+  AND LOWER(t.nome) LIKE '%negoci%'
+  AND ct.created_at >= CURRENT_DATE - (p_dias || ' days')::interval;
+
+  -- Total de vendas fechadas
+  SELECT COUNT(*)
+  INTO v_total_fechamento
+  FROM public.vendas_contratos
+  WHERE id_empresa = p_empresa_id
+  AND created_at >= CURRENT_DATE - (p_dias || ' days')::interval;
+
+  -- Retornar tabela com etapas e percentuais
+  RETURN QUERY
+  SELECT 'Leads'::text, v_total_inicio, 
+         CASE WHEN v_total_inicio > 0 THEN 100.0 ELSE 0 END
+  UNION ALL
+  SELECT 'Contato'::text, v_total_leads,
+         CASE WHEN v_total_inicio > 0 THEN ROUND((v_total_leads::numeric / v_total_inicio * 100), 2) ELSE 0 END
+  UNION ALL
+  SELECT 'Proposta'::text, v_total_contato,
+         CASE WHEN v_total_inicio > 0 THEN ROUND((v_total_contato::numeric / v_total_inicio * 100), 2) ELSE 0 END
+  UNION ALL
+  SELECT 'Negociação'::text, v_total_negociacao,
+         CASE WHEN v_total_inicio > 0 THEN ROUND((v_total_negociacao::numeric / v_total_inicio * 100), 2) ELSE 0 END
+  UNION ALL
+  SELECT 'Fechamento'::text, v_total_fechamento,
+         CASE WHEN v_total_inicio > 0 THEN ROUND((v_total_fechamento::numeric / v_total_inicio * 100), 2) ELSE 0 END;
+END;
+$$;
+
+-- ============================================================================
 -- FIM DAS FUNÇÕES RPC
 -- ============================================================================
 

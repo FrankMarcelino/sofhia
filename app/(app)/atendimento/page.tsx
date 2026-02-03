@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
-import { ConversasList } from '@/components/atendimento/conversas-list';
-import { ChatViewer } from '@/components/atendimento/chat-viewer';
+import { AtendimentoWrapper } from '@/components/atendimento/atendimento-wrapper';
 import { StatsCards } from '@/components/atendimento/stats-cards';
 import {
   getConversas,
@@ -71,23 +70,7 @@ export default async function AtendimentoPage() {
       </section>
 
       {/* Main Grid - Split View */}
-      <section className="grid grid-cols-5 gap-6" style={{ height: 'calc(100vh - 340px)', minHeight: '500px' }}>
-        {/* Left Column - Conversas List (2/5 width) */}
-        <div className="col-span-2">
-          <ConversasList
-            conversas={conversas}
-            className="h-full"
-          />
-        </div>
-
-        {/* Right Column - Chat Viewer (3/5 width) */}
-        <div className="col-span-3">
-          <ChatViewer
-            interacoes={[]}
-            className="h-full"
-          />
-        </div>
-      </section>
+      <AtendimentoWrapper conversas={conversas} />
     </div>
   );
 }

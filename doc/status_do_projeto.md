@@ -1,17 +1,17 @@
 # Status do Projeto — SOFHIA Enterprise
 
 > **Última Atualização:** 03/02/2026
-> **Versão Atual:** 0.7.0 (Módulos Core MVP)
-> **Fase:** Fase 1 - MVP (Core + UI Modernizada)
+> **Versão Atual:** 0.7.1 (Correções de Integração Supabase)
+> **Fase:** Fase 1 - MVP (Core + UI Modernizada + Integrações Corrigidas)
 
 ---
 
 ## 📊 Progresso Geral
 
 ```
-████████████████████████░░ 85%
+██████████████████████████ 90%
 
-MVP: 9/12 módulos completos + UI modernizada + Layout desktop-only ✨
+MVP: 9/12 módulos completos + UI modernizada + Integrações funcionais ✨
 ```
 
 ### Fases do Projeto
@@ -381,6 +381,57 @@ Implementação de 4 módulos MVP seguindo estratégia de complexidade crescente
 ---
 
 ## 📝 Log de Alterações
+
+### 03/02/2026 - Correções de Integração Supabase (v0.7.1)
+
+**Problema:** Análise detalhada revelou problemas críticos nas integrações com Supabase que impediam funcionamento correto dos módulos.
+
+**Correções Implementadas:**
+
+#### Database (SQL)
+- ✅ **RPC Functions Adicionadas:**
+  - `calcular_taxa_conversao_periodo(uuid, integer)` - Calcula taxa de conversão de leads para vendas
+  - `analisar_funil_vendas(uuid, integer)` - Retorna dados agregados do funil de vendas
+- ✅ **RLS Policies Adicionadas:** ~20 novas políticas
+  - INSERT: conversas, interacoes, vendas_contratos, carteiras_movimentacoes, feedback_mensagens, usos_ia
+  - UPDATE: conversas, interacoes, pessoas_dados_qualificacao, feedback_mensagens, carteiras_movimentacoes
+  - DELETE: interacoes, pessoas_dados_qualificacao, feedback_mensagens, carteiras_movimentacoes
+
+#### Application (TypeScript)
+- ✅ **Queries Corrigidas:**
+  - `lib/queries/dashboard.ts` - Corrigidos type mismatches (4 locais)
+    - Coluna `status` → `status_conversa`
+    - Coluna `id` → `id_conversa`
+    - Enum `'ativa'` → `'conversando'`
+    - Retorno de `buscar_tendencia_vendas` alinhado com schema
+  - `lib/queries/monitoring.ts` - Mock data substituído por query real
+    - `requisicoesPorMinuto` agora consulta tabela `interacoes`
+- ✅ **Error Handling Implementado:**
+  - Nova função `handleSupabaseError()` em `lib/utils.ts`
+  - Nova função `logSupabaseWarning()` em `lib/utils.ts`
+  - Aplicado em todos os arquivos de queries (5 arquivos)
+
+#### Cleanup
+- ✅ Removido arquivo duplicado `app/dashboard/layout.tsx`
+
+#### Documentação
+- ✅ Criado `database/EXECUTE_ME.md` - Guia de execução dos scripts SQL
+- ✅ Criado `database/TEST_CHECKLIST.md` - Checklist completo de testes de integração
+
+**Métricas de Qualidade:**
+- ESLint: 0 erros, 1 warning (não crítico)
+- TypeScript: 0 erros
+- Build: ✅ Sucesso (57s)
+- Rotas: 9 (3 estáticas, 6 dinâmicas)
+
+**Arquivos Modificados:** 12
+- Database: 2 (rpc_functions.sql, rls_policies.sql)
+- Queries: 5 (dashboard, monitoring, atendimento, financeiro, parametros)
+- Utils: 1 (error handling)
+- Documentação: 3 (EXECUTE_ME, TEST_CHECKLIST, status_do_projeto)
+- Cleanup: 1 (deletado)
+
+---
 
 ### 03/02/2026 - Módulos Core MVP (v0.7.0)
 - Implementado módulo Monitoramento

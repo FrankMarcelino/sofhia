@@ -1,11 +1,14 @@
 'use client';
 
+import { useState, FormEvent } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
 import { Bot, Save } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { createClient } from '@/lib/supabase/client';
 
 interface PreferenciasIA {
   id_preferencia?: string;
@@ -29,10 +32,11 @@ interface ToggleRowProps {
   id: string;
   label: string;
   description: string;
-  defaultChecked: boolean;
+  checked: boolean;
+  onChange: (checked: boolean) => void;
 }
 
-function ToggleRow({ id, label, description, defaultChecked }: ToggleRowProps) {
+function ToggleRow({ id, label, description, checked, onChange }: ToggleRowProps) {
   return (
     <div className="flex items-center justify-between py-3 border-b border-border last:border-0">
       <div className="space-y-0.5">
@@ -45,7 +49,8 @@ function ToggleRow({ id, label, description, defaultChecked }: ToggleRowProps) {
         <input
           type="checkbox"
           id={id}
-          defaultChecked={defaultChecked}
+          checked={checked}
+          onChange={(e) => onChange(e.target.checked)}
           className="sr-only peer"
         />
         <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
@@ -55,7 +60,10 @@ function ToggleRow({ id, label, description, defaultChecked }: ToggleRowProps) {
 }
 
 export function PreferenciasIAForm({ preferencias, className }: PreferenciasIAProps) {
-  const prefs = preferencias || {
+  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
+  
+  const defaultPrefs = {
     transcrever_audio_cliente: true,
     responder_em_audio_se_receber_audio: false,
     extrair_dados_documentos: true,
@@ -65,6 +73,81 @@ export function PreferenciasIAForm({ preferencias, className }: PreferenciasIAPr
     transbordo_automatico_erro: true,
     nome_fila_transbordo: null,
     buffer_time: 9,
+  };
+
+  const [formData, setFormData] = useState({
+    transcrever_audio_cliente: preferencias?.transcrever_audio_cliente ?? defaultPrefs.transcrever_audio_cliente,
+    responder_em_audio_se_receber_audio: preferencias?.responder_em_audio_se_receber_audio ?? defaultPrefs.responder_em_audio_se_receber_audio,
+    extrair_dados_documentos: preferencias?.extrair_dados_documentos ?? defaultPrefs.extrair_dados_documentos,
+    simular_digitacao: preferencias?.simular_digitacao ?? defaultPrefs.simular_digitacao,
+    tempo_medio_digitacao_segundos: preferencias?.tempo_medio_digitacao_segundos ?? defaultPrefs.tempo_medio_digitacao_segundos,
+    maximo_tentativas_ia: preferencias?.maximo_tentativas_ia ?? defaultPrefs.maximo_tentativas_ia,
+    transbordo_automatico_erro: preferencias?.transbordo_automatico_erro ?? defaultPrefs.transbordo_automatico_erro,
+    nome_fila_transbordo: preferencias?.nome_fila_transbordo ?? defaultPrefs.nome_fila_transbordo,
+    buffer_time: preferencias?.buffer_time ?? defaultPrefs.buffer_time,
+  });
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const supabase = createClient();
+      
+      // Buscar empresa do usuário
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Usuário não autenticado');
+
+      const { data: userData } = await supabase
+        .from('usuarios_sofhia')
+        .select('id_empresa')
+        .eq('id', user.id)
+        .single();
+
+      if (!userData?.id_empresa) throw new Error('Empresa não encontrada');
+
+      // Upsert (insert ou update)
+      const { error } = await supabase
+        .from('empresa_preferencias_ia')
+        .upsert({
+          id_empresa: userData.id_empresa,
+          transcrever_audio_cliente: formData.transcrever_audio_cliente,
+          responder_em_audio_se_receber_audio: formData.responder_em_audio_se_receber_audio,
+          extrair_dados_documentos: formData.extrair_dados_documentos,
+          simular_digitacao: formData.simular_digitacao,
+          tempo_medio_digitacao_segundos: formData.tempo_medio_digitacao_segundos,
+          maximo_tentativas_ia: formData.maximo_tentativas_ia,
+          transbordo_automatico_erro: formData.transbordo_automatico_erro,
+          nome_fila_transbordo: formData.nome_fila_transbordo || null,
+          buffer_time: formData.buffer_time,
+        }, {
+          onConflict: 'id_empresa'
+        });
+
+      if (error) {
+        console.error('Erro ao salvar preferências de IA:', error);
+        toast({
+          title: 'Erro ao salvar',
+          description: 'Não foi possível salvar as preferências. Tente novamente.',
+          variant: 'destructive',
+        });
+        return;
+      }
+
+      toast({
+        title: 'Sucesso!',
+        description: 'Preferências de IA salvas com sucesso.',
+      });
+    } catch (error) {
+      console.error('Erro inesperado:', error);
+      toast({
+        title: 'Erro inesperado',
+        description: 'Ocorreu um erro ao salvar. Tente novamente.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -79,38 +162,43 @@ export function PreferenciasIAForm({ preferencias, className }: PreferenciasIAPr
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           {/* Toggles Section */}
           <div className="space-y-0">
             <ToggleRow
               id="transcrever_audio"
               label="Transcrever áudios do cliente"
               description="Converter automaticamente áudios recebidos em texto"
-              defaultChecked={prefs.transcrever_audio_cliente}
+              checked={formData.transcrever_audio_cliente}
+              onChange={(checked) => setFormData({ ...formData, transcrever_audio_cliente: checked })}
             />
             <ToggleRow
               id="responder_audio"
               label="Responder em áudio"
               description="Responder com áudio quando o cliente enviar áudio"
-              defaultChecked={prefs.responder_em_audio_se_receber_audio}
+              checked={formData.responder_em_audio_se_receber_audio}
+              onChange={(checked) => setFormData({ ...formData, responder_em_audio_se_receber_audio: checked })}
             />
             <ToggleRow
               id="extrair_documentos"
               label="Extrair dados de documentos"
               description="Analisar imagens de documentos enviados"
-              defaultChecked={prefs.extrair_dados_documentos}
+              checked={formData.extrair_dados_documentos}
+              onChange={(checked) => setFormData({ ...formData, extrair_dados_documentos: checked })}
             />
             <ToggleRow
               id="simular_digitacao"
               label="Simular digitação"
               description="Mostrar indicador de digitação antes de responder"
-              defaultChecked={prefs.simular_digitacao}
+              checked={formData.simular_digitacao}
+              onChange={(checked) => setFormData({ ...formData, simular_digitacao: checked })}
             />
             <ToggleRow
               id="transbordo_erro"
               label="Transbordo automático em erro"
               description="Transferir para humano quando a IA falhar"
-              defaultChecked={prefs.transbordo_automatico_erro}
+              checked={formData.transbordo_automatico_erro}
+              onChange={(checked) => setFormData({ ...formData, transbordo_automatico_erro: checked })}
             />
           </div>
 
@@ -123,7 +211,8 @@ export function PreferenciasIAForm({ preferencias, className }: PreferenciasIAPr
                 type="number"
                 min={1}
                 max={10}
-                defaultValue={prefs.tempo_medio_digitacao_segundos}
+                value={formData.tempo_medio_digitacao_segundos}
+                onChange={(e) => setFormData({ ...formData, tempo_medio_digitacao_segundos: parseInt(e.target.value) || 1 })}
               />
               <p className="text-xs text-muted-foreground">Delay simulado</p>
             </div>
@@ -134,7 +223,8 @@ export function PreferenciasIAForm({ preferencias, className }: PreferenciasIAPr
                 type="number"
                 min={1}
                 max={10}
-                defaultValue={prefs.maximo_tentativas_ia}
+                value={formData.maximo_tentativas_ia}
+                onChange={(e) => setFormData({ ...formData, maximo_tentativas_ia: parseInt(e.target.value) || 1 })}
               />
               <p className="text-xs text-muted-foreground">Antes do transbordo</p>
             </div>
@@ -145,7 +235,8 @@ export function PreferenciasIAForm({ preferencias, className }: PreferenciasIAPr
                 type="number"
                 min={1}
                 max={30}
-                defaultValue={prefs.buffer_time}
+                value={formData.buffer_time}
+                onChange={(e) => setFormData({ ...formData, buffer_time: parseInt(e.target.value) || 1 })}
               />
               <p className="text-xs text-muted-foreground">Aguardar mensagens</p>
             </div>
@@ -156,7 +247,8 @@ export function PreferenciasIAForm({ preferencias, className }: PreferenciasIAPr
             <Label htmlFor="fila_transbordo">Fila de Transbordo</Label>
             <Input
               id="fila_transbordo"
-              defaultValue={prefs.nome_fila_transbordo || ''}
+              value={formData.nome_fila_transbordo || ''}
+              onChange={(e) => setFormData({ ...formData, nome_fila_transbordo: e.target.value })}
               placeholder="Nome da fila para transferências"
             />
             <p className="text-xs text-muted-foreground">
@@ -165,9 +257,9 @@ export function PreferenciasIAForm({ preferencias, className }: PreferenciasIAPr
           </div>
 
           <div className="flex justify-end pt-4">
-            <Button type="submit" className="gap-2">
+            <Button type="submit" className="gap-2" disabled={isLoading}>
               <Save className="h-4 w-4" />
-              Salvar Preferências
+              {isLoading ? 'Salvando...' : 'Salvar Preferências'}
             </Button>
           </div>
         </form>

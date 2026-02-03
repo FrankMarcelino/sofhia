@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { logSupabaseWarning } from '@/lib/utils';
 
 export interface UpChatConfig {
   id_config: string;
@@ -28,7 +29,12 @@ export async function getUpChatConfig(empresaId: string): Promise<UpChatConfig |
     .eq('id_empresa', empresaId)
     .single();
 
-  if (error || !data) {
+  if (error) {
+    logSupabaseWarning(error, 'buscar configuração UpChat');
+    return null;
+  }
+
+  if (!data) {
     return null;
   }
 
@@ -39,7 +45,7 @@ export async function getSystemStats(empresaId: string) {
   const supabase = await createClient();
 
   // Buscar estatísticas em paralelo
-  const [conversasResult, agentesResult, usosResult] = await Promise.all([
+  const [conversasResult, agentesResult, usosResult, interacoesResult] = await Promise.all([
     // Conversas ativas hoje
     supabase
       .from('conversas')
@@ -60,6 +66,13 @@ export async function getSystemStats(empresaId: string) {
       .select('tokens_total')
       .eq('id_empresa', empresaId)
       .gte('created_at', new Date(new Date().setHours(0, 0, 0, 0)).toISOString()),
+
+    // Interações no último minuto (para calcular requisições/min)
+    supabase
+      .from('interacoes')
+      .select('id_interacao', { count: 'exact', head: true })
+      .eq('id_empresa', empresaId)
+      .gte('created_at', new Date(Date.now() - 60000).toISOString()),
   ]);
 
   const tokensHoje = usosResult.data?.reduce((acc, uso) => acc + (uso.tokens_total || 0), 0) || 0;
@@ -68,7 +81,7 @@ export async function getSystemStats(empresaId: string) {
     conversasAtivas: conversasResult.count || 0,
     agentesAtivos: agentesResult.count || 0,
     tokensHoje,
-    requisicoesPorMinuto: Math.floor(Math.random() * 15) + 5, // Mock por enquanto
+    requisicoesPorMinuto: interacoesResult.count || 0,
   };
 }
 

@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { handleSupabaseError } from '@/lib/utils';
 
 export interface DashboardKPIs {
   conversasAtivas: number;
@@ -87,8 +88,7 @@ export async function getDashboardKPIs(
 
 interface VendasTrendRaw {
   data: string;
-  vendas: number;
-  leads: number;
+  valor_total: number;
 }
 
 /**
@@ -99,21 +99,41 @@ export async function getVendasTrend(
 ): Promise<VendasTrend[]> {
   const supabase = await createClient();
 
-  const { data } = await supabase.rpc('buscar_tendencia_vendas', {
+  const { data, error } = await supabase.rpc('buscar_tendencia_vendas', {
     p_empresa_id: empresaId,
     p_dias: 7,
   });
 
+  if (error) {
+    handleSupabaseError(error, 'buscar tendência de vendas');
+  }
+
   if (!data) return [];
 
-  return (data as VendasTrendRaw[]).map((item) => ({
-    data: new Date(item.data).toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: 'short',
-    }),
-    vendas: item.vendas || 0,
-    leads: item.leads || 0,
-  }));
+  // buscar_tendencia_vendas retorna { data, valor_total }
+  // Precisamos também contar leads para cada dia
+  const result: VendasTrend[] = [];
+  
+  for (const item of data as VendasTrendRaw[]) {
+    // Contar leads para o mesmo dia
+    const { count: leadsCount } = await supabase
+      .from('pessoas')
+      .select('*', { count: 'exact', head: true })
+      .eq('id_empresa', empresaId)
+      .gte('created_at', item.data)
+      .lt('created_at', new Date(new Date(item.data).getTime() + 86400000).toISOString());
+
+    result.push({
+      data: new Date(item.data).toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: 'short',
+      }),
+      vendas: item.valor_total || 0,
+      leads: leadsCount || 0,
+    });
+  }
+
+  return result;
 }
 
 interface FunilVendasRaw {
@@ -154,9 +174,9 @@ export async function getFunilVendas(
 }
 
 interface ConversaRaw {
-  id: string;
+  id_conversa: string;
   pessoa: { nome: string } | null;
-  status: string;
+  status_conversa: string;
   created_at: string;
 }
 
@@ -170,21 +190,25 @@ export async function getAtividadesRecentes(
   const supabase = await createClient();
 
   // Buscar últimas conversas
-  const { data: conversas } = await supabase
+  const { data: conversas, error } = await supabase
     .from('conversas')
-    .select('id, pessoa:pessoas(nome), status, created_at')
+    .select('id_conversa, pessoa:pessoas(nome), status_conversa, created_at')
     .eq('id_empresa', empresaId)
     .order('created_at', { ascending: false })
     .limit(limit);
 
+  if (error) {
+    handleSupabaseError(error, 'buscar atividades recentes');
+  }
+
   if (!conversas) return [];
 
   return (conversas as unknown as ConversaRaw[]).map((conversa) => ({
-    id: conversa.id,
+    id: conversa.id_conversa,
     tipo: 'conversa' as const,
     titulo: `Nova conversa com ${conversa.pessoa?.nome || 'Cliente'}`,
-    descricao: `Status: ${conversa.status}`,
+    descricao: `Status: ${conversa.status_conversa}`,
     timestamp: conversa.created_at,
-    status: conversa.status === 'ativa' ? ('success' as const) : ('info' as const),
+    status: conversa.status_conversa === 'conversando' ? ('success' as const) : ('info' as const),
   }));
 }

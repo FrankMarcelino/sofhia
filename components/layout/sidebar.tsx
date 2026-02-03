@@ -9,12 +9,12 @@ import {
   Users,
   Bot,
   Database,
-  Sparkles,
   DollarSign,
   Settings,
   BarChart3,
   FileText,
   Headphones,
+  Sparkles,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -166,22 +166,6 @@ export function Sidebar({ className }: SidebarProps) {
 
         {/* Footer */}
         <div className="p-4 border-t border-[#334155]">
-          {/* Upgrade Card */}
-          <div className="mb-4 p-4 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-700 shadow-lg">
-            <div className="flex items-center gap-2 mb-2">
-              <Sparkles className="h-4 w-4 text-white" />
-              <span className="text-xs font-bold text-white uppercase tracking-wide">
-                Upgrade to Pro
-              </span>
-            </div>
-            <p className="text-xs text-emerald-50 mb-3 leading-relaxed">
-              Get advanced AI features and unlimited conversations
-            </p>
-            <button className="w-full py-2 px-3 bg-white hover:bg-emerald-50 text-emerald-700 text-xs font-bold rounded-lg transition-colors">
-              Upgrade Now
-            </button>
-          </div>
-
           {/* Version Info */}
           <div className="px-3 py-2 text-[11px] text-slate-400">
             <div className="font-semibold mb-0.5 text-slate-300">SOFHIA Enterprise</div>

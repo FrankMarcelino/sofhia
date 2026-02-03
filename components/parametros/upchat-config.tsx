@@ -5,9 +5,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/hooks/use-toast';
 import { Server, Save, RefreshCw, CheckCircle, XCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useState } from 'react';
+import { useState, FormEvent } from 'react';
+import { createClient } from '@/lib/supabase/client';
 
 interface UpChatConfig {
   id_config?: string;
@@ -27,19 +29,93 @@ interface UpChatConfigProps {
 }
 
 export function UpChatConfigForm({ config, className }: UpChatConfigProps) {
+  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
   const [testStatus, setTestStatus] = useState<'idle' | 'testing' | 'success' | 'error'>('idle');
+  const [formData, setFormData] = useState({
+    company_name: config?.company_name || '',
+    api_global_token_upchat: config?.api_global_token_upchat || '',
+    url_provedor_upchat: config?.url_provedor_upchat || '',
+    url_socket_upchat: config?.url_socket_upchat || '',
+    url_eventos_upchat: config?.url_eventos_upchat || '',
+    usuario_upchat: config?.usuario_upchat || '',
+    senha_upchat: config?.senha_upchat || '',
+    queue_id: config?.queue_id || '',
+  });
 
   const handleTestConnection = async () => {
     setTestStatus('testing');
     // Simular teste de conexão
     setTimeout(() => {
       // Por enquanto, considera sucesso se tiver token e URL
-      if (config?.api_global_token_upchat && config?.url_provedor_upchat) {
+      if (formData.api_global_token_upchat && formData.url_provedor_upchat) {
         setTestStatus('success');
       } else {
         setTestStatus('error');
       }
     }, 1500);
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const supabase = createClient();
+      
+      // Buscar empresa do usuário
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Usuário não autenticado');
+
+      const { data: userData } = await supabase
+        .from('usuarios_sofhia')
+        .select('id_empresa')
+        .eq('id', user.id)
+        .single();
+
+      if (!userData?.id_empresa) throw new Error('Empresa não encontrada');
+
+      // Upsert (insert ou update)
+      const { error } = await supabase
+        .from('configuracoes_upchat')
+        .upsert({
+          id_empresa: userData.id_empresa,
+          company_name: formData.company_name || null,
+          api_global_token_upchat: formData.api_global_token_upchat,
+          url_provedor_upchat: formData.url_provedor_upchat || null,
+          url_socket_upchat: formData.url_socket_upchat || null,
+          url_eventos_upchat: formData.url_eventos_upchat || null,
+          usuario_upchat: formData.usuario_upchat || null,
+          senha_upchat: formData.senha_upchat || null,
+          queue_id: formData.queue_id || null,
+        }, {
+          onConflict: 'id_empresa'
+        });
+
+      if (error) {
+        console.error('Erro ao salvar configurações UpChat:', error);
+        toast({
+          title: 'Erro ao salvar',
+          description: 'Não foi possível salvar as configurações. Tente novamente.',
+          variant: 'destructive',
+        });
+        return;
+      }
+
+      toast({
+        title: 'Sucesso!',
+        description: 'Configurações do UpChat salvas com sucesso.',
+      });
+    } catch (error) {
+      console.error('Erro inesperado:', error);
+      toast({
+        title: 'Erro inesperado',
+        description: 'Ocorreu um erro ao salvar. Tente novamente.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -59,13 +135,14 @@ export function UpChatConfigForm({ config, className }: UpChatConfigProps) {
         )}
       </CardHeader>
       <CardContent>
-        <form className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="company_name">Company Name</Label>
               <Input
                 id="company_name"
-                defaultValue={config?.company_name || ''}
+                value={formData.company_name}
+                onChange={(e) => setFormData({ ...formData, company_name: e.target.value })}
                 placeholder="Nome da instância"
               />
             </div>
@@ -73,7 +150,8 @@ export function UpChatConfigForm({ config, className }: UpChatConfigProps) {
               <Label htmlFor="queue_id">Queue ID</Label>
               <Input
                 id="queue_id"
-                defaultValue={config?.queue_id || ''}
+                value={formData.queue_id}
+                onChange={(e) => setFormData({ ...formData, queue_id: e.target.value })}
                 placeholder="ID da fila"
               />
             </div>
@@ -84,8 +162,10 @@ export function UpChatConfigForm({ config, className }: UpChatConfigProps) {
             <Input
               id="api_token"
               type="password"
-              defaultValue={config?.api_global_token_upchat || ''}
+              value={formData.api_global_token_upchat}
+              onChange={(e) => setFormData({ ...formData, api_global_token_upchat: e.target.value })}
               placeholder="Token de autenticação"
+              required
             />
             <p className="text-xs text-muted-foreground">
               Token de acesso global para autenticação com a API UpChat
@@ -97,7 +177,8 @@ export function UpChatConfigForm({ config, className }: UpChatConfigProps) {
               <Label htmlFor="url_provedor">URL do Provedor</Label>
               <Input
                 id="url_provedor"
-                defaultValue={config?.url_provedor_upchat || ''}
+                value={formData.url_provedor_upchat}
+                onChange={(e) => setFormData({ ...formData, url_provedor_upchat: e.target.value })}
                 placeholder="https://api.upchat.com.br"
               />
             </div>
@@ -105,7 +186,8 @@ export function UpChatConfigForm({ config, className }: UpChatConfigProps) {
               <Label htmlFor="url_socket">URL Socket</Label>
               <Input
                 id="url_socket"
-                defaultValue={config?.url_socket_upchat || ''}
+                value={formData.url_socket_upchat}
+                onChange={(e) => setFormData({ ...formData, url_socket_upchat: e.target.value })}
                 placeholder="wss://socket.upchat.com.br"
               />
             </div>
@@ -115,7 +197,8 @@ export function UpChatConfigForm({ config, className }: UpChatConfigProps) {
             <Label htmlFor="url_eventos">URL de Eventos</Label>
             <Input
               id="url_eventos"
-              defaultValue={config?.url_eventos_upchat || ''}
+              value={formData.url_eventos_upchat}
+              onChange={(e) => setFormData({ ...formData, url_eventos_upchat: e.target.value })}
               placeholder="https://eventos.upchat.com.br"
             />
           </div>
@@ -125,7 +208,8 @@ export function UpChatConfigForm({ config, className }: UpChatConfigProps) {
               <Label htmlFor="usuario">Usuário</Label>
               <Input
                 id="usuario"
-                defaultValue={config?.usuario_upchat || ''}
+                value={formData.usuario_upchat}
+                onChange={(e) => setFormData({ ...formData, usuario_upchat: e.target.value })}
                 placeholder="Usuário de acesso"
               />
             </div>
@@ -134,7 +218,8 @@ export function UpChatConfigForm({ config, className }: UpChatConfigProps) {
               <Input
                 id="senha"
                 type="password"
-                defaultValue={config?.senha_upchat || ''}
+                value={formData.senha_upchat}
+                onChange={(e) => setFormData({ ...formData, senha_upchat: e.target.value })}
                 placeholder="••••••••"
               />
             </div>
@@ -175,14 +260,14 @@ export function UpChatConfigForm({ config, className }: UpChatConfigProps) {
               variant="outline"
               className="gap-2"
               onClick={handleTestConnection}
-              disabled={testStatus === 'testing'}
+              disabled={testStatus === 'testing' || isLoading}
             >
               <RefreshCw className={cn('h-4 w-4', testStatus === 'testing' && 'animate-spin')} />
               Testar Conexão
             </Button>
-            <Button type="submit" className="gap-2">
+            <Button type="submit" className="gap-2" disabled={isLoading}>
               <Save className="h-4 w-4" />
-              Salvar Configurações
+              {isLoading ? 'Salvando...' : 'Salvar Configurações'}
             </Button>
           </div>
         </form>

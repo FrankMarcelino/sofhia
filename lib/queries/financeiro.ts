@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { logSupabaseWarning } from '@/lib/utils';
 
 export interface Carteira {
   id_carteira: string;
@@ -35,7 +36,12 @@ export async function getCarteira(empresaId: string): Promise<Carteira | null> {
     .eq('id_empresa', empresaId)
     .single();
 
-  if (error || !data) {
+  if (error) {
+    logSupabaseWarning(error, 'buscar carteira');
+    return null;
+  }
+
+  if (!data) {
     return null;
   }
 
@@ -55,7 +61,12 @@ export async function getMovimentacoes(
     .order('created_at', { ascending: false })
     .limit(limite);
 
-  if (error || !data) {
+  if (error) {
+    logSupabaseWarning(error, 'buscar movimentações');
+    return [];
+  }
+
+  if (!data) {
     return [];
   }
 

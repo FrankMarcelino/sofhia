@@ -32,47 +32,47 @@ const levelPrefixes: Record<LogEntry['level'], string> = {
   success: 'OK',
 };
 
-// Logs simulados para demonstração
+// Logs simulados para demonstração (timestamps fixos para evitar erro de hidratação)
 const mockLogs: LogEntry[] = [
   {
     id: '1',
-    timestamp: new Date(Date.now() - 1000 * 60 * 0.5).toISOString(),
+    timestamp: new Date('2026-02-03T18:37:00Z').toISOString(),
     level: 'success',
     message: 'Conexão com UpChat estabelecida',
   },
   {
     id: '2',
-    timestamp: new Date(Date.now() - 1000 * 60 * 1).toISOString(),
+    timestamp: new Date('2026-02-03T18:36:00Z').toISOString(),
     level: 'info',
     message: 'Health check executado com sucesso',
   },
   {
     id: '3',
-    timestamp: new Date(Date.now() - 1000 * 60 * 2).toISOString(),
+    timestamp: new Date('2026-02-03T18:35:00Z').toISOString(),
     level: 'info',
     message: 'Socket reconectado automaticamente',
   },
   {
     id: '4',
-    timestamp: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
+    timestamp: new Date('2026-02-03T18:32:00Z').toISOString(),
     level: 'warn',
     message: 'Latência elevada detectada (450ms)',
   },
   {
     id: '5',
-    timestamp: new Date(Date.now() - 1000 * 60 * 10).toISOString(),
+    timestamp: new Date('2026-02-03T18:27:00Z').toISOString(),
     level: 'success',
     message: 'Webhook recebido e processado',
   },
   {
     id: '6',
-    timestamp: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
+    timestamp: new Date('2026-02-03T18:22:00Z').toISOString(),
     level: 'info',
     message: 'Agente Sophie Bot ativado',
   },
   {
     id: '7',
-    timestamp: new Date(Date.now() - 1000 * 60 * 20).toISOString(),
+    timestamp: new Date('2026-02-03T18:17:00Z').toISOString(),
     level: 'success',
     message: 'Serviço iniciado com sucesso',
   },

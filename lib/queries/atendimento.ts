@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { logSupabaseWarning } from '@/lib/utils';
 
 export interface Conversa {
   id_conversa: string;
@@ -73,8 +74,12 @@ export async function getConversas(
 
   const { data, error } = await query;
 
-  if (error || !data) {
-    console.error('Erro ao buscar conversas:', error);
+  if (error) {
+    logSupabaseWarning(error, 'buscar conversas');
+    return [];
+  }
+
+  if (!data) {
     return [];
   }
 

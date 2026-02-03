@@ -105,3 +105,48 @@ export function truncate(text: string, length: number): string {
 export function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
+
+/**
+ * Supabase error type
+ */
+interface SupabaseError {
+  message?: string;
+  details?: string;
+  hint?: string;
+  code?: string;
+}
+
+/**
+ * Handle Supabase errors with standardized logging and error messages
+ * @param error - The error object from Supabase
+ * @param context - Description of the operation that failed
+ * @throws Error with user-friendly message
+ */
+export function handleSupabaseError(error: SupabaseError | null | undefined, context: string): never {
+  // Log error details for debugging
+  console.error(`[Supabase Error - ${context}]`, {
+    message: error?.message,
+    details: error?.details,
+    hint: error?.hint,
+    code: error?.code,
+    timestamp: new Date().toISOString(),
+  });
+
+  // Throw user-friendly error
+  const userMessage = error?.message || 'Erro desconhecido ao processar a requisição';
+  throw new Error(`Erro ao ${context}: ${userMessage}`);
+}
+
+/**
+ * Log Supabase warnings without throwing
+ * @param error - The error object from Supabase
+ * @param context - Description of the operation
+ */
+export function logSupabaseWarning(error: SupabaseError | null | undefined, context: string): void {
+  console.warn(`[Supabase Warning - ${context}]`, {
+    message: error?.message,
+    details: error?.details,
+    code: error?.code,
+    timestamp: new Date().toISOString(),
+  });
+}

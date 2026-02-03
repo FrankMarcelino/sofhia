@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { Sidebar } from '@/components/layout/sidebar';
 import { Topbar } from '@/components/layout/topbar';
+import { Toaster } from '@/components/ui/toaster';
 
 async function getLayoutData() {
   const supabase = await createClient();
@@ -72,6 +73,9 @@ export default async function DashboardLayout({
           {children}
         </main>
       </div>
+      
+      {/* Toast Notifications */}
+      <Toaster />
     </div>
   );
 }
