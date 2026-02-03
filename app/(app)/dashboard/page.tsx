@@ -112,9 +112,9 @@ export default async function DashboardPage() {
   ];
 
   return (
-    <div className="w-full max-w-7xl mx-auto py-8">
+    <div className="w-full max-w-7xl mx-auto">
       {/* Header */}
-      <div className="flex items-start justify-between gap-6 mb-12">
+      <section className="flex items-start justify-between gap-6 pb-10">
         <div>
           <h1 className="text-3xl font-bold text-foreground mb-1">
             Welcome back, {user?.nome?.split(' ')[0]}!
@@ -133,11 +133,11 @@ export default async function DashboardPage() {
             Export Report
           </Button>
         </div>
-      </div>
+      </section>
 
       {/* KPIs Grid */}
       {kpis ? (
-        <div className="grid grid-cols-4 gap-8 mb-12">
+        <section className="grid grid-cols-4 gap-6 pb-10">
           <KPICard
             title="Conversas Ativas"
             value={kpis.conversasAtivas}
@@ -177,15 +177,15 @@ export default async function DashboardPage() {
             iconColor="primary"
             trend={{ value: 5.1, isPositive: true }}
           />
-        </div>
+        </section>
       ) : (
-        <div className="text-center py-12 mb-12">
+        <section className="text-center py-12 pb-10">
           <p className="text-muted-foreground">Carregando métricas...</p>
-        </div>
+        </section>
       )}
 
       {/* Main Content Grid - 2 Columns Layout */}
-      <div className="grid grid-cols-5 gap-10 mb-12">
+      <section className="grid grid-cols-5 gap-8 pb-10">
         {/* Left Column - Sales Funnel (2/5 width) */}
         <div className="col-span-2">
           <SalesFunnel stages={funnelStages} />
@@ -202,10 +202,12 @@ export default async function DashboardPage() {
             showViewAll={true}
           />
         </div>
-      </div>
+      </section>
 
       {/* Top Performing Agents */}
-      <TopAgents agents={topAgents} />
+      <section>
+        <TopAgents agents={topAgents} />
+      </section>
     </div>
   );
 }

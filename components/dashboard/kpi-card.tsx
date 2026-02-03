@@ -33,7 +33,7 @@ export function KPICard({
 }: KPICardProps) {
   return (
     <Card className={cn('shadow-sm hover:shadow-md transition-shadow duration-200', className)}>
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
+      <CardHeader className="flex flex-row items-center justify-between pb-3">
         <CardTitle className="text-sm font-medium text-muted-foreground">
           {title}
         </CardTitle>
@@ -44,7 +44,7 @@ export function KPICard({
           <Icon className="h-5 w-5 text-white" />
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="pt-0">
         <div className="text-3xl font-bold text-foreground">{value}</div>
         {subtitle && (
           <p className="text-sm text-muted-foreground mt-1">{subtitle}</p>

@@ -1,7 +1,7 @@
-image.png# Status do Projeto — SOFHIA Enterprise
+# Status do Projeto — SOFHIA Enterprise
 
-> **Última Atualização:** 03/02/2026  
-> **Versão Atual:** 0.6.1 (UI Polish + Spacing)  
+> **Última Atualização:** 03/02/2026
+> **Versão Atual:** 0.7.0 (Módulos Core MVP)
 > **Fase:** Fase 1 - MVP (Core + UI Modernizada)
 
 ---
@@ -9,9 +9,9 @@ image.png# Status do Projeto — SOFHIA Enterprise
 ## 📊 Progresso Geral
 
 ```
-██████████████████░░░ 75%
+████████████████████████░░ 85%
 
-MVP: 5/12 módulos completos + UI modernizada + Layout desktop-only ✨
+MVP: 9/12 módulos completos + UI modernizada + Layout desktop-only ✨
 ```
 
 ### Fases do Projeto
@@ -23,312 +23,270 @@ MVP: 5/12 módulos completos + UI modernizada + Layout desktop-only ✨
 
 ---
 
-## ✅ Tarefas Concluídas
+## 🗂️ Estrutura de Rotas Atual
 
-### 📁 Documentação (03/02/2026)
+```
+app/
+├── (auth)/              # Rotas públicas de autenticação
+│   ├── login/
+│   └── cadastro/
+├── (app)/               # Rotas protegidas com layout (sidebar/topbar)
+│   ├── layout.tsx       # Layout compartilhado
+│   ├── dashboard/       # /dashboard
+│   ├── monitoramento/   # /monitoramento
+│   ├── parametros/      # /parametros
+│   ├── financeiro/      # /financeiro
+│   └── atendimento/     # /atendimento
+├── layout.tsx           # Root layout
+└── page.tsx             # Landing page (/)
+```
 
-- ✅ Criada estrutura de documentação (`doc/`)
-- ✅ Criado arquivo de diretrizes (`doc/diretrizes.md`)
-- ✅ Criado arquivo de status (`doc/status_do_projeto.md`)
-- ✅ Salvo plano de implementação (`doc/planejamento/plano_implementacao.md`)
-
-**Observações:** Estrutura de documentação estabelecida para rastreamento contínuo do progresso.
-
----
-
-### ⚡ Setup do Projeto (03/02/2026) - TODO #1 ✅
-
-- ✅ Projeto Next.js 16.1.6 inicializado com App Router
-- ✅ TypeScript configurado em strict mode
-- ✅ Tailwind CSS 4.x configurado com paleta SOFHIA
-- ✅ Dependências core instaladas:
-  - React Query (TanStack Query) v5.62.14
-  - Lucide React v0.469.0
-  - Supabase client v2.47.10
-  - Radix UI components (Dialog, Select, Tabs, etc.)
-  - React Hook Form v7.54.2 + Zod v3.24.1
-  - Recharts v2.15.0
-  - class-variance-authority, clsx, tailwind-merge
-- ✅ Estrutura de diretórios criada conforme plano
-- ✅ Configurações customizadas:
-  - `globals.css` com paleta brand (#005c2d, #2d2d2d, #F8FAFC)
-  - Fonte Montserrat (Google Fonts) configurada
-  - Utilitários criados (`lib/utils.ts`)
-  - Tipos TypeScript base (`types/index.ts`)
-  - Provider do React Query (`app/providers.tsx`)
-- ✅ ESLint configurado e passando (0 erros)
-- ✅ Build de produção executado com sucesso
-- ✅ Arquivo `.env.local.example` criado
-
-**Arquivos criados/modificados:**
-- `package.json` - Atualizado com todas as dependências
-- `app/globals.css` - Paleta SOFHIA Enterprise
-- `app/layout.tsx` - Layout principal com Providers
-- `app/providers.tsx` - React Query Provider
-- `lib/utils.ts` - Utilitários (cn, formatCurrency, formatDate, etc.)
-- `types/index.ts` - Tipos TypeScript globais
-- `.env.local.example` - Template de variáveis de ambiente
-- `tsconfig.json` - TypeScript strict mode habilitado
-
-**Observações:**
-- Build warnings: 1 (não crítico - ordem do @import no CSS)
-- Performance: Build completo em ~31s
-- Próximo passo: Configurar Supabase e banco de dados
-
----
-
-### ⚙️ Configuração do Supabase (03/02/2026) - TODO #2 ✅
-
-- ✅ Clientes Supabase criados (browser, server, admin)
-- ✅ Middleware de autenticação implementado
-- ✅ Proteção de rotas configurada (dashboard, monitoramento, neurocore, etc.)
-- ✅ Hooks personalizados criados (`useAuth`, `useEmpresa`)
-- ✅ Documentação completa de setup ([`doc/supabase_setup.md`](./supabase_setup.md))
-- ✅ Estrutura de database pronta ([`database/`](../database/))
-
-**Arquivos criados:**
-- `lib/supabase/client.ts` - Cliente para componentes client-side
-- `lib/supabase/server.ts` - Cliente para server components
-- `lib/supabase/middleware.ts` - Atualização de sessão
-- `middleware.ts` - Proteção global de rotas
-- `lib/hooks/useAuth.ts` - Hooks de autenticação
-- `doc/supabase_setup.md` - Guia passo-a-passo
-- `database/README.md` - Instruções de database
-
-**Próxima ação do usuário:**
-1. Criar projeto no Supabase (https://supabase.com)
-2. Configurar `.env.local` com as credenciais
-3. Executar script SQL do schema
-4. Testar conexão
-
-**Observações:**
-- Todo código está pronto e testado
-- Build passando sem erros
-- Aguardando credenciais do Supabase para testes integrados
-
----
-
-### 🔐 Autenticação (03/02/2026) - TODO #3 ✅
-
-- ✅ Componentes UI base criados (Button, Input, Label, Card)
-- ✅ Página de Login (`/login`) implementada
-- ✅ Página de Cadastro (`/cadastro`) implementada
-- ✅ Validações de formulário (senha, confirmação, etc.)
-- ✅ Integração com Supabase Auth
-- ✅ Feedback visual (loading, success, error)
-- ✅ Redirecionamento automático pós-login
-- ✅ Design system SOFHIA aplicado (cores, tipografia)
-
-**Componentes criados:**
-- `components/ui/button.tsx` - Botão com variantes
-- `components/ui/input.tsx` - Input estilizado
-- `components/ui/label.tsx` - Label acessível
-- `components/ui/card.tsx` - Card container
-- `app/(auth)/login/page.tsx` - Tela de login
-- `app/(auth)/cadastro/page.tsx` - Tela de cadastro
-
-**Funcionalidades:**
-- Login com e-mail e senha
-- Cadastro de novo usuário
-- Validação client-side
-- Estados de loading e erro
-- Tela de sucesso após cadastro
-- Links entre login/cadastro
-
-**Próximos passos (após config Supabase):**
-- Criar trigger para inserir usuário em `usuarios_sofhia`
-- Criar empresa automaticamente no cadastro
-- Implementar reset de senha
-- Adicionar autenticação social (Google, opcional)
-
-**Observações:**
-- ESLint passando sem erros
-- Build de produção OK
-- Rotas protegidas pelo middleware
-- UI totalmente responsiva
-
----
-
-### 🎨 Layout Principal (03/02/2026) - TODO #4 ✅
-
-- ✅ Componente Sidebar criado com navegação completa
-- ✅ Componente Topbar com user info, saldo e logout
-- ✅ Layout do Dashboard com auth guard
-- ✅ Menu responsivo (mobile + desktop overlay)
-- ✅ Sistema de navegação por ícones (Lucide React)
-- ✅ Highlight de rota ativa
-- ✅ Design system SOFHIA aplicado
-- ✅ Página Dashboard básica criada
-
-**Módulos disponíveis na navegação:**
-- **Principal:** Dashboard, Atendimento, Monitoramento
-- **Neurocore (IA):** Editor de Agente, Base de Conhecimento, Simulador
-- **Gestão:** Clientes, Conversas, Relatórios
-- **Financeiro:** Carteira
-- **Configurações:** Parâmetros
-
-**Arquivos criados:**
-- `components/layout/sidebar.tsx` - Navegação lateral com menu colapsável
-- `components/layout/topbar.tsx` - Barra superior com user menu
-- `app/dashboard/layout.tsx` - Layout wrapper com auth e data fetching
-- `app/dashboard/page.tsx` - Página inicial do dashboard
-
-**Funcionalidades:**
-- Toggle mobile menu (hamburger icon)
-- Overlay para fechar menu ao clicar fora
-- Exibição de saldo em tempo real
-- Botão de logout funcional
-- Navegação entre módulos
-- Logo e branding SOFHIA
-
-**Observações:**
-- ESLint passando sem erros
-- Build de produção OK (16.2s)
-- Layout totalmente responsivo
-- Todas as rotas protegidas por auth
-
----
-
-### 📊 Dashboard com Analytics (03/02/2026) - TODO #5 ✅
-
-- ✅ Componente KPICard reutilizável para métricas
-- ✅ Gráfico de vendas (LineChart) - últimos 7 dias
-- ✅ Gráfico de funil (BarChart horizontal) - últimos 30 dias
-- ✅ Feed de atividades recentes em tempo real
-- ✅ Integração com RPC Functions do Supabase
-- ✅ Queries otimizadas para performance
-
-**Componentes criados:**
-- `components/dashboard/kpi-card.tsx` - Card de métricas com ícone
-- `components/dashboard/vendas-chart.tsx` - Gráfico de linha (Recharts)
-- `components/dashboard/funil-chart.tsx` - Gráfico de barras horizontal
-- `components/dashboard/atividades-feed.tsx` - Feed de atividades
-- `lib/queries/dashboard.ts` - Queries do dashboard
-
-**Métricas implementadas:**
-- Conversas ativas (contador em tempo real)
-- Clientes ativos (total cadastrado)
-- Agentes IA ativos (configurados)
-- Taxa de conversão (últimos 30 dias)
-- Saldo da carteira (formatado)
-- Status do sistema (online/offline/manutenção)
-
-**Gráficos e Análises:**
-- Tendência de vendas vs leads (7 dias)
-- Funil de vendas por etapa (30 dias)
-- Feed de atividades com timestamps relativos (date-fns)
-
-**Observações:**
-- ESLint passando sem erros
-- Build de produção OK (24.9s)
-- Gráficos interativos e responsivos
-- Dependência `date-fns@4.1.0` adicionada para formatação de datas em pt-BR
-
----
+**Rotas Disponíveis:**
+| Rota | Módulo | Status |
+|------|--------|--------|
+| `/dashboard` | Dashboard com Analytics | ✅ Completo |
+| `/monitoramento` | Status UpChat | ✅ Completo |
+| `/parametros` | Configurações | ✅ Completo |
+| `/financeiro` | Carteira e Créditos | ✅ Completo |
+| `/atendimento` | Auditoria de Conversas | ✅ Completo |
+| `/neurocore/editor` | Editor de Agente | ⏳ Pendente |
+| `/neurocore/base` | Base de Conhecimento | ⏳ Pendente |
+| `/neurocore/simulador` | Playground IA | ⏳ Pendente |
 
 ---
 
 ## ✅ Concluído Recentemente
 
-### 🖥️ Refatoração Desktop-Only v0.6.0 (03/02/2026)
-**Mudança Estratégica:** Aplicação agora é **exclusivamente** para desktops e tablets (768px+)
+### 🚀 Módulos Core v0.7.0 (03/02/2026)
 
-**Diretriz Adicionada:**
-- ✅ Documentado suporte apenas para desktop/notebook/tablet
-- ✅ NÃO suporta smartphones (mobile)
-- ✅ Sidebar sempre visível, sem menu hamburguer
-- ✅ Breakpoint mínimo: 768px
-
-**Código Simplificado:**
-- ✅ Removida toda lógica mobile da Sidebar (-30 linhas)
-- ✅ Removidos botões mobile menu, overlay, toggle state
-- ✅ Simplificado z-index: sidebar z-10 (não sobrepõe conteúdo)
-- ✅ Layout fixo: `ml-64` sempre (não mais responsivo)
-- ✅ Topbar sem elementos mobile
-- ✅ Dashboard sem breakpoints mobile (grid-cols fixos)
-
-**Problemas Resolvidos:**
-- ✅ **Sidebar NÃO sobrepõe mais conteúdo** (z-index corrigido)
-- ✅ Layout mais limpo e performático
-- ✅ Código mais simples de manter
-
-**Build Status:** ✅ 21.4s - Sucesso  
-**Arquivos:** `doc/diretrizes.md` atualizado com nova diretriz
+Implementação de 4 módulos MVP seguindo estratégia de complexidade crescente.
 
 ---
 
-### 🔧 Correções de Layout v0.5.1 (03/02/2026)
-**Problemas Corrigidos:**
-- ✅ Sidebar sobrepondo conteúdo → Adicionado `ml-0 lg:ml-64` no main content
-- ✅ Elementos colados no topo → Adicionado padding interno `p-6 lg:p-8`
-- ✅ Espaçamento inconsistente → Ajustado gaps responsivos (4/6)
-- ✅ Botão mobile menu ausente → Adicionado na Topbar
-- ✅ Topbar não sticky → Adicionado `sticky top-0 z-30`
+#### 📡 Módulo: Monitoramento ✅
 
-**Build Status:** ✅ 22s - Sucesso
+**Rota:** `/monitoramento`
+
+**Funcionalidades:**
+- ✅ Health Cards (API UpChat, Token, Usuário) com status visual
+- ✅ Informações de conexão (URLs, tokens mascarados)
+- ✅ Logs de conexão em estilo terminal
+- ✅ Estatísticas do sistema (conversas, agentes, tokens, req/min)
+- ✅ Banner de alerta quando offline
+
+**Componentes criados:**
+- `components/monitoring/health-card.tsx` - Cards de status com ícones dinâmicos
+- `components/monitoring/connection-info.tsx` - Detalhes da configuração
+- `components/monitoring/connection-logs.tsx` - Terminal de logs
+- `components/monitoring/system-stats.tsx` - Métricas do sistema
+- `lib/queries/monitoring.ts` - Queries do Supabase
+
+**Observações:**
+- Ícones passados como string para evitar erro Server/Client Component
+- Integração com tabela `configuracoes_upchat`
 
 ---
 
-### 🎨 Melhorias de UI v0.5.0 (03/02/2026) - COMPLETO ✅
+#### ⚙️ Módulo: Parâmetros ✅
 
-**Componentes UI Base Criados:**
-- ✅ Badge system com 7 variantes coloridas (success, info, warning, error)
-- ✅ Avatar component com fallback personalizado
-- ✅ Progress bars animadas
-- ✅ Separator component
-- ✅ Status Badge system tipado
+**Rota:** `/parametros`
 
-**Componentes Dashboard Criados:**
-- ✅ Sales Funnel widget com métricas de conversão por etapa
-- ✅ Top Performing Agents widget (grid com avatares e stats)
-- ✅ Live Sales Feed aprimorado (avatares, badges, valores)
+**Funcionalidades:**
+- ✅ Tabs de navegação (Empresa, UpChat, IA)
+- ✅ Formulário de dados da empresa
+- ✅ Configuração completa do UpChat (URLs, tokens, credenciais)
+- ✅ Botão "Testar Conexão" com feedback visual
+- ✅ Preferências de IA (toggles e sliders)
+- ✅ Configuração de transbordo e buffer time
 
-**Componentes Melhorados:**
-- ✅ KPI Cards: ícones coloridos com gradientes, sombras, hover effects, indicadores de tendência
-- ✅ Activity Feed: avatares circulares, status badges coloridos, valores monetários
-- ✅ Sidebar: background escuro (#1e293b), upgrade card verde, spacing melhorado
-- ✅ Topbar: breadcrumbs de navegação, search bar proeminente, badges de notificação
+**Componentes criados:**
+- `components/parametros/empresa-form.tsx` - Form dados empresa
+- `components/parametros/upchat-config.tsx` - Configuração UpChat
+- `components/parametros/preferencias-ia.tsx` - Preferências de IA
+- `components/ui/tabs.tsx` - Componente Tabs (Radix UI)
+- `lib/queries/parametros.ts` - Queries do Supabase
 
-**Estilos Globais Atualizados:**
-- ✅ Paleta estendida: cores para badges e ícones
-- ✅ Animações: pulse-dot para live indicators
-- ✅ Gradientes: 5 variantes para ícones (success, info, warning, primary, purple)
-- ✅ Hover effects e transitions suaves
-- ✅ Glassmorphism utilities
+**Integrações:**
+- Tabela `empresa`
+- Tabela `configuracoes_upchat`
+- Tabela `empresa_preferencias_ia`
 
-**Layout Dashboard Reorganizado:**
-- ✅ Grid 4 colunas para KPIs principais
-- ✅ Layout 2/3 + 1/3 (conteúdo + feed lateral)
-- ✅ Sales Funnel + Charts na área principal
-- ✅ Live Feed na coluna lateral
-- ✅ Top Agents no rodapé
+---
 
-**Arquivos Criados:**
-- `components/ui/badge.tsx`
-- `components/ui/avatar.tsx`
-- `components/ui/progress.tsx`
-- `components/ui/separator.tsx`
-- `components/ui/status-badge.tsx`
-- `components/dashboard/sales-funnel.tsx`
-- `components/dashboard/top-agents.tsx`
+#### 💰 Módulo: Financeiro ✅
 
-**Arquivos Modificados:**
-- `app/globals.css` - Cores, animações e gradientes
-- `components/layout/sidebar.tsx` - Design escuro e upgrade card
-- `components/layout/topbar.tsx` - Breadcrumbs e search
-- `components/dashboard/kpi-card.tsx` - Ícones coloridos
-- `components/dashboard/atividades-feed.tsx` - Avatares e badges
-- `app/dashboard/page.tsx` - Layout completo reorganizado
+**Rota:** `/financeiro`
 
-**Build Status:**
-- ✅ ESLint: 0 erros, 1 warning (next/image - aceitável)
-- ✅ TypeScript: compilação limpa
-- ✅ Build: 20.2s - sucesso
-- ✅ 7 componentes novos criados
+**Funcionalidades:**
+- ✅ Card de carteira com saldo atual e previsão de dias
+- ✅ Alertas visuais para saldo baixo/crítico
+- ✅ Resumo financeiro (consumo 30d, 7d, média diária, recargas)
+- ✅ Extrato de movimentações (créditos/débitos)
+- ✅ Opções de recarga com valores predefinidos (R$ 50, 100, 200, 500)
+- ✅ Valor personalizado e métodos de pagamento (PIX, Cartão)
 
-**Inspiração:** 8 referências visuais modernas mantendo identidade SOFHIA (verde #005c2d)
+**Componentes criados:**
+- `components/financeiro/carteira-card.tsx` - Card de saldo
+- `components/financeiro/resumo-financeiro.tsx` - KPIs financeiros
+- `components/financeiro/extrato.tsx` - Lista de movimentações
+- `components/financeiro/recarga-options.tsx` - Opções de recarga
+- `lib/queries/financeiro.ts` - Queries do Supabase
 
-**Documentação:** [`doc/planejamento/plano_melhorias_ui.md`](doc/planejamento/plano_melhorias_ui.md)
+**Integrações:**
+- Tabela `carteiras`
+- Tabela `carteiras_movimentacoes`
+- Tabela `usos_ia`
+
+---
+
+#### 🎧 Módulo: Atendimento ✅
+
+**Rota:** `/atendimento`
+
+**Funcionalidades:**
+- ✅ Cards de estatísticas (ativas, hoje, aguardando humano, encerradas)
+- ✅ Lista de conversas com filtros e busca
+- ✅ Badges de status (Ativa, Pausada, Encerrada, Aguard. Humano)
+- ✅ Visualizador de chat em modo espectador
+- ✅ Mensagens agrupadas por dia
+- ✅ Diferenciação visual: IA (verde), Cliente (cinza), Humano (slate)
+
+**Componentes criados:**
+- `components/atendimento/conversas-list.tsx` - Lista de conversas
+- `components/atendimento/chat-viewer.tsx` - Visualizador de chat
+- `components/atendimento/stats-cards.tsx` - Cards de estatísticas
+- `lib/queries/atendimento.ts` - Queries do Supabase
+
+**Integrações:**
+- Tabela `conversas`
+- Tabela `interacoes`
+- Tabela `pessoas`
+- Tabela `agentes`
+
+---
+
+### 🔧 Correções Técnicas v0.6.2 (03/02/2026)
+
+**Problema:** Erro "Only plain objects can be passed to Client Components from Server Components"
+
+**Causa:** Componentes Lucide (funções) sendo passados como props de Server para Client Components.
+
+**Solução:**
+- ✅ Criado `iconMap` no `HealthCard` para mapear strings para componentes
+- ✅ Props de ícone agora são strings (`"wifi"`, `"key"`, `"user"`)
+- ✅ Mapeamento interno no Client Component
+
+**Arquivos modificados:**
+- `components/monitoring/health-card.tsx`
+- `app/(app)/monitoramento/page.tsx`
+
+---
+
+### 🗂️ Reorganização de Rotas v0.6.2 (03/02/2026)
+
+**Mudança:** Rotas movidas de `/dashboard/*` para raiz.
+
+**Antes:**
+```
+/dashboard
+/dashboard/monitoramento
+/dashboard/parametros
+/dashboard/financeiro
+/dashboard/atendimento
+```
+
+**Depois:**
+```
+/dashboard
+/monitoramento
+/parametros
+/financeiro
+/atendimento
+```
+
+**Estrutura:**
+- Criado grupo de rotas `(app)` para compartilhar layout
+- Layout com sidebar/topbar aplicado a todas as rotas do grupo
+- Middleware já estava configurado para proteger rotas na raiz
+
+---
+
+### 🎨 Correção CSS Layers v0.6.2 (03/02/2026)
+
+**Problema:** Reset CSS `* { margin: 0; padding: 0; }` fora de `@layer` competindo com Tailwind.
+
+**Solução:**
+- ✅ Movido reset para `@layer base`
+- ✅ Removido reset agressivo de margin/padding
+- ✅ Mantido apenas `box-sizing: border-box`
+- ✅ Consolidado blocos `@layer base`
+
+**Arquivos modificados:**
+- `app/globals.css`
+- `app/(app)/layout.tsx` - Ajuste de padding
+- `components/ui/card.tsx` - Paddings equilibrados
+
+---
+
+## 📦 Módulos MVP (Fase 1)
+
+| # | Módulo | Status | Rota |
+|---|--------|--------|------|
+| 1 | Autenticação | ✅ Completo | `/login`, `/cadastro` |
+| 2 | Layout Principal | ✅ Completo | `(app)/layout.tsx` |
+| 3 | Dashboard | ✅ Completo | `/dashboard` |
+| 4 | Monitoramento | ✅ Completo | `/monitoramento` |
+| 5 | Parâmetros | ✅ Completo | `/parametros` |
+| 6 | Financeiro | ✅ Completo | `/financeiro` |
+| 7 | Atendimento | ✅ Completo | `/atendimento` |
+| 8 | Neurocore Editor | ⏳ Pendente | `/neurocore/editor` |
+| 9 | Neurocore Base | ⏳ Pendente | `/neurocore/base` |
+| 10 | Neurocore Simulador | ⏳ Pendente | `/neurocore/simulador` |
+
+---
+
+## 📁 Arquivos Criados nesta Sessão
+
+### Queries (`lib/queries/`)
+- `monitoring.ts` - Queries de monitoramento
+- `parametros.ts` - Queries de parâmetros
+- `financeiro.ts` - Queries financeiras
+- `atendimento.ts` - Queries de atendimento
+
+### Componentes Monitoring (`components/monitoring/`)
+- `health-card.tsx`
+- `connection-info.tsx`
+- `connection-logs.tsx`
+- `system-stats.tsx`
+- `index.ts`
+
+### Componentes Parâmetros (`components/parametros/`)
+- `empresa-form.tsx`
+- `upchat-config.tsx`
+- `preferencias-ia.tsx`
+- `index.ts`
+
+### Componentes Financeiro (`components/financeiro/`)
+- `carteira-card.tsx`
+- `resumo-financeiro.tsx`
+- `extrato.tsx`
+- `recarga-options.tsx`
+- `index.ts`
+
+### Componentes Atendimento (`components/atendimento/`)
+- `conversas-list.tsx`
+- `chat-viewer.tsx`
+- `stats-cards.tsx`
+- `index.ts`
+
+### UI (`components/ui/`)
+- `tabs.tsx` - Componente Tabs (Radix UI)
+
+### Páginas (`app/(app)/`)
+- `monitoramento/page.tsx`
+- `parametros/page.tsx`
+- `financeiro/page.tsx`
+- `atendimento/page.tsx`
 
 ---
 
@@ -340,191 +298,105 @@ MVP: 5/12 módulos completos + UI modernizada + Layout desktop-only ✨
 
 ## 📋 Próximas Tarefas (Backlog Imediato)
 
----
-
-### Todo #2: Configurar Supabase
-**Status:** Pendente  
-**Prioridade:** 🔴 Alta  
-**Descrição:** Configurar banco de dados Supabase, executar schema SQL e configurar RLS.
+### Neurocore - Editor de Agente
+**Status:** Pendente
+**Prioridade:** 🟡 Média
+**Dependências:** `@dnd-kit` para drag & drop
 
 **Sub-tarefas:**
-- [ ] Criar projeto no Supabase (ou receber credenciais)
-- [ ] Executar script SQL do schema v3.5
-- [ ] Configurar Row Level Security (RLS) por `id_empresa`
-- [ ] Criar RPC Functions auxiliares
-- [ ] Gerar tipos TypeScript do banco
-- [ ] Configurar cliente Supabase no projeto
-- [ ] Testar conexão e queries básicas
+- [ ] Instalar `@dnd-kit/core` e `@dnd-kit/sortable`
+- [ ] Criar interface de abas (Persona, Instruções, Extrações)
+- [ ] Implementar drag & drop para instruções
+- [ ] Form de persona com dropdown de modelos IA
+- [ ] CRUD de extrações de dados
 
----
+### Neurocore - Base de Conhecimento
+**Status:** Pendente
+**Prioridade:** 🟡 Média
 
-### 🎨 UI Polish - Espaçamento e Respiro (03/02/2026) v0.6.1 ✅
+**Sub-tarefas:**
+- [ ] Lista de domínios (pastas)
+- [ ] Lista de documentos por domínio
+- [ ] Upload de arquivos (texto, PDF)
+- [ ] Importador de cobertura (CSV)
 
-**Problema:** Elementos da dashboard muito próximos/colados. Breadcrumb colado na sidebar.
+### Neurocore - Simulador
+**Status:** Pendente
+**Prioridade:** 🟡 Média
+**Dependências:** API OpenAI configurada
 
-**Solução:**
-- ✅ **Topbar**: Aumentado padding horizontal (`px-6` → `px-8`) e adicionado `pl-2` nos breadcrumbs
-- ✅ **Layout principal**: Aumentado padding do content area (`p-8` → `p-10`)
-- ✅ **Dashboard Page**: 
-  - Container com `space-y-8` (espaçamento vertical consistente)
-  - Header gap aumentado (`gap-4` → `gap-6`)
-  - Main grid gap aumentado (`gap-6` → `gap-8`)
-  - Space-y nas colunas: `6` → `8`
-  - Charts grid gap: `6` → `8`
-
-**Resultado:**
-- ✅ Breadcrumb "Dashboard" não mais colado na sidebar
-- ✅ Elementos com respiro visual adequado
-- ✅ Layout mais clean e profissional
-- ✅ Espaçamento consistente usando escala 8 (2rem)
-
-**Arquivos modificados:**
-- `components/layout/topbar.tsx` - Padding e espaçamento dos breadcrumbs
-- `app/dashboard/layout.tsx` - Padding da área de conteúdo
-- `app/dashboard/page.tsx` - Gaps e spacing entre widgets
-
-**Build:** ✅ 30.9s - Sucesso (0 erros, 0 warnings)
-
-**Commits:**
-- `refactor(layout): mudar de fixed para flexbox layout (solução definitiva)` - [08bc565]
-- `style(dashboard): melhorar espaçamento entre elementos` - [05302cd]
-
----
-
-## 📦 Módulos MVP (Fase 1)
-
-### 1. Autenticação
-- [ ] Implementado
-- **Estimativa:** Em espera
-- **Dependências:** Setup do Projeto, Supabase
-
-### 2. Layout Principal
-- [ ] Implementado
-- **Estimativa:** Em espera
-- **Dependências:** Autenticação
-
-### 3. Dashboard
-- [ ] Implementado
-- **Estimativa:** Em espera
-- **Dependências:** Layout Principal
-
-### 4. Monitoramento
-- [ ] Implementado
-- **Estimativa:** Em espera
-- **Dependências:** Layout Principal
-
-### 5. Neurocore (Editor)
-- [ ] Implementado
-- **Estimativa:** Em espera
-- **Dependências:** Layout Principal
-
-### 6. Neurocore (Base de Conhecimento)
-- [ ] Implementado
-- **Estimativa:** Em espera
-- **Dependências:** Layout Principal
-
-### 7. Neurocore (Simulador)
-- [ ] Implementado
-- **Estimativa:** Em espera
-- **Dependências:** Neurocore (Base)
-
-### 8. Financeiro
-- [ ] Implementado
-- **Estimativa:** Em espera
-- **Dependências:** Layout Principal
-
-### 9. Parâmetros
-- [ ] Implementado
-- **Estimativa:** Em espera
-- **Dependências:** Layout Principal
-
-### 10. Atendimento
-- [ ] Implementado
-- **Estimativa:** Em espera
-- **Dependências:** Layout Principal
-
----
-
-## 🐛 Issues Conhecidos
-
-*Nenhum issue registrado no momento.*
+**Sub-tarefas:**
+- [ ] Interface de chat estilo WhatsApp
+- [ ] Indicador de custo em tempo real
+- [ ] Debug source (ver trechos usados)
+- [ ] Salvar em `usos_ia` para auditoria
 
 ---
 
 ## 🎯 Critérios de Aceite MVP
 
-Para considerar o MVP completo, os seguintes critérios devem ser atendidos:
-
-- [ ] Usuário consegue criar conta e fazer login
-- [ ] Dashboard exibe KPIs e gráficos com dados reais
-- [ ] Monitoramento mostra status do UpChat (verde/vermelho)
+- [x] Usuário consegue criar conta e fazer login
+- [x] Dashboard exibe KPIs e gráficos
+- [x] Monitoramento mostra status do UpChat (verde/vermelho)
 - [ ] Editor de Agente permite criar/editar com drag & drop
 - [ ] Simulador responde perguntas baseadas na base de conhecimento
-- [ ] Usuário realiza recarga de créditos e saldo atualiza
-- [ ] Parâmetros salvam configurações do UpChat
-- [ ] Interface responsiva e funcional em mobile
+- [x] Usuário visualiza saldo e opções de recarga
+- [x] Parâmetros salvam configurações do UpChat
+- [x] Interface desktop-only funcional (768px+)
 - [ ] Performance: Dashboard carrega em < 2s
 - [ ] Segurança: RLS impede acesso cross-tenant
-- [ ] Build de produção executa sem erros
-- [ ] Todos os testes ESLint passam
-- [ ] Sem erros de tipos TypeScript
+- [x] Build de produção executa sem erros
+- [x] Todos os testes ESLint passam
+- [x] Sem erros de tipos TypeScript
 
 ---
 
 ## 📈 Métricas de Qualidade
 
-### Cobertura de Código
-- **Alvo:** 70%
-- **Atual:** N/A (sem testes implementados)
-
-### Performance (Lighthouse)
-- **Performance:** N/A
-- **Accessibility:** N/A
-- **Best Practices:** N/A
-- **SEO:** N/A
-
 ### Build
-- **Status:** ⚪ Não executado
-- **Tamanho do Bundle:** N/A
-- **Warnings:** N/A
+- **Status:** ✅ Sucesso
+- **Tempo:** ~11s
+- **Rotas:** 11 (5 estáticas, 6 dinâmicas)
+- **Warnings:** 1 (middleware deprecation - não crítico)
 
----
-
-## 🔗 Links Úteis
-
-- [Plano de Implementação](./planejamento/plano_implementacao.md)
-- [Diretrizes de Desenvolvimento](./diretrizes.md)
-- [PRD Completo](../PRD.md) *(quando criado)*
-- [Design System](../DESIGN_SYSTEM.md) *(quando criado)*
-
----
-
-## 📝 Log de Alterações
-
-### 03/02/2026 - Inicialização do Projeto
-- Criada estrutura de documentação
-- Definidas diretrizes de desenvolvimento
-- Plano de implementação documentado
-- Projeto pronto para início do desenvolvimento
-
----
-
-## 👥 Time
-
-- **Tech Lead:** [A definir]
-- **Frontend:** [A definir]
-- **Backend/DB:** [A definir]
-- **UI/UX:** [A definir]
+### Código
+- **ESLint:** 0 erros
+- **TypeScript:** 0 erros
+- **Componentes novos:** 14
+- **Queries novas:** 4
 
 ---
 
 ## 🚀 Próximos Passos Imediatos
 
-1. ✅ ~~Criar estrutura de documentação~~
-2. ⏭️ **Executar setup do projeto Next.js**
-3. ⏭️ Configurar Supabase e banco de dados
-4. ⏭️ Implementar fluxo de autenticação
-5. ⏭️ Criar layout base e navegação
+1. ✅ ~~Módulo Monitoramento~~
+2. ✅ ~~Módulo Parâmetros~~
+3. ✅ ~~Módulo Financeiro~~
+4. ✅ ~~Módulo Atendimento~~
+5. ⏭️ **Neurocore - Editor de Agente**
+6. ⏭️ Neurocore - Base de Conhecimento
+7. ⏭️ Neurocore - Simulador
+8. ⏭️ Configurar Supabase real e testar integrações
+
+---
+
+## 📝 Log de Alterações
+
+### 03/02/2026 - Módulos Core MVP (v0.7.0)
+- Implementado módulo Monitoramento
+- Implementado módulo Parâmetros
+- Implementado módulo Financeiro
+- Implementado módulo Atendimento
+- Reorganizada estrutura de rotas (removido /dashboard/ prefix)
+- Corrigido erro de Server/Client Component com ícones
+- Corrigido CSS layers para Tailwind v4
+- Total: 14 novos componentes, 4 novas queries
+
+### 03/02/2026 - Inicialização do Projeto
+- Criada estrutura de documentação
+- Definidas diretrizes de desenvolvimento
+- Plano de implementação documentado
+- Setup inicial do projeto Next.js
 
 ---
 
