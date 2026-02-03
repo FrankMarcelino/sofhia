@@ -112,7 +112,7 @@ export function Sidebar({ className }: SidebarProps) {
       className={cn(
         'fixed top-0 left-0 h-screen w-64 flex flex-col',
         'bg-[#1e293b] border-r border-[#334155]',
-        'z-10', // Baixo z-index - não sobrepõe conteúdo principal
+        'z-40', // Z-index para sidebar sempre visível
         className
       )}
     >
