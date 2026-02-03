@@ -33,6 +33,28 @@
   --destructive: #dc2626;
   --destructive-foreground: #ffffff;
   
+  /* Status Badge Colors */
+  --badge-success-bg: #d1fae5;
+  --badge-success-text: #047857;
+  --badge-info-bg: #dbeafe;
+  --badge-info-text: #1e40af;
+  --badge-warning-bg: #fef3c7;
+  --badge-warning-text: #b45309;
+  --badge-error-bg: #fee2e2;
+  --badge-error-text: #b91c1c;
+  
+  /* Icon Colors */
+  --icon-success: #10b981;
+  --icon-info: #3b82f6;
+  --icon-warning: #f59e0b;
+  --icon-primary: #005c2d;
+  
+  /* Sidebar Dark Mode */
+  --sidebar-bg: #1e293b;
+  --sidebar-border: #334155;
+  --sidebar-active: var(--primary);
+  --sidebar-hover: #334155;
+  
   /* Border Radius */
   --radius: 0.5rem;
 }
@@ -90,4 +112,79 @@ body {
   h4 { font-size: 1.25rem; line-height: 1.75rem; }
   h5 { font-size: 1.125rem; line-height: 1.75rem; }
   h6 { font-size: 1rem; line-height: 1.5rem; }
+}
+
+/* ============================================================
+   SOFHIA UI - Custom Utilities & Animations
+   ============================================================ */
+
+/* Animações */
+@keyframes pulse-dot {
+  0%, 100% { 
+    opacity: 1; 
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 0.6; 
+    transform: scale(0.95);
+  }
+}
+
+@layer utilities {
+  /* Live Indicator */
+  .live-indicator {
+    animation: pulse-dot 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  /* Sombras Customizadas */
+  .shadow-card {
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  }
+
+  .shadow-card-lg {
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  }
+
+  /* Hover Effects */
+  .card-hover {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  }
+
+  .card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  }
+
+  /* Icon Gradients */
+  .icon-gradient-success {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  }
+
+  .icon-gradient-info {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  }
+
+  .icon-gradient-warning {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  }
+
+  .icon-gradient-primary {
+    background: linear-gradient(135deg, #005c2d 0%, #004221 100%);
+  }
+
+  .icon-gradient-purple {
+    background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
+  }
+
+  /* Glassmorphism */
+  .glass {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  /* Smooth transitions */
+  .transition-smooth {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
 }

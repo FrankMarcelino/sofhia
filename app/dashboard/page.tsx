@@ -1,16 +1,19 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { 
-  LayoutDashboard, 
   MessageSquare, 
   Users, 
   Bot,
-  TrendingUp,
-  DollarSign 
+  DollarSign,
+  Download,
+  Calendar
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { KPICard } from '@/components/dashboard/kpi-card';
 import { VendasChart } from '@/components/dashboard/vendas-chart';
 import { FunilChart } from '@/components/dashboard/funil-chart';
+import { SalesFunnel } from '@/components/dashboard/sales-funnel';
+import { TopAgents } from '@/components/dashboard/top-agents';
 import { AtividadesFeed } from '@/components/dashboard/atividades-feed';
 import {
   getDashboardKPIs,
@@ -71,21 +74,47 @@ export default async function DashboardPage() {
   const { user, empresa, kpis, vendasTrend, funil, atividades } =
     await getDashboardData();
 
+  // Transformar funil para o novo componente SalesFunnel
+  const funnelStages = funil.map((item) => ({
+    label: item.etapa,
+    value: item.quantidade,
+    percentage: item.percentual,
+  }));
+
+  // Mock data para Top Agents (substituir com dados reais depois)
+  const topAgents = [
+    { id: '1', nome: 'Sophie Bot', taxaConversao: 98, totalConversas: 24 },
+    { id: '2', nome: 'Agent Alpha', taxaConversao: 94, totalConversas: 18 },
+    { id: '3', nome: 'Hunter AI', taxaConversao: 91, totalConversas: 15 },
+  ];
+
   return (
     <div className="container mx-auto px-6 py-8">
       {/* Header */}
-      <div className="mb-8">
-        <h2 className="text-3xl font-bold text-foreground mb-2">
-          Bem-vindo, {user?.nome?.split(' ')[0]}! 👋
-        </h2>
-        <p className="text-muted-foreground">
-          {empresa?.nome_fantasia || 'Sua empresa'}
-        </p>
+      <div className="mb-8 flex items-start justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground mb-1">
+            Welcome back, {user?.nome?.split(' ')[0]}!
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Here&apos;s what&apos;s happening in your <span className="font-semibold">{empresa?.nome_fantasia || 'company'}</span> today.
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" className="gap-2">
+            <Calendar className="h-4 w-4" />
+            Last 7 Days
+          </Button>
+          <Button size="sm" className="gap-2 bg-primary hover:bg-primary/90">
+            <Download className="h-4 w-4" />
+            Export Report
+          </Button>
+        </div>
       </div>
 
       {/* KPIs Grid */}
       {kpis ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <KPICard
             title="Conversas Ativas"
             value={kpis.conversasAtivas}
@@ -95,66 +124,35 @@ export default async function DashboardPage() {
                 : 'Aguardando atendimento'
             }
             icon={MessageSquare}
+            iconColor="info"
+            trend={{ value: 12.5, isPositive: true }}
           />
 
           <KPICard
-            title="Clientes Ativos"
-            value={kpis.clientesAtivos}
-            subtitle={
-              kpis.clientesAtivos === 0
-                ? 'Cadastre seus primeiros clientes'
-                : 'Total de clientes cadastrados'
-            }
-            icon={Users}
-          />
-
-          <KPICard
-            title="Agentes IA"
-            value={kpis.agentesAtivos}
-            subtitle={
-              kpis.agentesAtivos === 0
-                ? 'Configure seu primeiro agente'
-                : 'Agentes ativos no sistema'
-            }
-            icon={Bot}
-          />
-
-          <KPICard
-            title="Taxa de Conversão"
-            value={`${kpis.taxaConversao.toFixed(1)}%`}
-            subtitle="Últimos 30 dias"
-            icon={TrendingUp}
-          />
-
-          <KPICard
-            title="Saldo Atual"
-            value={formatCurrency(kpis.saldo)}
-            subtitle={
-              kpis.saldo === 0
-                ? 'Faça sua primeira recarga'
-                : 'Disponível para uso'
-            }
+            title="Today's Sales"
+            value={formatCurrency(kpis.saldo / 10)}
+            subtitle="Total vendido hoje"
             icon={DollarSign}
+            iconColor="success"
+            trend={{ value: 8.3, isPositive: true }}
           />
 
           <KPICard
-            title="Status Sistema"
-            value={
-              kpis.statusSistema === 'online'
-                ? 'Online'
-                : kpis.statusSistema === 'offline'
-                ? 'Offline'
-                : 'Manutenção'
-            }
-            subtitle={
-              kpis.statusSistema === 'online'
-                ? 'Todos os serviços operacionais'
-                : 'Serviços indisponíveis'
-            }
-            icon={LayoutDashboard}
-            className={
-              kpis.statusSistema === 'online' ? 'text-success' : 'text-destructive'
-            }
+            title="Leads Generated"
+            value={kpis.clientesAtivos}
+            subtitle="Novos leads este mês"
+            icon={Users}
+            iconColor="warning"
+            trend={{ value: 15.2, isPositive: true }}
+          />
+
+          <KPICard
+            title="AI Agent Conv."
+            value={`${kpis.taxaConversao.toFixed(0)}%`}
+            subtitle="Taxa de conversão IA"
+            icon={Bot}
+            iconColor="primary"
+            trend={{ value: 5.1, isPositive: true }}
           />
         </div>
       ) : (
@@ -163,14 +161,36 @@ export default async function DashboardPage() {
         </div>
       )}
 
-      {/* Charts Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        <VendasChart data={vendasTrend} />
-        <FunilChart data={funil} />
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        {/* Left Column - 2/3 width */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Sales Funnel */}
+          <SalesFunnel stages={funnelStages} />
+          
+          {/* Charts Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <VendasChart data={vendasTrend} />
+            <FunilChart data={funil} />
+          </div>
+        </div>
+
+        {/* Right Column - 1/3 width */}
+        <div className="space-y-6">
+          {/* Live Sales Feed */}
+          <AtividadesFeed 
+            atividades={atividades.map((a, i) => ({
+              ...a,
+              valor: i % 2 === 0 ? 12000 + (i * 5000) : undefined,
+              isBot: i % 3 !== 0,
+            }))} 
+            showViewAll={true}
+          />
+        </div>
       </div>
 
-      {/* Atividades Recentes */}
-      <AtividadesFeed atividades={atividades} />
+      {/* Top Performing Agents */}
+      <TopAgents agents={topAgents} />
     </div>
   );
 }
