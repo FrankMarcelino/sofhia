@@ -43,7 +43,7 @@ export default async function DashboardLayout({
         <Topbar user={user} empresa={empresa} />
 
         {/* Content Area */}
-        <main className="flex-1 overflow-y-auto p-8">
+        <main className="flex-1 overflow-y-auto p-10">
           {children}
         </main>
       </div>

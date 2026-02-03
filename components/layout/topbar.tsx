@@ -64,9 +64,9 @@ export function Topbar({ user, empresa }: TopbarProps) {
   }));
 
   return (
-    <header className="sticky top-0 z-10 h-16 bg-white border-b border-border px-6 flex items-center justify-between shadow-sm">
+    <header className="sticky top-0 z-10 h-16 bg-white border-b border-border px-8 flex items-center justify-between shadow-sm">
       {/* Left: Breadcrumbs */}
-      <div className="flex items-center gap-3 flex-1">
+      <div className="flex items-center gap-3 flex-1 pl-2">
         <nav className="flex items-center gap-2 text-sm">
           {breadcrumbs.map((crumb, index) => (
             <div key={crumb.href} className="flex items-center gap-2">
