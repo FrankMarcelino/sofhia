@@ -114,7 +114,7 @@ export default async function DashboardPage() {
 
       {/* KPIs Grid */}
       {kpis ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-4 gap-6">
           <KPICard
             title="Conversas Ativas"
             value={kpis.conversasAtivas}
@@ -161,23 +161,15 @@ export default async function DashboardPage() {
         </div>
       )}
 
-      {/* Main Content Grid */}
-      <div className="grid grid-cols-3 gap-6 mb-6">
-        {/* Left Column - 2/3 width */}
-        <div className="col-span-2 space-y-6">
-          {/* Sales Funnel */}
+      {/* Main Content Grid - 2 Columns Layout */}
+      <div className="grid grid-cols-5 gap-8">
+        {/* Left Column - Sales Funnel (2/5 width) */}
+        <div className="col-span-2">
           <SalesFunnel stages={funnelStages} />
-          
-          {/* Charts Grid */}
-          <div className="grid grid-cols-2 gap-8">
-            <VendasChart data={vendasTrend} />
-            <FunilChart data={funil} />
-          </div>
         </div>
 
-        {/* Right Column - 1/3 width */}
-        <div className="space-y-8">
-          {/* Live Sales Feed */}
+        {/* Right Column - Live Sales Feed (3/5 width) */}
+        <div className="col-span-3">
           <AtividadesFeed 
             atividades={atividades.map((a, i) => ({
               ...a,
@@ -187,6 +179,12 @@ export default async function DashboardPage() {
             showViewAll={true}
           />
         </div>
+      </div>
+
+      {/* Charts Grid - Below main content */}
+      <div className="grid grid-cols-2 gap-8">
+        <VendasChart data={vendasTrend} />
+        <FunilChart data={funil} />
       </div>
 
       {/* Top Performing Agents */}
