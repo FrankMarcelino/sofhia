@@ -13,6 +13,7 @@
 -- ============================================================================
 
 -- Buscar dados completos da empresa por company_name (UpChat)
+DROP FUNCTION IF EXISTS public.buscar_dados_empresa_por_company_name(text);
 CREATE OR REPLACE FUNCTION public.buscar_dados_empresa_por_company_name(
   p_company_name text
 )
@@ -51,6 +52,7 @@ $$;
 -- ============================================================================
 
 -- Calcular KPIs do Dashboard
+DROP FUNCTION IF EXISTS public.calcular_kpis_dashboard(uuid, timestamp with time zone, timestamp with time zone);
 CREATE OR REPLACE FUNCTION public.calcular_kpis_dashboard(
   p_id_empresa uuid,
   p_data_inicio timestamp with time zone DEFAULT NULL,
@@ -120,6 +122,7 @@ END;
 $$;
 
 -- Buscar tendência de vendas (últimos N dias)
+DROP FUNCTION IF EXISTS public.buscar_tendencia_vendas(uuid, integer);
 CREATE OR REPLACE FUNCTION public.buscar_tendencia_vendas(
   p_id_empresa uuid,
   p_dias integer DEFAULT 30
@@ -143,6 +146,7 @@ AS $$
 $$;
 
 -- Buscar funil de vendas (conversão por etapa)
+DROP FUNCTION IF EXISTS public.buscar_funil_vendas(uuid, timestamp with time zone, timestamp with time zone);
 CREATE OR REPLACE FUNCTION public.buscar_funil_vendas(
   p_id_empresa uuid,
   p_data_inicio timestamp with time zone DEFAULT NULL,
@@ -216,6 +220,7 @@ $$;
 -- ============================================================================
 
 -- Buscar conversas com filtros (paginação)
+DROP FUNCTION IF EXISTS public.buscar_conversas_com_filtros(uuid, text, text, integer, integer);
 CREATE OR REPLACE FUNCTION public.buscar_conversas_com_filtros(
   p_id_empresa uuid,
   p_status_conversa text DEFAULT NULL,
@@ -268,6 +273,7 @@ $$;
 -- ============================================================================
 
 -- Calcular consumo diário de IA (últimos N dias)
+DROP FUNCTION IF EXISTS public.buscar_consumo_ia_diario(uuid, integer);
 CREATE OR REPLACE FUNCTION public.buscar_consumo_ia_diario(
   p_id_empresa uuid,
   p_dias integer DEFAULT 30
@@ -295,6 +301,7 @@ AS $$
 $$;
 
 -- Calcular consumo por fornecedor (OpenAI, ElevenLabs, etc.)
+DROP FUNCTION IF EXISTS public.buscar_consumo_por_fornecedor(uuid, timestamp with time zone, timestamp with time zone);
 CREATE OR REPLACE FUNCTION public.buscar_consumo_por_fornecedor(
   p_id_empresa uuid,
   p_data_inicio timestamp with time zone DEFAULT NULL,
@@ -329,6 +336,7 @@ $$;
 -- ============================================================================
 
 -- Buscar pessoas com dados de qualificação
+DROP FUNCTION IF EXISTS public.buscar_pessoa_completa(uuid);
 CREATE OR REPLACE FUNCTION public.buscar_pessoa_completa(
   p_id_pessoa uuid
 )
@@ -377,6 +385,7 @@ $$;
 -- Nota: Requer extensão pgvector instalada
 -- CREATE EXTENSION IF NOT EXISTS vector;
 
+DROP FUNCTION IF EXISTS public.buscar_conhecimento_similar(uuid, vector, integer);
 CREATE OR REPLACE FUNCTION public.buscar_conhecimento_similar(
   p_id_empresa uuid,
   p_query_embedding vector,
@@ -409,6 +418,7 @@ $$;
 -- ============================================================================
 
 -- Buscar heatmap de interações (dia da semana x hora do dia)
+DROP FUNCTION IF EXISTS public.buscar_heatmap_interacoes(uuid, integer);
 CREATE OR REPLACE FUNCTION public.buscar_heatmap_interacoes(
   p_id_empresa uuid,
   p_dias integer DEFAULT 30
@@ -439,6 +449,7 @@ $$;
 -- ============================================================================
 
 -- Verificar e criar alerta de saldo baixo
+DROP FUNCTION IF EXISTS public.verificar_saldo_baixo(uuid);
 CREATE OR REPLACE FUNCTION public.verificar_saldo_baixo(
   p_id_empresa uuid
 )
