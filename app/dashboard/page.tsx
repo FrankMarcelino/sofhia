@@ -112,9 +112,9 @@ export default async function DashboardPage() {
   ];
 
   return (
-    <div className="w-full max-w-7xl mx-auto py-8 space-y-12">
+    <div className="w-full max-w-7xl mx-auto py-8">
       {/* Header */}
-      <div className="flex items-start justify-between gap-6">
+      <div className="flex items-start justify-between gap-6 mb-12">
         <div>
           <h1 className="text-3xl font-bold text-foreground mb-1">
             Welcome back, {user?.nome?.split(' ')[0]}!
@@ -137,7 +137,7 @@ export default async function DashboardPage() {
 
       {/* KPIs Grid */}
       {kpis ? (
-        <div className="grid grid-cols-4 gap-8">
+        <div className="grid grid-cols-4 gap-8 mb-12">
           <KPICard
             title="Conversas Ativas"
             value={kpis.conversasAtivas}
@@ -179,13 +179,13 @@ export default async function DashboardPage() {
           />
         </div>
       ) : (
-        <div className="text-center py-12">
+        <div className="text-center py-12 mb-12">
           <p className="text-muted-foreground">Carregando métricas...</p>
         </div>
       )}
 
       {/* Main Content Grid - 2 Columns Layout */}
-      <div className="grid grid-cols-5 gap-10">
+      <div className="grid grid-cols-5 gap-10 mb-12">
         {/* Left Column - Sales Funnel (2/5 width) */}
         <div className="col-span-2">
           <SalesFunnel stages={funnelStages} />
