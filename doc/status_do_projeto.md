@@ -1,7 +1,7 @@
 # Status do Projeto — SOFHIA Enterprise
 
 > **Última Atualização:** 03/02/2026  
-> **Versão Atual:** 0.6.0 (Desktop-Only Refactor)  
+> **Versão Atual:** 0.6.1 (UI Polish + Spacing)  
 > **Fase:** Fase 1 - MVP (Core + UI Modernizada)
 
 ---
@@ -355,6 +355,39 @@ MVP: 5/12 módulos completos + UI modernizada + Layout desktop-only ✨
 - [ ] Gerar tipos TypeScript do banco
 - [ ] Configurar cliente Supabase no projeto
 - [ ] Testar conexão e queries básicas
+
+---
+
+### 🎨 UI Polish - Espaçamento e Respiro (03/02/2026) v0.6.1 ✅
+
+**Problema:** Elementos da dashboard muito próximos/colados. Breadcrumb colado na sidebar.
+
+**Solução:**
+- ✅ **Topbar**: Aumentado padding horizontal (`px-6` → `px-8`) e adicionado `pl-2` nos breadcrumbs
+- ✅ **Layout principal**: Aumentado padding do content area (`p-8` → `p-10`)
+- ✅ **Dashboard Page**: 
+  - Container com `space-y-8` (espaçamento vertical consistente)
+  - Header gap aumentado (`gap-4` → `gap-6`)
+  - Main grid gap aumentado (`gap-6` → `gap-8`)
+  - Space-y nas colunas: `6` → `8`
+  - Charts grid gap: `6` → `8`
+
+**Resultado:**
+- ✅ Breadcrumb "Dashboard" não mais colado na sidebar
+- ✅ Elementos com respiro visual adequado
+- ✅ Layout mais clean e profissional
+- ✅ Espaçamento consistente usando escala 8 (2rem)
+
+**Arquivos modificados:**
+- `components/layout/topbar.tsx` - Padding e espaçamento dos breadcrumbs
+- `app/dashboard/layout.tsx` - Padding da área de conteúdo
+- `app/dashboard/page.tsx` - Gaps e spacing entre widgets
+
+**Build:** ✅ 30.9s - Sucesso (0 erros, 0 warnings)
+
+**Commits:**
+- `refactor(layout): mudar de fixed para flexbox layout (solução definitiva)` - [08bc565]
+- `style(dashboard): melhorar espaçamento entre elementos` - [05302cd]
 
 ---
 
