@@ -112,9 +112,9 @@ export default async function DashboardPage() {
   ];
 
   return (
-    <div className="w-full max-w-7xl mx-auto">
+    <div className="w-full max-w-7xl mx-auto min-h-full py-8 space-y-12">
       {/* Header */}
-      <div className="flex items-start justify-between gap-6 mb-12">
+      <div className="flex items-start justify-between gap-6">
         <div>
           <h1 className="text-3xl font-bold text-foreground mb-1">
             Welcome back, {user?.nome?.split(' ')[0]}!
@@ -185,7 +185,7 @@ export default async function DashboardPage() {
       )}
 
       {/* Main Content Grid - 2 Columns Layout */}
-      <div className="grid grid-cols-5 gap-10 mb-12">
+      <div className="grid grid-cols-5 gap-10">
         {/* Left Column - Sales Funnel (2/5 width) */}
         <div className="col-span-2">
           <SalesFunnel stages={funnelStages} />
