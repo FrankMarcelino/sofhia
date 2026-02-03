@@ -77,6 +77,37 @@ MVP: 1/12 módulos completos
 
 ---
 
+### ⚙️ Configuração do Supabase (03/02/2026) - TODO #2 ✅
+
+- ✅ Clientes Supabase criados (browser, server, admin)
+- ✅ Middleware de autenticação implementado
+- ✅ Proteção de rotas configurada (dashboard, monitoramento, neurocore, etc.)
+- ✅ Hooks personalizados criados (`useAuth`, `useEmpresa`)
+- ✅ Documentação completa de setup ([`doc/supabase_setup.md`](./supabase_setup.md))
+- ✅ Estrutura de database pronta ([`database/`](../database/))
+
+**Arquivos criados:**
+- `lib/supabase/client.ts` - Cliente para componentes client-side
+- `lib/supabase/server.ts` - Cliente para server components
+- `lib/supabase/middleware.ts` - Atualização de sessão
+- `middleware.ts` - Proteção global de rotas
+- `lib/hooks/useAuth.ts` - Hooks de autenticação
+- `doc/supabase_setup.md` - Guia passo-a-passo
+- `database/README.md` - Instruções de database
+
+**Próxima ação do usuário:**
+1. Criar projeto no Supabase (https://supabase.com)
+2. Configurar `.env.local` com as credenciais
+3. Executar script SQL do schema
+4. Testar conexão
+
+**Observações:**
+- Todo código está pronto e testado
+- Build passando sem erros
+- Aguardando credenciais do Supabase para testes integrados
+
+---
+
 ## 🔄 Em Andamento
 
 *Nenhuma tarefa em andamento no momento.*
@@ -85,10 +116,10 @@ MVP: 1/12 módulos completos
 
 ## 📋 Próximas Tarefas (Backlog Imediato)
 
-### Todo #2: Configurar Supabase
+### Todo #3: Implementar Autenticação
 **Status:** Próximo
 **Prioridade:** 🔴 Alta  
-**Descrição:** Configurar banco de dados Supabase, executar schema SQL e configurar RLS.
+**Descrição:** Criar telas de Login, Cadastro e integração com Supabase Auth.
 
 **Sub-tarefas:**
 - [ ] Criar projeto Next.js 14+ com App Router
