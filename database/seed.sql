@@ -66,7 +66,7 @@ INSERT INTO empresa (
   id_plano,
   id_neurocore
 ) VALUES (
-  'e1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6',
+  'e1a2b3c4-d5e6-47a8-b9c0-d1e2f3a4b5c6',
   'ISP Telecom LTDA',
   '12.345.678/0001-90',
   'Rua das Empresas, 1000',
@@ -93,7 +93,7 @@ INSERT INTO usuarios_sofhia (
   ativo
 ) VALUES (
   '5054f694-488e-4514-8624-f3c282a1afb8',
-  'e1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6',
+  'e1a2b3c4-d5e6-47a8-b9c0-d1e2f3a4b5c6',
   'Frank Silva',
   true
 ) ON CONFLICT (id) DO UPDATE SET
@@ -113,7 +113,7 @@ INSERT INTO carteiras (
   ativo
 ) VALUES (
   gen_random_uuid(),
-  'e1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6',
+  'e1a2b3c4-d5e6-47a8-b9c0-d1e2f3a4b5c6',
   1500.00,
   500.00,
   100.00,
@@ -126,25 +126,25 @@ INSERT INTO carteiras (
 -- ============================================================
 
 INSERT INTO pessoas (id_pessoa, id_empresa, nome, telefone, email, cpf, endereco, bairro, cidade, estado, cep, observacoes) VALUES
-  (gen_random_uuid(), 'e1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6', 'João Pedro Santos', '11987651234', 'joao.santos@email.com', '123.456.789-00', 'Rua A, 123', 'Centro', 'São Paulo', 'SP', '01000-000', 'Cliente premium - Fibra 500MB'),
+  (gen_random_uuid(), 'e1a2b3c4-d5e6-47a8-b9c0-d1e2f3a4b5c6', 'João Pedro Santos', '11987651234', 'joao.santos@email.com', '123.456.789-00', 'Rua A, 123', 'Centro', 'São Paulo', 'SP', '01000-000', 'Cliente premium - Fibra 500MB'),
   
-  (gen_random_uuid(), 'e1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6', 'Maria Oliveira', '11987652345', 'maria.oliveira@email.com', '234.567.890-11', 'Av B, 456', 'Jardins', 'São Paulo', 'SP', '01400-000', 'Cliente - Fibra 300MB'),
+  (gen_random_uuid(), 'e1a2b3c4-d5e6-47a8-b9c0-d1e2f3a4b5c6', 'Maria Oliveira', '11987652345', 'maria.oliveira@email.com', '234.567.890-11', 'Av B, 456', 'Jardins', 'São Paulo', 'SP', '01400-000', 'Cliente - Fibra 300MB'),
   
-  (gen_random_uuid(), 'e1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6', 'Carlos Eduardo Lima', '11987653456', 'carlos.lima@email.com', NULL, 'Rua C, 789', 'Vila Mariana', 'São Paulo', 'SP', '04100-000', 'Lead - Interesse em Fibra 1GB'),
+  (gen_random_uuid(), 'e1a2b3c4-d5e6-47a8-b9c0-d1e2f3a4b5c6', 'Carlos Eduardo Lima', '11987653456', 'carlos.lima@email.com', NULL, 'Rua C, 789', 'Vila Mariana', 'São Paulo', 'SP', '04100-000', 'Lead - Interesse em Fibra 1GB'),
   
-  (gen_random_uuid(), 'e1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6', 'Ana Paula Costa', '11987654567', 'ana.costa@email.com', '345.678.901-22', NULL, NULL, 'Campinas', 'SP', NULL, 'Cliente cancelado - Mudou de cidade'),
+  (gen_random_uuid(), 'e1a2b3c4-d5e6-47a8-b9c0-d1e2f3a4b5c6', 'Ana Paula Costa', '11987654567', 'ana.costa@email.com', '345.678.901-22', NULL, NULL, 'Campinas', 'SP', NULL, 'Cliente cancelado - Mudou de cidade'),
   
-  (gen_random_uuid(), 'e1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6', 'Roberto Silva', '11987655678', 'roberto.silva@email.com', '456.789.012-33', 'Rua D, 321', 'Moema', 'São Paulo', 'SP', '04500-000', 'Cliente premium - Fibra 1GB'),
+  (gen_random_uuid(), 'e1a2b3c4-d5e6-47a8-b9c0-d1e2f3a4b5c6', 'Roberto Silva', '11987655678', 'roberto.silva@email.com', '456.789.012-33', 'Rua D, 321', 'Moema', 'São Paulo', 'SP', '04500-000', 'Cliente premium - Fibra 1GB'),
   
-  (gen_random_uuid(), 'e1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6', 'Patricia Ferreira', '11987656789', 'patricia.f@email.com', NULL, NULL, NULL, 'São Paulo', 'SP', NULL, 'Lead - Origem WhatsApp'),
+  (gen_random_uuid(), 'e1a2b3c4-d5e6-47a8-b9c0-d1e2f3a4b5c6', 'Patricia Ferreira', '11987656789', 'patricia.f@email.com', NULL, NULL, NULL, 'São Paulo', 'SP', NULL, 'Lead - Origem WhatsApp'),
   
-  (gen_random_uuid(), 'e1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6', 'Lucas Mendes', '11987657890', 'lucas.mendes@email.com', '567.890.123-44', 'Av E, 654', 'Pinheiros', 'São Paulo', 'SP', '05400-000', 'Cliente - Fibra 200MB'),
+  (gen_random_uuid(), 'e1a2b3c4-d5e6-47a8-b9c0-d1e2f3a4b5c6', 'Lucas Mendes', '11987657890', 'lucas.mendes@email.com', '567.890.123-44', 'Av E, 654', 'Pinheiros', 'São Paulo', 'SP', '05400-000', 'Cliente - Fibra 200MB'),
   
-  (gen_random_uuid(), 'e1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6', 'Fernanda Rocha', '11987658901', 'fernanda.rocha@email.com', '678.901.234-55', 'Rua F, 987', 'Itaim Bibi', 'São Paulo', 'SP', '04500-000', 'Cliente premium - Fibra 1GB'),
+  (gen_random_uuid(), 'e1a2b3c4-d5e6-47a8-b9c0-d1e2f3a4b5c6', 'Fernanda Rocha', '11987658901', 'fernanda.rocha@email.com', '678.901.234-55', 'Rua F, 987', 'Itaim Bibi', 'São Paulo', 'SP', '04500-000', 'Cliente premium - Fibra 1GB'),
   
-  (gen_random_uuid(), 'e1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6', 'Pedro Almeida', '11987659012', 'pedro.almeida@email.com', NULL, NULL, NULL, 'São Paulo', 'SP', NULL, 'Lead - Origem Instagram'),
+  (gen_random_uuid(), 'e1a2b3c4-d5e6-47a8-b9c0-d1e2f3a4b5c6', 'Pedro Almeida', '11987659012', 'pedro.almeida@email.com', NULL, NULL, NULL, 'São Paulo', 'SP', NULL, 'Lead - Origem Instagram'),
   
-  (gen_random_uuid(), 'e1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6', 'Juliana Martins', '11987650123', 'juliana.m@email.com', '789.012.345-66', 'Rua G, 135', 'Brooklin', 'São Paulo', 'SP', '04600-000', 'Cliente - Fibra 500MB');
+  (gen_random_uuid(), 'e1a2b3c4-d5e6-47a8-b9c0-d1e2f3a4b5c6', 'Juliana Martins', '11987650123', 'juliana.m@email.com', '789.012.345-66', 'Rua G, 135', 'Brooklin', 'São Paulo', 'SP', '04600-000', 'Cliente - Fibra 500MB');
 
 -- ============================================================
 -- 7. MODELOS IA (requisito para agentes)
@@ -184,7 +184,7 @@ INSERT INTO agentes (
 ) VALUES
 (
   gen_random_uuid(),
-  'e1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6',
+  'e1a2b3c4-d5e6-47a8-b9c0-d1e2f3a4b5c6',
   '11111111-1111-1111-1111-111111111111',
   '33333333-3333-3333-3333-333333333333',
   'Atendente Virtual ISP',
@@ -202,7 +202,7 @@ INSERT INTO agentes (
 ),
 (
   gen_random_uuid(),
-  'e1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6',
+  'e1a2b3c4-d5e6-47a8-b9c0-d1e2f3a4b5c6',
   '11111111-1111-1111-1111-111111111111',
   '44444444-4444-4444-4444-444444444444',
   'Vendedor Virtual',
@@ -220,7 +220,7 @@ INSERT INTO agentes (
 ),
 (
   gen_random_uuid(),
-  'e1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6',
+  'e1a2b3c4-d5e6-47a8-b9c0-d1e2f3a4b5c6',
   '11111111-1111-1111-1111-111111111111',
   '55555555-5555-5555-5555-555555555555',
   'Suporte Técnico IA',
@@ -242,12 +242,12 @@ INSERT INTO agentes (
 
 WITH pessoas_sample AS (
   SELECT id_pessoa, nome FROM pessoas 
-  WHERE id_empresa = 'e1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6' 
+  WHERE id_empresa = 'e1a2b3c4-d5e6-47a8-b9c0-d1e2f3a4b5c6' 
   LIMIT 5
 ),
 agente_sample AS (
   SELECT id_agente FROM agentes 
-  WHERE id_empresa = 'e1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6' 
+  WHERE id_empresa = 'e1a2b3c4-d5e6-47a8-b9c0-d1e2f3a4b5c6' 
   LIMIT 1
 )
 INSERT INTO conversas (
@@ -263,7 +263,7 @@ INSERT INTO conversas (
 )
 SELECT
   gen_random_uuid(),
-  'e1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6',
+  'e1a2b3c4-d5e6-47a8-b9c0-d1e2f3a4b5c6',
   p.id_pessoa,
   a.id_agente,
   CASE WHEN random() < 0.3 THEN 'conversando'::"CONVERSA_STATUS" ELSE 'encerrada'::"CONVERSA_STATUS" END,
@@ -284,12 +284,12 @@ CROSS JOIN agente_sample a;
 
 WITH conversas_recentes AS (
   SELECT id_conversa, id_pessoa FROM conversas 
-  WHERE id_empresa = 'e1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6'
+  WHERE id_empresa = 'e1a2b3c4-d5e6-47a8-b9c0-d1e2f3a4b5c6'
   LIMIT 5
 ),
 pessoas_nomes AS (
   SELECT id_pessoa, nome FROM pessoas
-  WHERE id_empresa = 'e1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6'
+  WHERE id_empresa = 'e1a2b3c4-d5e6-47a8-b9c0-d1e2f3a4b5c6'
 )
 INSERT INTO interacoes (
   id_interacao,
@@ -323,11 +323,11 @@ FROM conversas_recentes c;
 
 WITH agentes_sample AS (
   SELECT id_agente FROM agentes 
-  WHERE id_empresa = 'e1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6'
+  WHERE id_empresa = 'e1a2b3c4-d5e6-47a8-b9c0-d1e2f3a4b5c6'
 ),
 conversas_sample AS (
   SELECT id_conversa FROM conversas
-  WHERE id_empresa = 'e1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6'
+  WHERE id_empresa = 'e1a2b3c4-d5e6-47a8-b9c0-d1e2f3a4b5c6'
   LIMIT 5
 )
 INSERT INTO usos_ia (
@@ -340,7 +340,7 @@ INSERT INTO usos_ia (
   created_at
 )
 SELECT
-  'e1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6',
+  'e1a2b3c4-d5e6-47a8-b9c0-d1e2f3a4b5c6',
   a.id_agente,
   c.id_conversa,
   'gpt-4o',
@@ -364,21 +364,21 @@ INSERT INTO conhecimento_dominios (
 ) VALUES
   (
     gen_random_uuid(),
-    'e1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6',
+    'e1a2b3c4-d5e6-47a8-b9c0-d1e2f3a4b5c6',
     'Planos e Preços',
     'Informações sobre planos de internet, preços e promoções',
     true
   ),
   (
     gen_random_uuid(),
-    'e1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6',
+    'e1a2b3c4-d5e6-47a8-b9c0-d1e2f3a4b5c6',
     'Suporte Técnico',
     'Procedimentos de troubleshooting e resolução de problemas',
     true
   ),
   (
     gen_random_uuid(),
-    'e1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6',
+    'e1a2b3c4-d5e6-47a8-b9c0-d1e2f3a4b5c6',
     'Políticas da Empresa',
     'Termos de serviço, políticas de cancelamento e SLA',
     true
@@ -390,7 +390,7 @@ INSERT INTO conhecimento_dominios (
 
 WITH dominios_sample AS (
   SELECT id_dominio, nome FROM conhecimento_dominios 
-  WHERE id_empresa = 'e1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6'
+  WHERE id_empresa = 'e1a2b3c4-d5e6-47a8-b9c0-d1e2f3a4b5c6'
 )
 INSERT INTO base_conhecimento_geral (
   id,
@@ -401,7 +401,7 @@ INSERT INTO base_conhecimento_geral (
 )
 SELECT
   gen_random_uuid(),
-  'e1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6',
+  'e1a2b3c4-d5e6-47a8-b9c0-d1e2f3a4b5c6',
   d.id_dominio,
   CASE 
     WHEN d.nome = 'Planos e Preços' THEN 'Tabela de Planos 2026'
