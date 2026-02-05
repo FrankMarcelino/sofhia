@@ -174,6 +174,8 @@ CREATE TABLE public.agentes (
   instrucoes jsonb DEFAULT '[]'::jsonb,
   limitacoes jsonb DEFAULT '[]'::jsonb,
   roteiro jsonb DEFAULT '[]'::jsonb,
+  rules jsonb DEFAULT '[]'::jsonb,
+  others_instructions jsonb DEFAULT '[]'::jsonb,
   meio_comunicacao text,
   ativo boolean DEFAULT false,
   nome_agente_identificador text,
@@ -245,16 +247,16 @@ CREATE TABLE public.agentes_treinamento_inicial (
 -- PARTE 5: BASE DE CONHECIMENTO
 -- ============================================================================
 
--- Domínios de conhecimento (pastas)
+-- Domínios de conhecimento (pastas) - vinculado ao Neurocore
 CREATE TABLE public.conhecimento_dominios (
   id_dominio uuid NOT NULL DEFAULT gen_random_uuid(),
   created_at timestamp with time zone NOT NULL DEFAULT now(),
-  id_empresa uuid NOT NULL,
+  id_neurocore uuid NOT NULL,
   nome text NOT NULL,
   descricao text,
   ativo boolean DEFAULT true,
   CONSTRAINT conhecimento_dominios_pkey PRIMARY KEY (id_dominio),
-  CONSTRAINT conhecimento_dominios_empresa_fk FOREIGN KEY (id_empresa) REFERENCES public.empresa(id_empresa)
+  CONSTRAINT conhecimento_dominios_neurocore_fk FOREIGN KEY (id_neurocore) REFERENCES public.neurocores(id_neurocore)
 );
 
 -- Base de conhecimento geral (RAG)

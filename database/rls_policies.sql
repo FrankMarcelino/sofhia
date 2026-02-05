@@ -75,6 +75,19 @@ AS $$
   SELECT id_empresa FROM public.usuarios_sofhia WHERE id = auth.uid();
 $$;
 
+-- Função auxiliar para obter id_neurocore da empresa do usuário
+CREATE OR REPLACE FUNCTION public.user_neurocore_id()
+RETURNS uuid
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+AS $$
+  SELECT e.id_neurocore
+  FROM public.empresa e
+  JOIN public.usuarios_sofhia u ON u.id_empresa = e.id_empresa
+  WHERE u.id = auth.uid();
+$$;
+
 -- ============================================================================
 -- PARTE 3: POLÍTICAS DE SELECT (Leitura)
 -- ============================================================================
@@ -121,11 +134,11 @@ CREATE POLICY "usuarios_veem_treinamento_empresa" ON public.agentes_treinamento_
   FOR SELECT
   USING (id_empresa = public.user_empresa_id());
 
--- Base de conhecimento
+-- Base de conhecimento - Domínios são vinculados ao Neurocore
 DROP POLICY IF EXISTS "usuarios_veem_dominios_empresa" ON public.conhecimento_dominios;
-CREATE POLICY "usuarios_veem_dominios_empresa" ON public.conhecimento_dominios
+CREATE POLICY "usuarios_veem_dominios_neurocore" ON public.conhecimento_dominios
   FOR SELECT
-  USING (id_empresa = public.user_empresa_id());
+  USING (id_neurocore = public.user_neurocore_id());
 
 DROP POLICY IF EXISTS "usuarios_veem_conhecimento_empresa" ON public.base_conhecimento_geral;
 CREATE POLICY "usuarios_veem_conhecimento_empresa" ON public.base_conhecimento_geral
@@ -291,11 +304,11 @@ CREATE POLICY "usuarios_criam_treinamento_empresa" ON public.agentes_treinamento
   FOR INSERT
   WITH CHECK (id_empresa = public.user_empresa_id());
 
--- Base de conhecimento
+-- Base de conhecimento - Domínios são vinculados ao Neurocore
 DROP POLICY IF EXISTS "usuarios_criam_dominios_empresa" ON public.conhecimento_dominios;
-CREATE POLICY "usuarios_criam_dominios_empresa" ON public.conhecimento_dominios
+CREATE POLICY "usuarios_criam_dominios_neurocore" ON public.conhecimento_dominios
   FOR INSERT
-  WITH CHECK (id_empresa = public.user_empresa_id());
+  WITH CHECK (id_neurocore = public.user_neurocore_id());
 
 DROP POLICY IF EXISTS "usuarios_criam_conhecimento_empresa" ON public.base_conhecimento_geral;
 CREATE POLICY "usuarios_criam_conhecimento_empresa" ON public.base_conhecimento_geral
@@ -573,11 +586,11 @@ CREATE POLICY "usuarios_deletam_extracoes_empresa" ON public.agente_extracoes
     )
   );
 
--- Base de conhecimento
+-- Base de conhecimento - Domínios são vinculados ao Neurocore
 DROP POLICY IF EXISTS "usuarios_deletam_dominios_empresa" ON public.conhecimento_dominios;
-CREATE POLICY "usuarios_deletam_dominios_empresa" ON public.conhecimento_dominios
+CREATE POLICY "usuarios_deletam_dominios_neurocore" ON public.conhecimento_dominios
   FOR DELETE
-  USING (id_empresa = public.user_empresa_id());
+  USING (id_neurocore = public.user_neurocore_id());
 
 DROP POLICY IF EXISTS "usuarios_deletam_conhecimento_empresa" ON public.base_conhecimento_geral;
 CREATE POLICY "usuarios_deletam_conhecimento_empresa" ON public.base_conhecimento_geral

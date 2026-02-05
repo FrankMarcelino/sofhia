@@ -1,23 +1,34 @@
 import { createClient } from '@/lib/supabase/server';
 import { logSupabaseWarning } from '@/lib/utils';
 
+import type { GuidelineStep } from '@/types/agents';
+
 export interface ModeloIA {
   id_modelo: string;
-  nome_modelo: string;
+  nome_exibicao: string;
   provedor: string;
-  custo_input: number;
-  custo_output: number;
+  custo_input_por_1m: number;
+  custo_output_por_1m: number;
+  context_window: number | null;
+  ativo: boolean;
 }
 
 export interface Agente {
   id_agente: string;
+  created_at: string;
+  updated_at: string;
+  id_empresa: string;
+  id_neurocore: string;
+  id_tipo_agente: string;
   nome_agente: string;
   persona: string;
   tom_voz: string;
   objetivo: string;
-  instrucoes: string[];
-  limitacoes: string[];
-  roteiro: string[];
+  instrucoes: GuidelineStep[] | string[] | null;
+  limitacoes: GuidelineStep[] | string[] | null;
+  roteiro: GuidelineStep[] | string[] | null;
+  rules: GuidelineStep[] | null;
+  others_instructions: GuidelineStep[] | null;
   meio_comunicacao: string | null;
   ativo: boolean;
   nome_agente_identificador: string | null;
@@ -110,13 +121,13 @@ export interface Documento {
   };
 }
 
-export async function getDominios(empresaId: string): Promise<Dominio[]> {
+export async function getDominios(neurocoreId: string): Promise<Dominio[]> {
   const supabase = await createClient();
 
   const { data, error } = await supabase
     .from('conhecimento_dominios')
     .select('*')
-    .eq('id_empresa', empresaId)
+    .eq('id_neurocore', neurocoreId)
     .order('nome', { ascending: true });
 
   if (error) {

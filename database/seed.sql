@@ -353,28 +353,28 @@ CROSS JOIN generate_series(1, 4) AS gs;
 
 INSERT INTO conhecimento_dominios (
   id_dominio,
-  id_empresa,
+  id_neurocore,
   nome,
   descricao,
   ativo
 ) VALUES
   (
     gen_random_uuid(),
-    'e1a2b3c4-d5e6-47a8-b9c0-d1e2f3a4b5c6',
+    '11111111-1111-1111-1111-111111111111',
     'Planos e Preços',
     'Informações sobre planos de internet, preços e promoções',
     true
   ),
   (
     gen_random_uuid(),
-    'e1a2b3c4-d5e6-47a8-b9c0-d1e2f3a4b5c6',
+    '11111111-1111-1111-1111-111111111111',
     'Suporte Técnico',
     'Procedimentos de troubleshooting e resolução de problemas',
     true
   ),
   (
     gen_random_uuid(),
-    'e1a2b3c4-d5e6-47a8-b9c0-d1e2f3a4b5c6',
+    '11111111-1111-1111-1111-111111111111',
     'Políticas da Empresa',
     'Termos de serviço, políticas de cancelamento e SLA',
     true
@@ -385,8 +385,8 @@ INSERT INTO conhecimento_dominios (
 -- ============================================================
 
 WITH dominios_sample AS (
-  SELECT id_dominio, nome FROM conhecimento_dominios 
-  WHERE id_empresa = 'e1a2b3c4-d5e6-47a8-b9c0-d1e2f3a4b5c6'
+  SELECT id_dominio, nome FROM conhecimento_dominios
+  WHERE id_neurocore = '11111111-1111-1111-1111-111111111111'
 )
 INSERT INTO base_conhecimento_geral (
   id,

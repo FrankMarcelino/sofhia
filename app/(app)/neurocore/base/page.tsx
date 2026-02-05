@@ -32,9 +32,26 @@ async function getBaseData() {
     };
   }
 
+  // Buscar id_neurocore da empresa
+  const { data: empresaData } = await supabase
+    .from('empresa')
+    .select('id_neurocore')
+    .eq('id_empresa', empresaId)
+    .single();
+
+  const neurocoreId = empresaData?.id_neurocore;
+
+  if (!neurocoreId) {
+    return {
+      dominios: [],
+      documentos: [],
+      empresaId,
+    };
+  }
+
   // Buscar dados em paralelo
   const [dominios, documentos] = await Promise.all([
-    getDominios(empresaId),
+    getDominios(neurocoreId),
     getDocumentos(empresaId),
   ]);
 
@@ -42,6 +59,7 @@ async function getBaseData() {
     dominios,
     documentos,
     empresaId,
+    neurocoreId,
   };
 }
 
@@ -64,13 +82,13 @@ export default async function BasePage() {
       <div className="grid grid-cols-12 gap-6">
         {/* Left: Domínios */}
         <div className="col-span-4">
-          <DominiosList dominios={dominios} empresaId={empresaId} />
+          <DominiosList dominios={dominios} />
         </div>
 
         {/* Right: Documentos */}
         <div className="col-span-8">
-          <DocumentosList 
-            documentos={documentos} 
+          <DocumentosList
+            documentos={documentos}
             dominios={dominios}
             empresaId={empresaId}
           />
