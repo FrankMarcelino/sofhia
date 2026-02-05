@@ -174,7 +174,7 @@ export function ExtracoesTab({ agente, extracoes, className }: ExtracoesTabProps
               Você precisa criar a persona do agente primeiro.
             </p>
             <p className="text-xs text-muted-foreground mt-1">
-              Vá para a aba "Persona" e salve as configurações básicas.
+              Vá para a aba Persona e salve as configurações básicas.
             </p>
           </div>
         </CardContent>
@@ -204,7 +204,7 @@ export function ExtracoesTab({ agente, extracoes, className }: ExtracoesTabProps
               Nenhuma extração configurada ainda.
             </p>
             <p className="text-xs text-muted-foreground mt-1">
-              Clique em "Adicionar Extração" para começar.
+              Clique em Adicionar Extração para começar.
             </p>
           </div>
         ) : (
@@ -265,7 +265,7 @@ export function ExtracoesTab({ agente, extracoes, className }: ExtracoesTabProps
                     className="w-full min-h-[60px] px-3 py-2 text-sm border border-input rounded-md bg-background resize-none focus:outline-none focus:ring-2 focus:ring-ring"
                   />
                   <p className="text-xs text-muted-foreground">
-                    Ex: "Pergunte o nome completo do cliente e certifique-se que informou nome e sobrenome"
+                    Ex: Pergunte o nome completo do cliente e certifique-se que informou nome e sobrenome
                   </p>
                 </div>
               </div>
@@ -297,8 +297,8 @@ export function ExtracoesTab({ agente, extracoes, className }: ExtracoesTabProps
         {/* Dica */}
         <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg">
           <p className="text-xs text-amber-900 dark:text-amber-100">
-            <strong>💡 Exemplo de Extração:</strong><br />
-            Campo: "CPF do Cliente" | Tipo: CPF | Descrição: "Pergunte o CPF e valide se tem 11 dígitos. Se inválido, peça novamente."
+            <strong>Exemplo de Extração:</strong><br />
+            Campo: CPF do Cliente | Tipo: CPF | Descrição: Pergunte o CPF e valide se tem 11 dígitos. Se inválido, peça novamente.
           </p>
         </div>
       </CardContent>

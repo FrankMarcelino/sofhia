@@ -73,11 +73,27 @@ export async function getAgente(empresaId: string): Promise<Agente | null> {
     .single();
 
   if (error || !data) {
-    // Se não houver agente, retornar null (será criado um novo)
     return null;
   }
 
   return data as Agente;
+}
+
+export async function getAgentes(empresaId: string): Promise<Agente[]> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from('agentes')
+    .select('*')
+    .eq('id_empresa', empresaId)
+    .order('nome_agente', { ascending: true });
+
+  if (error) {
+    logSupabaseWarning(error, 'buscar agentes');
+    return [];
+  }
+
+  return (data || []) as Agente[];
 }
 
 export async function getExtracoes(agenteId: string): Promise<Extracao[]> {

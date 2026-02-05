@@ -131,7 +131,7 @@ export function SimuladorChat({ agente }: SimuladorChatProps) {
               Você precisa criar um agente primeiro.
             </p>
             <p className="text-xs text-muted-foreground mt-1">
-              Vá para "Editor de Agente" e configure a persona.
+              Vá para Editor de Agente e configure a persona.
             </p>
           </div>
         </CardContent>
