@@ -21,8 +21,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR">
-      <body className={`${montserrat.variable} antialiased`}>
+    <html lang="pt-BR" className="h-full overflow-hidden">
+      <body className={`${montserrat.variable} antialiased h-full overflow-hidden`}>
         <Providers>{children}</Providers>
       </body>
     </html>

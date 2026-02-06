@@ -144,9 +144,11 @@ export function AgentEditTabs({ agente, modelos, extracoes }: AgentEditTabsProps
             <CardTitle className="text-xl">
               {agente.nome_agente}
             </CardTitle>
-            <p className="text-sm text-muted-foreground">
-              Configure as características do seu agente
-            </p>
+            {agente.nome_agente_identificador && (
+              <p className="text-sm text-muted-foreground">
+                {agente.nome_agente_identificador}
+              </p>
+            )}
           </div>
         </div>
         <Badge variant={agente.ativo ? 'success' : 'warning'}>
@@ -158,31 +160,31 @@ export function AgentEditTabs({ agente, modelos, extracoes }: AgentEditTabsProps
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col">
             <Tabs defaultValue="personality" className="w-full">
-              <TabsList className="w-full justify-start border-b rounded-none h-auto flex-wrap gap-1 bg-transparent p-0 mb-6">
-                <TabsTrigger value="personality" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md">
+              <TabsList className="w-full justify-start border-b rounded-none h-auto flex-wrap gap-1 bg-transparent p-0 pb-3 mb-6">
+                <TabsTrigger value="personality" className="data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:font-semibold rounded-md">
                   Personalidade
                 </TabsTrigger>
-                <TabsTrigger value="limitations" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md">
+                <TabsTrigger value="limitations" className="data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:font-semibold rounded-md">
                   Limitações
                 </TabsTrigger>
-                <TabsTrigger value="instructions" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md">
+                <TabsTrigger value="instructions" className="data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:font-semibold rounded-md">
                   Instruções
                 </TabsTrigger>
-                <TabsTrigger value="guideline" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md">
+                <TabsTrigger value="guideline" className="data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:font-semibold rounded-md">
                   Guideline
                 </TabsTrigger>
-                <TabsTrigger value="rules" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md">
+                <TabsTrigger value="rules" className="data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:font-semibold rounded-md">
                   Regras
                 </TabsTrigger>
-                <TabsTrigger value="others" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md">
+                <TabsTrigger value="others" className="data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:font-semibold rounded-md">
                   Outras
                 </TabsTrigger>
-                <TabsTrigger value="extracoes" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md">
+                <TabsTrigger value="extracoes" className="data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:font-semibold rounded-md">
                   Extrações
                 </TabsTrigger>
               </TabsList>
 
-              <div className="min-h-[400px]">
+              <div>
                 <TabsContent value="personality" className="mt-0">
                   <PersonalitySection form={form} modelos={modelos} />
                 </TabsContent>

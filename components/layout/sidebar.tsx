@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -15,6 +16,7 @@ import {
   FileText,
   Headphones,
   Sparkles,
+  ChevronRight,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -107,12 +109,34 @@ const menuItems = [
 export function Sidebar({ className }: SidebarProps) {
   const pathname = usePathname();
 
+  // Seção ativa = a que contém a rota atual
+  const activeSectionIndex = useMemo(() => {
+    return menuItems.findIndex((section) =>
+      section.items.some((item) => pathname.startsWith(item.href))
+    );
+  }, [pathname]);
+
+  const [openSections, setOpenSections] = useState<Set<number>>(() => {
+    return new Set(activeSectionIndex >= 0 ? [activeSectionIndex] : [0]);
+  });
+
+  const toggleSection = (index: number) => {
+    setOpenSections((prev) => {
+      const next = new Set(prev);
+      if (next.has(index)) {
+        next.delete(index);
+      } else {
+        next.add(index);
+      }
+      return next;
+    });
+  };
+
   return (
     <aside
       className={cn(
         'flex-shrink-0 w-64 h-screen flex flex-col',
         'bg-[#1e293b] border-r border-[#334155]',
-        'overflow-y-auto',
         className
       )}
     >
@@ -130,43 +154,71 @@ export function Sidebar({ className }: SidebarProps) {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto py-6 px-3">
-          <div className="space-y-6">
-            {menuItems.map((section) => (
-              <div key={section.title}>
-                <h3 className="px-3 mb-3 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                  {section.title}
-                </h3>
-                <div className="space-y-1.5">
-                  {section.items.map((item) => {
-                    const isActive = pathname === item.href;
-                    const Icon = item.icon;
+        <nav className="flex-1 overflow-y-auto py-4 px-3">
+          <div className="space-y-1">
+            {menuItems.map((section, sectionIndex) => {
+              const isOpen = openSections.has(sectionIndex);
+              const hasActiveItem = section.items.some((item) =>
+                pathname.startsWith(item.href)
+              );
 
-                    return (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        className={cn(
-                          'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200',
-                          isActive
-                            ? 'bg-primary text-white shadow-lg shadow-primary/20'
-                            : 'text-slate-300 hover:bg-slate-700/50 hover:text-white'
-                        )}
-                      >
-                        <Icon className="h-5 w-5 shrink-0" />
-                        <span>{item.label}</span>
-                      </Link>
-                    );
-                  })}
+              return (
+                <div key={section.title}>
+                  <button
+                    onClick={() => toggleSection(sectionIndex)}
+                    className={cn(
+                      'w-full flex items-center justify-between px-3 py-2 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-colors duration-200',
+                      hasActiveItem
+                        ? 'text-emerald-400'
+                        : 'text-slate-400 hover:text-slate-200'
+                    )}
+                  >
+                    <span>{section.title}</span>
+                    <ChevronRight
+                      className={cn(
+                        'h-3.5 w-3.5 transition-transform duration-200',
+                        isOpen && 'rotate-90'
+                      )}
+                    />
+                  </button>
+
+                  <div
+                    className={cn(
+                      'overflow-hidden transition-all duration-200',
+                      isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                    )}
+                  >
+                    <div className="space-y-1 pt-1 pb-2">
+                      {section.items.map((item) => {
+                        const isActive = pathname.startsWith(item.href);
+                        const Icon = item.icon;
+
+                        return (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            className={cn(
+                              'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200',
+                              isActive
+                                ? 'bg-primary text-white shadow-lg shadow-primary/20'
+                                : 'text-slate-300 hover:bg-slate-700/50 hover:text-white'
+                            )}
+                          >
+                            <Icon className="h-5 w-5 shrink-0" />
+                            <span>{item.label}</span>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </nav>
 
         {/* Footer */}
         <div className="p-4 border-t border-[#334155]">
-          {/* Version Info */}
           <div className="px-3 py-2 text-[11px] text-slate-400">
             <div className="font-semibold mb-0.5 text-slate-300">SOFHIA Enterprise</div>
             <div>v0.5.0 (UI Modernization)</div>

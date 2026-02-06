@@ -25,8 +25,21 @@ export function PersonalitySection({ form, modelos }: PersonalitySectionProps) {
         </p>
       </div>
 
+      {/* Objetivo */}
+      <div className="space-y-2">
+        <Label htmlFor="objetivo">Objetivo</Label>
+        <Input
+          id="objetivo"
+          placeholder="Qual o principal objetivo deste agente?"
+          {...form.register('objetivo')}
+        />
+        <p className="text-xs text-muted-foreground">
+          O que este agente deve alcançar
+        </p>
+      </div>
+
       {/* Identificação */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="space-y-2">
           <Label htmlFor="nome_agente">Nome do Agente</Label>
           <Input
@@ -40,10 +53,10 @@ export function PersonalitySection({ form, modelos }: PersonalitySectionProps) {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="nome_agente_identificador">Nome para Cliente</Label>
+          <Label htmlFor="nome_agente_identificador">Tipo de Agente</Label>
           <Input
             id="nome_agente_identificador"
-            placeholder="Ex: Sofia"
+            placeholder="Ex: Atendente"
             {...form.register('nome_agente_identificador')}
           />
           <p className="text-xs text-muted-foreground">
@@ -69,21 +82,24 @@ export function PersonalitySection({ form, modelos }: PersonalitySectionProps) {
             Gênero da persona do agente
           </p>
         </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="tom_voz">Tom de Voz</Label>
-          <Input
-            id="tom_voz"
-            placeholder="Ex: Amigável e profissional"
-            {...form.register('tom_voz')}
-          />
-          <p className="text-xs text-muted-foreground">
-            Como o agente se comunica
-          </p>
-        </div>
       </div>
 
-      {/* Persona */}
+      {/* Tom de Voz */}
+      <div className="space-y-2">
+        <Label htmlFor="tom_voz">Tom de Voz</Label>
+        <Textarea
+          id="tom_voz"
+          placeholder="Ex: Amigável e profissional, com linguagem acessível..."
+          rows={2}
+          {...form.register('tom_voz')}
+          className="resize-y"
+        />
+        <p className="text-xs text-muted-foreground">
+          Como o agente se comunica
+        </p>
+      </div>
+
+      {/* Personalidade */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <Label htmlFor="persona">Personalidade</Label>
@@ -94,26 +110,12 @@ export function PersonalitySection({ form, modelos }: PersonalitySectionProps) {
         <Textarea
           id="persona"
           placeholder="Descreva a personalidade do agente em detalhes..."
-          rows={4}
+          rows={5}
           {...form.register('persona')}
-          className="resize-y min-h-[100px]"
+          className="resize-y min-h-[120px]"
         />
         <p className="text-xs text-muted-foreground">
           Características de comportamento e atitude
-        </p>
-      </div>
-
-      {/* Objetivo */}
-      <div className="space-y-2">
-        <Label htmlFor="objetivo">Objetivo</Label>
-        <Textarea
-          id="objetivo"
-          placeholder="Qual o principal objetivo deste agente?"
-          rows={3}
-          {...form.register('objetivo')}
-        />
-        <p className="text-xs text-muted-foreground">
-          O que este agente deve alcançar
         </p>
       </div>
 

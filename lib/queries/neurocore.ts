@@ -86,7 +86,8 @@ export async function getAgentes(empresaId: string): Promise<Agente[]> {
     .from('agentes')
     .select('*')
     .eq('id_empresa', empresaId)
-    .order('nome_agente', { ascending: true });
+    .order('nome_agente', { ascending: true })
+    .order('nome_agente_identificador', { ascending: true });
 
   if (error) {
     logSupabaseWarning(error, 'buscar agentes');

@@ -2,6 +2,7 @@
 
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { useCallback } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -92,13 +93,13 @@ export function SortableGuidelineStep({
       ref={setNodeRef}
       style={style}
       className={cn(
-        'border rounded-lg bg-card transition-all',
-        isDragging && 'opacity-50 shadow-lg',
+        'border-0 rounded-xl bg-card shadow-sm transition-all',
+        isDragging && 'opacity-50 shadow-md',
         !step?.active && 'opacity-60'
       )}
     >
       {/* Header */}
-      <div className="flex items-center gap-2 p-3 border-b">
+      <div className="flex items-center gap-2 p-3">
         <button
           type="button"
           className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground"
@@ -156,28 +157,16 @@ export function SortableGuidelineStep({
             </Label>
 
             {step?.sub?.map((subItem, subIndex) => (
-              <div key={subIndex} className="flex items-center gap-2 pl-4">
-                <span className="text-xs text-muted-foreground w-6">
-                  {index + 1}.{subIndex + 1}
-                </span>
-                <Input
-                  value={subItem.content}
-                  onChange={(e) => handleSubContentChange(subIndex, e.target.value)}
-                  placeholder="Detalhe adicional..."
-                  className="flex-1 h-8 text-sm"
-                />
-                <Switch
-                  checked={subItem.active}
-                  onCheckedChange={(checked) => handleSubActiveChange(subIndex, checked)}
-                />
-                <button
-                  type="button"
-                  onClick={() => handleRemoveSub(subIndex)}
-                  className="text-muted-foreground hover:text-destructive transition-colors"
-                >
-                  <Trash2 className="h-3 w-3" />
-                </button>
-              </div>
+              <AutoResizeSubItem
+                key={subIndex}
+                index={index}
+                subIndex={subIndex}
+                content={subItem.content}
+                active={subItem.active}
+                onContentChange={(value) => handleSubContentChange(subIndex, value)}
+                onActiveChange={(checked) => handleSubActiveChange(subIndex, checked)}
+                onRemove={() => handleRemoveSub(subIndex)}
+              />
             ))}
 
             <Button
@@ -193,6 +182,66 @@ export function SortableGuidelineStep({
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function AutoResizeSubItem({
+  index,
+  subIndex,
+  content,
+  active,
+  onContentChange,
+  onActiveChange,
+  onRemove,
+}: {
+  index: number;
+  subIndex: number;
+  content: string;
+  active: boolean;
+  onContentChange: (value: string) => void;
+  onActiveChange: (checked: boolean) => void;
+  onRemove: () => void;
+}) {
+  const adjustHeight = useCallback((el: HTMLTextAreaElement | null) => {
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = `${el.scrollHeight}px`;
+  }, []);
+
+  const setRef = useCallback((el: HTMLTextAreaElement | null) => {
+    adjustHeight(el);
+  }, [adjustHeight]);
+
+  return (
+    <div className="flex items-start gap-2 pl-4">
+      <span className="text-xs text-muted-foreground w-6 pt-2">
+        {index + 1}.{subIndex + 1}
+      </span>
+      <textarea
+        ref={setRef}
+        value={content}
+        onChange={(e) => {
+          onContentChange(e.target.value);
+          adjustHeight(e.target);
+        }}
+        onFocus={(e) => adjustHeight(e.target)}
+        placeholder="Detalhe adicional..."
+        rows={1}
+        className="flex-1 min-h-[32px] px-3 py-1.5 text-sm border border-input rounded-md bg-background resize-none overflow-hidden focus:outline-none focus:ring-2 focus:ring-ring"
+      />
+      <Switch
+        checked={active}
+        onCheckedChange={onActiveChange}
+        className="mt-1"
+      />
+      <button
+        type="button"
+        onClick={onRemove}
+        className="text-muted-foreground hover:text-destructive transition-colors mt-1.5"
+      >
+        <Trash2 className="h-3 w-3" />
+      </button>
     </div>
   );
 }

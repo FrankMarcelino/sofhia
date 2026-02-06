@@ -32,7 +32,7 @@ export function AgentSelector({
       {/* Lista horizontal de agentes */}
       <div className="w-full">
         <ScrollArea className="w-full whitespace-nowrap">
-          <div className="flex gap-4 pb-4">
+          <div className="flex items-center justify-center gap-4 py-4">
             {agentes.map((agente) => (
               <AgentCard
                 key={agente.id_agente}

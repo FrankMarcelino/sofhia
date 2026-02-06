@@ -59,7 +59,7 @@ export default async function DashboardLayout({
   const { user, empresa } = await getLayoutData();
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex h-screen overflow-hidden bg-background">
       {/* Sidebar - Always visible (desktop/tablet only) */}
       <Sidebar />
 
@@ -69,7 +69,7 @@ export default async function DashboardLayout({
         <Topbar user={user} empresa={empresa} />
 
         {/* Content Area */}
-        <main className="flex-1 overflow-y-auto px-10 py-8">
+        <main className="flex-1 min-h-0 overflow-y-auto px-10 py-8">
           {children}
         </main>
       </div>
