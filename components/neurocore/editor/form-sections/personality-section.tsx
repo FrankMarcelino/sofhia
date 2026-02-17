@@ -5,16 +5,14 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import type { UseFormReturn } from 'react-hook-form';
-import type { AgentFormData, ModeloIA } from '@/types/agents';
+import type { AgentFormData } from '@/types/agents';
 import { GENDER_OPTIONS, COMMUNICATION_OPTIONS } from '@/types/agents';
 
 interface PersonalitySectionProps {
   form: UseFormReturn<AgentFormData>;
-  modelos: ModeloIA[];
 }
 
-export function PersonalitySection({ form, modelos }: PersonalitySectionProps) {
-  const modeloSelecionado = modelos.find(m => m.id_modelo === form.watch('id_modelo_ia'));
+export function PersonalitySection({ form }: PersonalitySectionProps) {
 
   return (
     <div className="space-y-6">
@@ -124,27 +122,6 @@ export function PersonalitySection({ form, modelos }: PersonalitySectionProps) {
         <h4 className="text-sm font-semibold">Configurações Técnicas</h4>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="id_modelo_ia">Modelo de IA</Label>
-            <select
-              id="id_modelo_ia"
-              value={form.watch('id_modelo_ia') || 'gpt-4o'}
-              onChange={(e) => form.setValue('id_modelo_ia', e.target.value)}
-              className="w-full px-3 py-2 text-sm border border-input rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-ring"
-            >
-              {modelos.map((modelo) => (
-                <option key={modelo.id_modelo} value={modelo.id_modelo}>
-                  {modelo.nome_exibicao} ({modelo.provedor})
-                </option>
-              ))}
-            </select>
-            {modeloSelecionado && (
-              <p className="text-xs text-muted-foreground">
-                Custo: ${modeloSelecionado.custo_input_por_1m}/1M in · ${modeloSelecionado.custo_output_por_1m}/1M out
-              </p>
-            )}
-          </div>
-
           <div className="space-y-2">
             <Label htmlFor="meio_comunicacao">Meio de Comunicação</Label>
             <select

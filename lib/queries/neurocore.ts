@@ -140,15 +140,10 @@ export interface Documento {
   };
 }
 
-export interface Cobertura {
-  id: string;
-  id_empresa: string;
-  cep: string | null;
-  bairro: string | null;
-  cidade: string | null;
-  status_disponibilidade: boolean;
-  created_at: string;
-}
+export type { Cobertura, TipoCobertura } from '@/lib/types/cobertura';
+export { inferirTipoCobertura, TIPOS_COBERTURA_LABEL } from '@/lib/types/cobertura';
+
+import type { Cobertura } from '@/lib/types/cobertura';
 
 export async function getDominios(neurocoreId: string): Promise<Dominio[]> {
   const supabase = await createClient();

@@ -3,19 +3,17 @@
 import { useState } from 'react';
 import { AgentCard } from './agent-card';
 import { AgentEditTabs } from './agent-edit-tabs';
-import type { Agente, ModeloIA } from '@/types/agents';
+import type { Agente } from '@/types/agents';
 import type { Extracao } from '@/lib/queries/neurocore';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 
 interface AgentSelectorProps {
   agentes: Agente[];
-  modelos: ModeloIA[];
   extracoesByAgente: Record<string, Extracao[]>;
 }
 
 export function AgentSelector({
   agentes,
-  modelos,
   extracoesByAgente,
 }: AgentSelectorProps) {
   const [selectedAgenteId, setSelectedAgenteId] = useState<string | null>(
@@ -51,7 +49,6 @@ export function AgentSelector({
         <AgentEditTabs
           key={selectedAgente.id_agente}
           agente={selectedAgente}
-          modelos={modelos}
           extracoes={selectedExtracoes}
         />
       )}

@@ -17,12 +17,42 @@ import { MapPin, Plus, Pencil, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/client';
 import { CoberturaFormDialog } from './cobertura-form-dialog';
-import type { Cobertura } from '@/lib/queries/neurocore';
+import type { Cobertura } from '@/lib/types/cobertura';
+import { inferirTipoCobertura, TIPOS_COBERTURA_LABEL } from '@/lib/types/cobertura';
 
 interface CoberturaListProps {
   coberturas: Cobertura[];
   empresaId: string;
   className?: string;
+}
+
+function formatLocation(c: Cobertura): string {
+  const tipo = inferirTipoCobertura(c);
+
+  switch (tipo) {
+    case 'faixa_cep':
+      return `CEP ${c.cep_inicio || '?'} a ${c.cep_fim || '?'}`;
+    case 'logradouro': {
+      const parts = [c.logradouro];
+      if (c.numero_inicio || c.numero_fim) {
+        parts.push([c.numero_inicio, c.numero_fim].filter(Boolean).join('-'));
+      }
+      if (c.bairro) parts.push(c.bairro);
+      if (c.cidade) parts.push(c.cidade);
+      return parts.join(', ');
+    }
+    case 'bairro': {
+      const parts = [c.bairro, c.cidade].filter(Boolean);
+      if (c.estado) return `${parts.join(', ')} - ${c.estado}`;
+      return parts.join(', ');
+    }
+    case 'cidade':
+      return c.estado ? `${c.cidade} - ${c.estado}` : c.cidade || 'Sem localização';
+    case 'estado':
+      return c.estado || 'Sem localização';
+    default:
+      return 'Sem localização';
+  }
 }
 
 export function CoberturaList({ coberturas: initialCoberturas, empresaId, className }: CoberturaListProps) {
@@ -76,11 +106,6 @@ export function CoberturaList({ coberturas: initialCoberturas, empresaId, classN
     }
   };
 
-  const formatLocation = (c: Cobertura) => {
-    const parts = [c.bairro, c.cidade].filter(Boolean);
-    return parts.join(', ') || 'Sem localização';
-  };
-
   return (
     <>
       <Card className={cn('shadow-sm', className)}>
@@ -101,42 +126,48 @@ export function CoberturaList({ coberturas: initialCoberturas, empresaId, classN
         </CardHeader>
         <CardContent>
           <div className="space-y-2 max-h-[500px] overflow-y-auto">
-            {coberturas.map((cobertura) => (
-              <div
-                key={cobertura.id}
-                className="flex items-center justify-between p-3 rounded-lg border border-border hover:bg-muted/50 transition-colors"
-              >
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <p className="text-sm font-medium text-foreground">
-                      {formatLocation(cobertura)}
-                    </p>
-                    <Badge variant={cobertura.status_disponibilidade ? 'success' : 'error'}>
-                      {cobertura.status_disponibilidade ? 'Disponível' : 'Indisponível'}
-                    </Badge>
+            {coberturas.map((cobertura) => {
+              const tipo = inferirTipoCobertura(cobertura);
+              return (
+                <div
+                  key={cobertura.id}
+                  className="flex items-center justify-between p-3 rounded-lg border border-border hover:bg-muted/50 transition-colors"
+                >
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <p className="text-sm font-medium text-foreground">
+                        {formatLocation(cobertura)}
+                      </p>
+                      <Badge variant="outline" className="text-[10px] px-1.5 py-0">
+                        {TIPOS_COBERTURA_LABEL[tipo]}
+                      </Badge>
+                      <Badge variant={cobertura.status_disponibilidade ? 'success' : 'error'}>
+                        {cobertura.status_disponibilidade ? 'Disponível' : 'Indisponível'}
+                      </Badge>
+                    </div>
+                    {cobertura.observacoes && (
+                      <p className="text-xs text-muted-foreground mt-1 truncate max-w-[300px]">
+                        {cobertura.observacoes}
+                      </p>
+                    )}
                   </div>
-                  {cobertura.cep && (
-                    <p className="text-xs text-muted-foreground mt-1">
-                      CEP: {cobertura.cep}
-                    </p>
-                  )}
+                  <div className="flex items-center gap-2 ml-2">
+                    <button
+                      onClick={() => handleEdit(cobertura)}
+                      className="text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </button>
+                    <button
+                      onClick={() => setDeleteConfirm(cobertura.id)}
+                      className="text-muted-foreground hover:text-destructive transition-colors"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 ml-2">
-                  <button
-                    onClick={() => handleEdit(cobertura)}
-                    className="text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    <Pencil className="h-4 w-4" />
-                  </button>
-                  <button
-                    onClick={() => setDeleteConfirm(cobertura.id)}
-                    className="text-muted-foreground hover:text-destructive transition-colors"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
 
             {coberturas.length === 0 && (
               <div className="text-center py-12 border-2 border-dashed border-border rounded-lg">

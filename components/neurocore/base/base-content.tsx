@@ -5,7 +5,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { DominiosList } from './dominios-list';
 import { DocumentosList } from './documentos-list';
 import { CoberturaList } from './cobertura-list';
-import type { Dominio, Documento, Cobertura } from '@/lib/queries/neurocore';
+import type { Dominio, Documento } from '@/lib/queries/neurocore';
+import type { Cobertura } from '@/lib/types/cobertura';
 
 interface BaseContentProps {
   dominios: Dominio[];

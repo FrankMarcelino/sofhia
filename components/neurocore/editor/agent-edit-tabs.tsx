@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Loader2, Save, Bot } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
-import type { Agente, AgentFormData, ModeloIA, GuidelineStep } from '@/types/agents';
+import type { Agente, AgentFormData, GuidelineStep } from '@/types/agents';
 import {
   PersonalitySection,
   LimitationsSection,
@@ -25,7 +25,6 @@ import type { Extracao } from '@/lib/queries/neurocore';
 
 interface AgentEditTabsProps {
   agente: Agente;
-  modelos: ModeloIA[];
   extracoes: Extracao[];
 }
 
@@ -47,7 +46,7 @@ function convertToGuidelineSteps(data: GuidelineStep[] | string[] | null): Guide
   }));
 }
 
-export function AgentEditTabs({ agente, modelos, extracoes }: AgentEditTabsProps) {
+export function AgentEditTabs({ agente, extracoes }: AgentEditTabsProps) {
   const router = useRouter();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -186,7 +185,7 @@ export function AgentEditTabs({ agente, modelos, extracoes }: AgentEditTabsProps
 
               <div>
                 <TabsContent value="personality" className="mt-0">
-                  <PersonalitySection form={form} modelos={modelos} />
+                  <PersonalitySection form={form} />
                 </TabsContent>
 
                 <TabsContent value="limitations" className="mt-0">

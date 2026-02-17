@@ -5,7 +5,6 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AgentSelector } from '@/components/neurocore/editor/agent-selector';
 import {
   getAgentes,
-  getModelosIA,
   getExtracoes,
 } from '@/lib/queries/neurocore';
 
@@ -30,17 +29,13 @@ async function getEditorData() {
   if (!empresaId) {
     return {
       agentes: [],
-      modelos: [],
       extracoesByAgente: {},
       error: 'Empresa não encontrada.',
     };
   }
 
   // Buscar dados em paralelo
-  const [agentes, modelos] = await Promise.all([
-    getAgentes(empresaId),
-    getModelosIA(),
-  ]);
+  const agentes = await getAgentes(empresaId);
 
   // Buscar extrações de todos os agentes em paralelo
   const extracoesByAgente: Record<string, Awaited<ReturnType<typeof getExtracoes>>> = {};
@@ -59,7 +54,6 @@ async function getEditorData() {
 
   return {
     agentes,
-    modelos,
     extracoesByAgente,
     empresaId,
     error: null,
@@ -67,7 +61,7 @@ async function getEditorData() {
 }
 
 export default async function EditorPage() {
-  const { agentes, modelos, extracoesByAgente, error } = await getEditorData();
+  const { agentes, extracoesByAgente, error } = await getEditorData();
 
   // Se não há agentes, mostrar mensagem
   if (agentes.length === 0) {
@@ -118,7 +112,6 @@ export default async function EditorPage() {
       {/* Seletor de Agentes + Editor */}
       <AgentSelector
         agentes={agentes as never}
-        modelos={modelos as never}
         extracoesByAgente={extracoesByAgente}
       />
     </div>
