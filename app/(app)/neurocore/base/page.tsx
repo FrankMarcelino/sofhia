@@ -1,10 +1,10 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
-import { DominiosList } from '@/components/neurocore/base/dominios-list';
-import { DocumentosList } from '@/components/neurocore/base/documentos-list';
+import { BaseContent } from '@/components/neurocore/base/base-content';
 import {
   getDominios,
   getDocumentos,
+  getCoberturas,
 } from '@/lib/queries/neurocore';
 
 async function getBaseData() {
@@ -29,6 +29,7 @@ async function getBaseData() {
     return {
       dominios: [],
       documentos: [],
+      coberturas: [],
     };
   }
 
@@ -45,26 +46,29 @@ async function getBaseData() {
     return {
       dominios: [],
       documentos: [],
+      coberturas: [],
       empresaId,
     };
   }
 
   // Buscar dados em paralelo
-  const [dominios, documentos] = await Promise.all([
+  const [dominios, documentos, coberturas] = await Promise.all([
     getDominios(neurocoreId),
     getDocumentos(empresaId),
+    getCoberturas(empresaId),
   ]);
 
   return {
     dominios,
     documentos,
+    coberturas,
     empresaId,
     neurocoreId,
   };
 }
 
 export default async function BasePage() {
-  const { dominios, documentos, empresaId } = await getBaseData();
+  const { dominios, documentos, coberturas, empresaId } = await getBaseData();
 
   return (
     <div className="w-full max-w-7xl mx-auto">
@@ -74,26 +78,17 @@ export default async function BasePage() {
           Base de Conhecimento
         </h1>
         <p className="text-sm text-muted-foreground">
-          Gerencie domínios e documentos que alimentam a inteligência do seu agente de IA.
+          Gerencie domínios, documentos e áreas de cobertura que alimentam a inteligência do seu agente de IA.
         </p>
       </section>
 
-      {/* Content Grid */}
-      <div className="grid grid-cols-12 gap-6">
-        {/* Left: Domínios */}
-        <div className="col-span-4">
-          <DominiosList dominios={dominios} />
-        </div>
-
-        {/* Right: Documentos */}
-        <div className="col-span-8">
-          <DocumentosList
-            documentos={documentos}
-            dominios={dominios}
-            empresaId={empresaId}
-          />
-        </div>
-      </div>
+      {/* Content with Tabs */}
+      <BaseContent
+        dominios={dominios}
+        documentos={documentos}
+        coberturas={coberturas || []}
+        empresaId={empresaId || ''}
+      />
     </div>
   );
 }

@@ -129,13 +129,25 @@ export interface Dominio {
 
 export interface Documento {
   id: string;
-  id_dominio: string | null;
-  titulo: string | null;
+  id_dominio: string;
+  titulo: string;
   conteudo: string;
+  status_publicacao: 'RASCUNHO' | 'PUBLICADO' | 'ARQUIVADO';
+  url_imagem: string | null;
   created_at: string;
   dominio?: {
     nome: string;
   };
+}
+
+export interface Cobertura {
+  id: string;
+  id_empresa: string;
+  cep: string | null;
+  bairro: string | null;
+  cidade: string | null;
+  status_disponibilidade: boolean;
+  created_at: string;
 }
 
 export async function getDominios(neurocoreId: string): Promise<Dominio[]> {
@@ -197,4 +209,25 @@ export async function getDocumentoById(documentoId: string): Promise<Documento |
   }
 
   return data;
+}
+
+// ============================================================================
+// ÁREA DE COBERTURA
+// ============================================================================
+
+export async function getCoberturas(empresaId: string): Promise<Cobertura[]> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from('conhecimento_cobertura')
+    .select('*')
+    .eq('id_empresa', empresaId)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    logSupabaseWarning(error, 'buscar coberturas');
+    return [];
+  }
+
+  return data || [];
 }
