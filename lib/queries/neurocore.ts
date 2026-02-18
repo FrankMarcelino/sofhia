@@ -134,6 +134,7 @@ export interface Documento {
   conteudo: string;
   status_publicacao: 'RASCUNHO' | 'PUBLICADO' | 'ARQUIVADO';
   url_imagem: string | null;
+  storage_path: string | null;
   created_at: string;
   dominio?: {
     nome: string;

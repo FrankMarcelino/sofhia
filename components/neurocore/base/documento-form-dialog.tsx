@@ -22,6 +22,7 @@ import { Button } from '@/components/ui/button';
 import { Save, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { createClient } from '@/lib/supabase/client';
+import { ImageUpload } from './image-upload';
 import type { Documento, Dominio } from '@/lib/queries/neurocore';
 
 interface DocumentoFormDialogProps {
@@ -32,16 +33,6 @@ interface DocumentoFormDialogProps {
   empresaId: string;
   defaultDominioId?: string;
   onSaved: (documento: Documento) => void;
-}
-
-function isValidImageUrl(url: string): boolean {
-  if (!url) return true;
-  try {
-    const parsed = new URL(url);
-    return parsed.protocol === 'https:';
-  } catch {
-    return false;
-  }
 }
 
 export function DocumentoFormDialog({
@@ -60,7 +51,8 @@ export function DocumentoFormDialog({
     conteudo: '',
     id_dominio: '',
     status_publicacao: 'RASCUNHO' as 'RASCUNHO' | 'PUBLICADO' | 'ARQUIVADO',
-    url_imagem: '',
+    url_imagem: null as string | null,
+    storage_path: null as string | null,
   });
 
   const isEditing = !!documento;
@@ -73,7 +65,8 @@ export function DocumentoFormDialog({
           conteudo: documento.conteudo,
           id_dominio: documento.id_dominio,
           status_publicacao: documento.status_publicacao,
-          url_imagem: documento.url_imagem || '',
+          url_imagem: documento.url_imagem ?? null,
+          storage_path: documento.storage_path ?? null,
         });
       } else {
         setFormData({
@@ -81,7 +74,8 @@ export function DocumentoFormDialog({
           conteudo: '',
           id_dominio: defaultDominioId || '',
           status_publicacao: 'RASCUNHO',
-          url_imagem: '',
+          url_imagem: null,
+          storage_path: null,
         });
       }
     }
@@ -100,12 +94,11 @@ export function DocumentoFormDialog({
       toast({ title: 'Atenção', description: 'Preencha o conteúdo do documento.', variant: 'destructive' });
       return;
     }
-    if (formData.url_imagem && !isValidImageUrl(formData.url_imagem)) {
-      toast({ title: 'Atenção', description: 'A URL da imagem deve usar HTTPS.', variant: 'destructive' });
-      return;
-    }
 
     setIsLoading(true);
+
+    // Captura o storage_path original antes de salvar para cleanup posterior
+    const originalStoragePath = documento?.storage_path ?? null;
 
     try {
       const supabase = createClient();
@@ -114,8 +107,11 @@ export function DocumentoFormDialog({
         conteudo: formData.conteudo.trim(),
         id_dominio: formData.id_dominio,
         status_publicacao: formData.status_publicacao,
-        url_imagem: formData.url_imagem.trim() || null,
+        url_imagem: formData.url_imagem || null,
+        storage_path: formData.storage_path || null,
       };
+
+      let savedDoc: Documento;
 
       if (isEditing) {
         const { data, error } = await supabase
@@ -125,13 +121,11 @@ export function DocumentoFormDialog({
           .select(`*, dominio:conhecimento_dominios(nome)`)
           .single();
 
-        if (error) {
+        if (error || !data) {
           toast({ title: 'Erro ao atualizar', description: 'Não foi possível atualizar o documento.', variant: 'destructive' });
           return;
         }
-
-        onSaved(data);
-        toast({ title: 'Sucesso!', description: 'Documento atualizado.' });
+        savedDoc = data;
       } else {
         const { data, error } = await supabase
           .from('base_conhecimento_geral')
@@ -139,16 +133,26 @@ export function DocumentoFormDialog({
           .select(`*, dominio:conhecimento_dominios(nome)`)
           .single();
 
-        if (error) {
+        if (error || !data) {
           toast({ title: 'Erro ao criar', description: 'Não foi possível criar o documento.', variant: 'destructive' });
           return;
         }
-
-        onSaved(data);
-        toast({ title: 'Sucesso!', description: 'Documento criado.' });
+        savedDoc = data;
       }
 
+      onSaved(savedDoc);
+      toast({ title: 'Sucesso!', description: isEditing ? 'Documento atualizado.' : 'Documento criado.' });
       onOpenChange(false);
+
+      // Cleanup: se o documento tinha uma imagem no Storage e ela foi substituída/removida,
+      // deleta o arquivo antigo como best-effort (não bloqueia nem exibe erro ao usuário)
+      if (originalStoragePath && originalStoragePath !== formData.storage_path) {
+        fetch('/api/upload/imagem', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ storagePath: originalStoragePath }),
+        }).catch(console.error);
+      }
     } catch {
       toast({ title: 'Erro inesperado', description: 'Ocorreu um erro. Tente novamente.', variant: 'destructive' });
     } finally {
@@ -232,14 +236,12 @@ export function DocumentoFormDialog({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="doc-url-imagem">URL da Imagem (opcional)</Label>
-            <Input
-              id="doc-url-imagem"
-              value={formData.url_imagem}
-              onChange={(e) => setFormData({ ...formData, url_imagem: e.target.value })}
-              placeholder="https://exemplo.com/imagem.png"
+            <Label>Imagem (opcional)</Label>
+            <ImageUpload
+              value={{ url: formData.url_imagem, storagePath: formData.storage_path }}
+              onChange={(v) => setFormData({ ...formData, url_imagem: v.url, storage_path: v.storagePath })}
+              disabled={isLoading}
             />
-            <p className="text-xs text-muted-foreground">Apenas URLs HTTPS são aceitas.</p>
           </div>
         </div>
 

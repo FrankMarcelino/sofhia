@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { FileText, Plus, Trash2, Pencil } from 'lucide-react';
+import { FileText, Plus, Trash2, Pencil, ImageIcon, HardDrive, ExternalLink } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/client';
 import { DocumentoFormDialog } from './documento-form-dialog';
@@ -83,6 +83,7 @@ export function DocumentosList({
 
   const handleDelete = async (id: string) => {
     setIsDeleting(true);
+    const doc = documentos.find((d) => d.id === id);
     try {
       const supabase = createClient();
       const { error } = await supabase
@@ -97,6 +98,15 @@ export function DocumentosList({
 
       onDocumentosChange(documentos.filter((d) => d.id !== id));
       toast({ title: 'Sucesso!', description: 'Documento removido.' });
+
+      // Cleanup: remove imagem do Storage se existir (best-effort)
+      if (doc?.storage_path) {
+        fetch('/api/upload/imagem', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ storagePath: doc.storage_path }),
+        }).catch(console.error);
+      }
     } catch {
       toast({ title: 'Erro inesperado', description: 'Ocorreu um erro. Tente novamente.', variant: 'destructive' });
     } finally {
@@ -166,6 +176,24 @@ export function DocumentosList({
                   key={doc.id}
                   className="flex items-start justify-between p-3 rounded-lg border border-border hover:bg-muted/50 transition-colors"
                 >
+                  {/* Thumbnail da imagem */}
+                  {doc.url_imagem && (
+                    <div className="shrink-0 w-10 h-10 rounded overflow-hidden border border-border bg-muted mr-3 mt-0.5">
+                      <img
+                        src={doc.url_imagem}
+                        alt=""
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          (e.currentTarget as HTMLImageElement).style.display = 'none';
+                          (e.currentTarget.nextElementSibling as HTMLElement | null)?.removeAttribute('hidden');
+                        }}
+                      />
+                      <div hidden className="w-full h-full flex items-center justify-center">
+                        <ImageIcon className="h-4 w-4 text-muted-foreground" />
+                      </div>
+                    </div>
+                  )}
+
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <p className="text-sm font-medium text-foreground truncate">
@@ -180,6 +208,29 @@ export function DocumentosList({
                         {statusCfg.label}
                       </Badge>
                     </div>
+                    {/* Badge de origem da imagem */}
+                    {doc.url_imagem && (
+                      <div className="mt-1">
+                        {doc.storage_path ? (
+                          <span
+                            title="Imagem hospedada no Supabase Storage — URL estável e gerenciada pela Sofhia"
+                            className="inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-800"
+                          >
+                            <HardDrive className="h-2.5 w-2.5" />
+                            Hospedada
+                          </span>
+                        ) : (
+                          <span
+                            title="Imagem em URL externa — pode ficar indisponível se o host de origem mudar. Edite o documento para hospedar a imagem."
+                            className="inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-800 cursor-help"
+                          >
+                            <ExternalLink className="h-2.5 w-2.5" />
+                            URL externa
+                          </span>
+                        )}
+                      </div>
+                    )}
+
                     <p className="text-xs text-muted-foreground line-clamp-2 mt-1">
                       {doc.conteudo.substring(0, 120)}
                       {doc.conteudo.length > 120 ? '...' : ''}
@@ -236,9 +287,13 @@ export function DocumentosList({
             )}
           </div>
 
-          <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+          <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg space-y-1">
             <p className="text-xs text-blue-900 dark:text-blue-100">
-              <strong>Dica:</strong> Você pode colar FAQs, políticas, descrições de produtos ou qualquer conteúdo que a IA deve conhecer.
+              <strong>Dica:</strong> Cole FAQs, políticas, descrições de produtos ou qualquer conteúdo que a IA deve conhecer.
+            </p>
+            <p className="text-xs text-blue-700 dark:text-blue-300">
+              Documentos com imagem <strong>Hospedada</strong> têm URL estável para o N8N.
+              Documentos com <strong>URL externa</strong> podem ficar indisponíveis — edite-os para hospedar a imagem diretamente.
             </p>
           </div>
         </CardContent>
