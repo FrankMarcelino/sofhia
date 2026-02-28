@@ -42,7 +42,8 @@ export interface Extracao {
   id_agente_extracoes: string;
   informacao_para_extrair: string;
   descricao_para_ia: string;
-  tipo_dado: 'string' | 'number' | 'boolean' | 'date' | 'email' | 'phone' | 'cpf' | 'cnpj';
+  tipo_dado: 'string' | 'number' | 'boolean' | 'date' | 'json';
+  tipo_chave_normatizada: string | null;
 }
 
 export async function getModelosIA(): Promise<ModeloIA[]> {
@@ -102,7 +103,7 @@ export async function getExtracoes(agenteId: string): Promise<Extracao[]> {
 
   const { data, error } = await supabase
     .from('agente_extracoes')
-    .select('*')
+    .select('id_agente_extracoes, informacao_para_extrair, descricao_para_ia, tipo_dado, tipo_chave_normatizada')
     .eq('id_agente', agenteId)
     .order('created_at', { ascending: true });
 

@@ -81,6 +81,7 @@ export interface Extracao {
   informacao_para_extrair: string;
   descricao_para_ia: string;
   tipo_dado: 'string' | 'number' | 'boolean' | 'date' | 'json';
+  tipo_chave_normatizada: string | null;
 }
 
 // Labels para tipos

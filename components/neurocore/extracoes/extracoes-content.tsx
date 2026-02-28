@@ -9,31 +9,49 @@ import { useToast } from '@/hooks/use-toast';
 import { createClient } from '@/lib/supabase/client';
 import { ExtracaoFormDialog } from './extracao-form-dialog';
 import { AgentCard } from '@/components/neurocore/editor/agent-card';
-import { Plus, Pencil, Trash2, Braces, Bot } from 'lucide-react';
+import { Plus, Pencil, Trash2, Braces, Bot, Link2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { Agente, Extracao } from '@/lib/queries/neurocore';
 import type { Agente as AgenteTipo } from '@/types/agents';
 
 const TIPO_LABEL: Record<string, string> = {
-  string: 'Texto',
-  number: 'Número',
+  string:  'Texto',
+  number:  'Número',
   boolean: 'Sim/Não',
-  date: 'Data',
-  email: 'E-mail',
-  phone: 'Telefone',
-  cpf: 'CPF',
-  cnpj: 'CNPJ',
+  date:    'Data',
+  json:    'JSON',
 };
 
 const TIPO_VARIANT: Record<string, string> = {
-  string: 'bg-blue-500/10 text-blue-600 border-blue-200',
-  number: 'bg-purple-500/10 text-purple-600 border-purple-200',
+  string:  'bg-blue-500/10 text-blue-600 border-blue-200',
+  number:  'bg-purple-500/10 text-purple-600 border-purple-200',
   boolean: 'bg-green-500/10 text-green-600 border-green-200',
-  date: 'bg-orange-500/10 text-orange-600 border-orange-200',
-  email: 'bg-cyan-500/10 text-cyan-600 border-cyan-200',
-  phone: 'bg-emerald-500/10 text-emerald-600 border-emerald-200',
-  cpf: 'bg-red-500/10 text-red-600 border-red-200',
-  cnpj: 'bg-amber-500/10 text-amber-600 border-amber-200',
+  date:    'bg-orange-500/10 text-orange-600 border-orange-200',
+  json:    'bg-slate-500/10 text-slate-600 border-slate-200',
+};
+
+const CHAVE_LABEL: Record<string, string> = {
+  nome_pessoa_fisica:   'Nome (PF)',
+  nome_pessoa_juridica: 'Nome (PJ)',
+  cpf:                  'CPF',
+  cnpj:                 'CNPJ',
+  rg:                   'RG',
+  email:                'E-mail',
+  telefone:             'Telefone',
+  telefone_2:           'Telefone 2',
+  data_nascimento:      'Nascimento',
+  cep:                  'CEP',
+  logradouro:           'Logradouro',
+  numero_casa:          'Número',
+  bairro:               'Bairro',
+  cidade:               'Cidade',
+  estado:               'Estado',
+  pais:                 'País',
+  plano_escolhido:      'Plano',
+  valor_total:          'Valor Total',
+  valor_mensalidade:    'Mensalidade',
+  dia_vencimento:       'Vencimento',
+  servicos_adicionais:  'Serviços',
 };
 
 interface ExtracoesContentProps {
@@ -180,6 +198,12 @@ export function ExtracoesContent({ agentes, extracoesByAgente: initial }: Extrac
                       )}>
                         {TIPO_LABEL[ext.tipo_dado] ?? ext.tipo_dado}
                       </span>
+                      {ext.tipo_chave_normatizada && (
+                        <span className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full border font-medium bg-indigo-500/10 text-indigo-600 border-indigo-200">
+                          <Link2 className="h-3 w-3" />
+                          {CHAVE_LABEL[ext.tipo_chave_normatizada] ?? ext.tipo_chave_normatizada}
+                        </span>
+                      )}
                     </div>
                     {ext.descricao_para_ia && (
                       <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">

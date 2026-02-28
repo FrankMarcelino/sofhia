@@ -22,18 +22,15 @@ interface ExtracaoForm {
   id?: string;
   informacao_para_extrair: string;
   descricao_para_ia: string;
-  tipo_dado: 'string' | 'number' | 'boolean' | 'date' | 'email' | 'phone' | 'cpf' | 'cnpj';
+  tipo_dado: 'string' | 'number' | 'boolean' | 'date' | 'json';
 }
 
 const TIPOS_DADO = [
-  { value: 'string', label: 'Texto' },
-  { value: 'number', label: 'Número' },
+  { value: 'string',  label: 'Texto'   },
+  { value: 'number',  label: 'Número'  },
   { value: 'boolean', label: 'Sim/Não' },
-  { value: 'date', label: 'Data' },
-  { value: 'email', label: 'E-mail' },
-  { value: 'phone', label: 'Telefone' },
-  { value: 'cpf', label: 'CPF' },
-  { value: 'cnpj', label: 'CNPJ' },
+  { value: 'date',    label: 'Data'    },
+  { value: 'json',    label: 'JSON'    },
 ];
 
 export function ExtracoesTab({ agente, extracoes, className }: ExtracoesTabProps) {
