@@ -13,8 +13,7 @@ import { ptBR } from 'date-fns/locale';
 interface Conversa {
   id_conversa: string;
   created_at: string;
-  status_conversa: 'conversando' | 'pausado' | 'encerrado' | 'aguardando_humano';
-  motivo_da_conversa: string;
+  status_conversa: 'ia_conversando' | 'pausado' | 'encerrado' | 'aguardando_humano';
   data_ultima_interacao: string;
   pessoa: {
     id_pessoa: string;
@@ -35,22 +34,13 @@ interface ConversasListProps {
 }
 
 const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'error' | 'info' }> = {
-  conversando: { label: 'Ativa', variant: 'success' },
+  ia_conversando: { label: 'Ativa', variant: 'success' },
   pausado: { label: 'Pausada', variant: 'warning' },
   encerrado: { label: 'Encerrada', variant: 'info' },
   aguardando_humano: { label: 'Aguard. Humano', variant: 'error' },
 };
 
-const motivoConfig: Record<string, string> = {
-  NAO_IDENTIFICADO: 'Não identificado',
-  VENDA: 'Venda',
-  SUPORTE: 'Suporte',
-  DUVIDA: 'Dúvida',
-  CANCELAMENTO: 'Cancelamento',
-  OUTRO: 'Outro',
-};
-
-type StatusFilter = 'todas' | 'conversando' | 'aguardando_humano' | 'encerrado';
+type StatusFilter = 'todas' | 'ia_conversando' | 'aguardando_humano' | 'encerrado';
 
 export function ConversasList({
   conversas,
@@ -117,10 +107,10 @@ export function ConversasList({
             Todas
           </Button>
           <Button
-            variant={statusFilter === 'conversando' ? 'outline' : 'ghost'}
+            variant={statusFilter === 'ia_conversando' ? 'outline' : 'ghost'}
             size="sm"
             className="text-xs"
-            onClick={() => setStatusFilter('conversando')}
+            onClick={() => setStatusFilter('ia_conversando')}
           >
             Ativas
           </Button>
@@ -185,7 +175,7 @@ export function ConversasList({
                     <div className="flex items-center gap-2 min-w-0">
                       <div className={cn(
                         'flex h-8 w-8 items-center justify-center rounded-full shrink-0',
-                        conversa.status_conversa === 'conversando'
+                        conversa.status_conversa === 'ia_conversando'
                           ? 'bg-emerald-100'
                           : conversa.status_conversa === 'aguardando_humano'
                             ? 'bg-red-100'
@@ -193,7 +183,7 @@ export function ConversasList({
                       )}>
                         <User className={cn(
                           'h-4 w-4',
-                          conversa.status_conversa === 'conversando'
+                          conversa.status_conversa === 'ia_conversando'
                             ? 'text-emerald-600'
                             : conversa.status_conversa === 'aguardando_humano'
                               ? 'text-red-600'
@@ -234,11 +224,6 @@ export function ConversasList({
                     </div>
                   </div>
 
-                  <div className="mt-2">
-                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
-                      {motivoConfig[conversa.motivo_da_conversa] || conversa.motivo_da_conversa}
-                    </span>
-                  </div>
                 </button>
               );
             })}

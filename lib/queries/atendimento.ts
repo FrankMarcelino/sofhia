@@ -5,9 +5,7 @@ export interface Conversa {
   id_conversa: string;
   created_at: string;
   updated_at: string;
-  status_conversa: 'conversando' | 'pausado' | 'encerrado' | 'aguardando_humano';
-  motivo_da_conversa: 'NAO_IDENTIFICADO' | 'VENDA' | 'SUPORTE' | 'DUVIDA' | 'CANCELAMENTO' | 'OUTRO';
-  encerrada: boolean;
+  status_conversa: 'ia_conversando' | 'pausado' | 'encerrado' | 'aguardando_humano';
   data_ultima_interacao: string;
   pessoa: {
     id_pessoa: string;
@@ -18,9 +16,6 @@ export interface Conversa {
     id_agente: string;
     nome_agente: string;
   } | null;
-  _count?: {
-    interacoes: number;
-  };
 }
 
 export interface Interacao {
@@ -33,7 +28,6 @@ export interface Interacao {
 
 export interface FiltrosConversa {
   status?: string;
-  motivo?: string;
   busca?: string;
   dataInicio?: string;
   dataFim?: string;
@@ -53,8 +47,6 @@ export async function getConversas(
       created_at,
       updated_at,
       status_conversa,
-      motivo_da_conversa,
-      encerrada,
       data_ultima_interacao,
       pessoa:pessoas(id_pessoa, nome, telefone),
       agente:agentes(id_agente, nome_agente)
@@ -66,10 +58,6 @@ export async function getConversas(
   // Aplicar filtros
   if (filtros?.status && filtros.status !== 'todos') {
     query = query.eq('status_conversa', filtros.status);
-  }
-
-  if (filtros?.motivo && filtros.motivo !== 'todos') {
-    query = query.eq('motivo_da_conversa', filtros.motivo);
   }
 
   const { data, error } = await query;
@@ -96,8 +84,6 @@ export async function getConversa(conversaId: string): Promise<Conversa | null> 
       created_at,
       updated_at,
       status_conversa,
-      motivo_da_conversa,
-      encerrada,
       data_ultima_interacao,
       pessoa:pessoas(id_pessoa, nome, telefone),
       agente:agentes(id_agente, nome_agente)
@@ -135,12 +121,12 @@ export async function getEstatisticasConversas(empresaId: string) {
   hoje.setHours(0, 0, 0, 0);
 
   const [totalAtivas, totalHoje, aguardandoHumano, encerradasHoje] = await Promise.all([
-    // Conversas ativas
+    // Conversas ativas (não encerradas)
     supabase
       .from('conversas')
       .select('id_conversa', { count: 'exact', head: true })
       .eq('id_empresa', empresaId)
-      .eq('encerrada', false),
+      .neq('status_conversa', 'encerrado'),
 
     // Conversas de hoje
     supabase
@@ -161,7 +147,7 @@ export async function getEstatisticasConversas(empresaId: string) {
       .from('conversas')
       .select('id_conversa', { count: 'exact', head: true })
       .eq('id_empresa', empresaId)
-      .eq('encerrada', true)
+      .eq('status_conversa', 'encerrado')
       .gte('updated_at', hoje.toISOString()),
   ]);
 

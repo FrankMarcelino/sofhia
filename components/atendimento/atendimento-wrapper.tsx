@@ -8,8 +8,7 @@ import { createClient } from '@/lib/supabase/client';
 interface Conversa {
   id_conversa: string;
   created_at: string;
-  status_conversa: 'conversando' | 'pausado' | 'encerrado' | 'aguardando_humano';
-  motivo_da_conversa: string;
+  status_conversa: 'ia_conversando' | 'pausado' | 'encerrado' | 'aguardando_humano';
   data_ultima_interacao: string;
   pessoa: {
     id_pessoa: string;
