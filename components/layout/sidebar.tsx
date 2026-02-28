@@ -6,7 +6,6 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import {
   LayoutDashboard,
-  MessageSquare,
   Users,
   Bot,
   Database,
@@ -17,6 +16,8 @@ import {
   Headphones,
   Sparkles,
   ChevronRight,
+  Braces,
+  History,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -37,18 +38,13 @@ const menuItems = [
         href: '/atendimento',
         icon: Headphones,
       },
-      {
-        label: 'Monitoramento',
-        href: '/monitoramento',
-        icon: BarChart3,
-      },
     ],
   },
   {
-    title: 'Neurocore (IA)',
+    title: 'Neurocore',
     items: [
       {
-        label: 'Editor de Agente',
+        label: 'Editor de Agentes',
         href: '/neurocore/editor',
         icon: Bot,
       },
@@ -56,6 +52,11 @@ const menuItems = [
         label: 'Base de Conhecimento',
         href: '/neurocore/base',
         icon: Database,
+      },
+      {
+        label: 'Extrações',
+        href: '/neurocore/extracoes',
+        icon: Braces,
       },
       {
         label: 'Simulador',
@@ -73,9 +74,14 @@ const menuItems = [
         icon: Users,
       },
       {
-        label: 'Conversas',
+        label: 'Histórico',
         href: '/conversas',
-        icon: MessageSquare,
+        icon: History,
+      },
+      {
+        label: 'Monitoramento',
+        href: '/monitoramento',
+        icon: BarChart3,
       },
       {
         label: 'Relatórios',
@@ -85,18 +91,13 @@ const menuItems = [
     ],
   },
   {
-    title: 'Financeiro',
+    title: 'Administração',
     items: [
       {
-        label: 'Carteira',
+        label: 'Financeiro',
         href: '/financeiro',
         icon: DollarSign,
       },
-    ],
-  },
-  {
-    title: 'Configurações',
-    items: [
       {
         label: 'Parâmetros',
         href: '/parametros',
