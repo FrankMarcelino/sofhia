@@ -1,6 +1,19 @@
 import { createClient } from '@/lib/supabase/server';
 import { logSupabaseWarning } from '@/lib/utils';
 
+export interface TagSimples {
+  id_tag: string;
+  nome: string;
+  cor_hex: string | null;
+}
+
+export interface ConversaSimples {
+  id_conversa: string;
+  created_at: string;
+  status_conversa: string;
+  conversas_tags: { tags: TagSimples }[];
+}
+
 export interface Pessoa {
   id_pessoa: string;
   created_at: string;
@@ -19,6 +32,7 @@ export interface Pessoa {
   estado: string | null;
   cep: string | null;
   observacoes: string | null;
+  conversas: ConversaSimples[];
 }
 
 export interface FiltrosPessoa {
@@ -51,7 +65,15 @@ export async function getPessoas(
       cidade,
       estado,
       cep,
-      observacoes
+      observacoes,
+      conversas(
+        id_conversa,
+        created_at,
+        status_conversa,
+        conversas_tags(
+          tags(id_tag, nome, cor_hex)
+        )
+      )
     `)
     .eq('id_empresa', empresaId)
     .order('created_at', { ascending: false })
@@ -70,7 +92,24 @@ export async function getPessoas(
     return [];
   }
 
-  return (data || []) as Pessoa[];
+  return (data || []) as unknown as Pessoa[];
+}
+
+export async function getTagsEmpresa(empresaId: string): Promise<TagSimples[]> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from('tags')
+    .select('id_tag, nome, cor_hex')
+    .eq('id_empresa', empresaId)
+    .order('nome');
+
+  if (error) {
+    logSupabaseWarning(error, 'buscar tags');
+    return [];
+  }
+
+  return data || [];
 }
 
 export async function getTotalPessoas(empresaId: string): Promise<number> {

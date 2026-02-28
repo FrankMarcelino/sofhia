@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
-import { getPessoas, getTotalPessoas } from '@/lib/queries/clientes';
+import { getPessoas, getTotalPessoas, getTagsEmpresa } from '@/lib/queries/clientes';
 import { ClientesTable } from '@/components/clientes/clientes-table';
 import { Users } from 'lucide-react';
 
@@ -24,19 +24,20 @@ async function getClientesData() {
   const empresaId = userData?.id_empresa;
 
   if (!empresaId) {
-    return { clientes: [], total: 0, empresaId: '' };
+    return { clientes: [], total: 0, empresaId: '', tags: [] };
   }
 
-  const [clientes, total] = await Promise.all([
+  const [clientes, total, tags] = await Promise.all([
     getPessoas(empresaId),
     getTotalPessoas(empresaId),
+    getTagsEmpresa(empresaId),
   ]);
 
-  return { clientes, total, empresaId };
+  return { clientes, total, empresaId, tags: tags ?? [] };
 }
 
 export default async function ClientesPage() {
-  const { clientes, total, empresaId } = await getClientesData();
+  const { clientes, total, empresaId, tags } = await getClientesData();
 
   return (
     <div className="w-full max-w-5xl mx-auto">
@@ -54,7 +55,7 @@ export default async function ClientesPage() {
       </section>
 
       {/* Conteúdo */}
-      <ClientesTable clientes={clientes} empresaId={empresaId} total={total} />
+      <ClientesTable clientes={clientes} empresaId={empresaId} total={total} tags={tags} />
     </div>
   );
 }
