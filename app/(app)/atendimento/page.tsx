@@ -53,9 +53,9 @@ export default async function AtendimentoPage() {
   const { conversas, stats } = await getAtendimentoData();
 
   return (
-    <div className="w-full max-w-7xl mx-auto">
+    <div className="w-full max-w-7xl mx-auto h-full flex flex-col">
       {/* Header */}
-      <section className="pb-6">
+      <section className="pb-6 shrink-0">
         <h1 className="text-3xl font-bold text-foreground mb-1">
           Atendimento
         </h1>
@@ -65,12 +65,14 @@ export default async function AtendimentoPage() {
       </section>
 
       {/* Stats Cards */}
-      <section className="pb-6">
+      <section className="pb-6 shrink-0">
         <StatsCards stats={stats} />
       </section>
 
-      {/* Main Grid - Split View */}
-      <AtendimentoWrapper conversas={conversas} />
+      {/* Main Grid - ocupa o restante da altura */}
+      <div className="flex-1 min-h-0">
+        <AtendimentoWrapper conversas={conversas} />
+      </div>
     </div>
   );
 }

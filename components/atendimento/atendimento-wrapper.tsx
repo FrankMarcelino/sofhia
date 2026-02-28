@@ -70,9 +70,9 @@ export function AtendimentoWrapper({ conversas }: AtendimentoWrapperProps) {
   }, [conversaSelecionada]);
 
   return (
-    <section className="grid grid-cols-5 gap-6" style={{ height: 'calc(100vh - 340px)', minHeight: '500px' }}>
+    <section className="grid grid-cols-5 gap-6 h-full">
       {/* Left Column - Conversas List (2/5 width) */}
-      <div className="col-span-2">
+      <div className="col-span-2 h-full">
         <ConversasList
           conversas={conversas}
           conversaSelecionada={conversaSelecionada}
@@ -82,7 +82,7 @@ export function AtendimentoWrapper({ conversas }: AtendimentoWrapperProps) {
       </div>
 
       {/* Right Column - Chat Viewer (3/5 width) */}
-      <div className="col-span-3">
+      <div className="col-span-3 h-full">
         <ChatViewer
           interacoes={interacoes}
           nomeCliente={conversaAtual?.pessoa?.nome || undefined}
