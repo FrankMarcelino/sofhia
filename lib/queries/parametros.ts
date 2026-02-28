@@ -58,6 +58,43 @@ export interface Tag {
   cor_hex: string;
 }
 
+export interface TagCompleta {
+  id_tag: string;
+  nome: string;
+  cor_hex: string;
+  descricao_para_ia: string | null;
+  tag_tipo: string;
+  mudar_status_conversa_para: string | null;
+  enviar_mensagem_texto: boolean;
+  mensagem_texto: string | null;
+}
+
+export async function getTagsCompletas(empresaId: string): Promise<TagCompleta[]> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from('tags')
+    .select(`
+      id_tag,
+      nome,
+      cor_hex,
+      descricao_para_ia,
+      tag_tipo,
+      mudar_status_conversa_para,
+      enviar_mensagem_texto,
+      mensagem_texto
+    `)
+    .eq('id_empresa', empresaId)
+    .order('nome');
+
+  if (error) {
+    logSupabaseWarning(error, 'buscar tags');
+    return [];
+  }
+
+  return (data || []) as TagCompleta[];
+}
+
 export interface Departamento {
   id: string;
   departamento: string;

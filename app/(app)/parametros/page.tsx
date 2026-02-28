@@ -1,11 +1,12 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Building2, Server, Bot, RefreshCcw } from 'lucide-react';
+import { Building2, Server, Bot, RefreshCcw, Tag } from 'lucide-react';
 import { EmpresaForm } from '@/components/parametros/empresa-form';
 import { UpChatConfigForm } from '@/components/parametros/upchat-config';
 import { PreferenciasIAForm } from '@/components/parametros/preferencias-ia';
 import { ReativacaoContent } from '@/components/parametros/reativacao-content';
+import { TagsContent } from '@/components/parametros/tags-content';
 import {
   getEmpresa,
   getUpChatConfig,
@@ -13,6 +14,7 @@ import {
   getRegrasReativacao,
   getPreferenciasReativacao,
   getTagsEmpresa,
+  getTagsCompletas,
   getDepartamentosEmpresa,
 } from '@/lib/queries/parametros';
 
@@ -41,12 +43,13 @@ async function getParametrosData() {
       regrasReativacao: [],
       preferenciasReativacao: null,
       tags: [],
+      tagsCompletas: [],
       departamentos: [],
       empresaId: '',
     };
   }
 
-  const [empresa, upChatConfig, preferenciasIA, regrasReativacao, preferenciasReativacao, tags, departamentos] =
+  const [empresa, upChatConfig, preferenciasIA, regrasReativacao, preferenciasReativacao, tags, tagsCompletas, departamentos] =
     await Promise.all([
       getEmpresa(empresaId),
       getUpChatConfig(empresaId),
@@ -54,6 +57,7 @@ async function getParametrosData() {
       getRegrasReativacao(empresaId),
       getPreferenciasReativacao(empresaId),
       getTagsEmpresa(empresaId),
+      getTagsCompletas(empresaId),
       getDepartamentosEmpresa(empresaId),
     ]);
 
@@ -64,6 +68,7 @@ async function getParametrosData() {
     regrasReativacao,
     preferenciasReativacao,
     tags,
+    tagsCompletas,
     departamentos,
     empresaId,
   };
@@ -77,6 +82,7 @@ export default async function ParametrosPage() {
     regrasReativacao,
     preferenciasReativacao,
     tags,
+    tagsCompletas,
     departamentos,
     empresaId,
   } = await getParametrosData();
@@ -95,7 +101,7 @@ export default async function ParametrosPage() {
 
       {/* Tabs */}
       <Tabs defaultValue="empresa" className="space-y-6">
-        <TabsList className="grid grid-cols-4 w-full max-w-2xl">
+        <TabsList className="grid grid-cols-5 w-full max-w-3xl">
           <TabsTrigger value="empresa" className="gap-2">
             <Building2 className="h-4 w-4" />
             Empresa
@@ -111,6 +117,10 @@ export default async function ParametrosPage() {
           <TabsTrigger value="reativacao" className="gap-2">
             <RefreshCcw className="h-4 w-4" />
             Reativação
+          </TabsTrigger>
+          <TabsTrigger value="tags" className="gap-2">
+            <Tag className="h-4 w-4" />
+            Tags
           </TabsTrigger>
         </TabsList>
 
@@ -134,6 +144,10 @@ export default async function ParametrosPage() {
             departamentos={departamentos}
             empresaId={empresaId}
           />
+        </TabsContent>
+
+        <TabsContent value="tags">
+          <TagsContent tags={tagsCompletas} empresaId={empresaId} />
         </TabsContent>
       </Tabs>
     </div>
