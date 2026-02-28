@@ -185,15 +185,20 @@ function MensagensPanel({
           <Clock className="h-3 w-3" />
           {formatDistanceToNow(new Date(conversa.created_at), { addSuffix: true, locale: ptBR })}
         </span>
-        {tags.map((tag) => (
-          <span
-            key={tag.id_tag}
-            className="text-xs px-2 py-0.5 rounded-full font-medium text-white"
-            style={{ backgroundColor: tag.cor_hex || '#6b7280' }}
-          >
-            {tag.nome}
-          </span>
-        ))}
+        {tags.length > 0 && (
+          <>
+            <span className="text-xs text-muted-foreground/60 font-medium">·</span>
+            {tags.map((tag) => (
+              <span
+                key={tag.id_tag}
+                className="text-xs px-2 py-0.5 rounded-full font-medium text-white"
+                style={{ backgroundColor: tag.cor_hex || '#6b7280' }}
+              >
+                {tag.nome}
+              </span>
+            ))}
+          </>
+        )}
         {conversa.encerrar_motivo && (
           <span className="text-xs text-muted-foreground ml-auto truncate max-w-[180px]" title={conversa.encerrar_motivo}>
             Motivo: {conversa.encerrar_motivo}
@@ -295,8 +300,8 @@ function ConversaItem({
       </p>
 
       {tags.length > 0 && (
-        <div className="flex flex-wrap gap-1 mt-1">
-          {tags.slice(0, 2).map((tag) => (
+        <div className="flex flex-wrap gap-1 mt-1.5">
+          {tags.map((tag) => (
             <span
               key={tag.id_tag}
               className="text-[9px] px-1.5 py-0.5 rounded-full font-medium text-white leading-none"
@@ -305,11 +310,6 @@ function ConversaItem({
               {tag.nome}
             </span>
           ))}
-          {tags.length > 2 && (
-            <span className="text-[9px] text-muted-foreground leading-none self-center">
-              +{tags.length - 2}
-            </span>
-          )}
         </div>
       )}
     </button>

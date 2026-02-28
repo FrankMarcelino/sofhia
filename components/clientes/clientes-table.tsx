@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -26,12 +26,19 @@ import { ConversaHistoricoSheet } from './conversa-historico-sheet';
 import type { Pessoa, TagSimples } from '@/lib/queries/clientes';
 import { cn } from '@/lib/utils';
 
-function getTagsPessoa(pessoa: Pessoa): TagSimples[] {
+// Returns up to `limit` unique tags from the person's most recent conversations
+function getTagsPessoa(pessoa: Pessoa, limit = 5): TagSimples[] {
+  const sorted = [...(pessoa.conversas ?? [])].sort(
+    (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  );
   const map = new Map<string, TagSimples>();
-  for (const conversa of (pessoa.conversas ?? [])) {
+  for (const conversa of sorted) {
     for (const ct of (conversa.conversas_tags ?? [])) {
       const tag = Array.isArray(ct.tags) ? ct.tags[0] : ct.tags;
-      if (tag) map.set(tag.id_tag, tag);
+      if (tag && !map.has(tag.id_tag)) {
+        map.set(tag.id_tag, tag);
+        if (map.size >= limit) return Array.from(map.values());
+      }
     }
   }
   return Array.from(map.values());
@@ -41,10 +48,10 @@ interface ClientesTableProps {
   clientes: Pessoa[];
   empresaId: string;
   total: number;
-  tags: TagSimples[];
+  tags?: TagSimples[];
 }
 
-export function ClientesTable({ clientes: initial, empresaId, tags }: ClientesTableProps) {
+export function ClientesTable({ clientes: initial, empresaId }: ClientesTableProps) {
   const { toast } = useToast();
   const [clientes, setClientes] = useState<Pessoa[]>(initial);
   const [busca, setBusca] = useState('');
@@ -53,6 +60,20 @@ export function ClientesTable({ clientes: initial, empresaId, tags }: ClientesTa
   const [clienteEditando, setClienteEditando] = useState<Pessoa | null>(null);
   const [deletando, setDeletando] = useState<string | null>(null);
   const [historicoAberto, setHistoricoAberto] = useState<Pessoa | null>(null);
+
+  // Derive available filter tags from the loaded client data (reliable regardless of RLS)
+  const availableTags = useMemo(() => {
+    const map = new Map<string, TagSimples>();
+    for (const c of clientes) {
+      for (const conv of (c.conversas ?? [])) {
+        for (const ct of (conv.conversas_tags ?? [])) {
+          const tag = Array.isArray(ct.tags) ? ct.tags[0] : ct.tags;
+          if (tag) map.set(tag.id_tag, tag);
+        }
+      }
+    }
+    return Array.from(map.values()).sort((a, b) => a.nome.localeCompare(b.nome));
+  }, [clientes]);
 
   const filtrados = clientes.filter((c) => {
     if (busca) {
@@ -127,11 +148,11 @@ export function ClientesTable({ clientes: initial, empresaId, tags }: ClientesTa
       </div>
 
       {/* Tag filter chips */}
-      {tags.length > 0 && (
+      {availableTags.length > 0 && (
         <div className="flex items-center gap-2 flex-wrap mb-4">
           <Tag className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
           <span className="text-xs text-muted-foreground">Filtrar por tag:</span>
-          {tags.map((tag) => (
+          {availableTags.map((tag) => (
             <button
               key={tag.id_tag}
               type="button"
@@ -142,7 +163,9 @@ export function ClientesTable({ clientes: initial, empresaId, tags }: ClientesTa
                   ? 'text-white border-transparent shadow-sm'
                   : 'bg-background hover:opacity-80 border-border text-foreground'
               )}
-              style={tagFiltro === tag.id_tag ? { backgroundColor: tag.cor_hex || '#6b7280' } : undefined}
+              style={
+                tagFiltro === tag.id_tag ? { backgroundColor: tag.cor_hex || '#6b7280' } : undefined
+              }
             >
               {tag.nome}
             </button>
