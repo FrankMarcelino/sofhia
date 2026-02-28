@@ -43,9 +43,82 @@ export interface RegraReativacao {
   id_regra: string;
   sequencia: number;
   tempo_espera_minutos: number;
-  tipo_acao: 'MENSAGEM' | 'TRANSBORDO';
+  tipo_acao: string;
   mensagem_texto: string | null;
   ativo: boolean;
+  id_tag: string | null;
+  id_transferencia_departamento: string | null;
+  tempo_inicio: string | null;
+  tempo_fim: string | null;
+}
+
+export interface Tag {
+  id_tag: string;
+  nome: string;
+  cor_hex: string;
+}
+
+export interface Departamento {
+  id: string;
+  departamento: string;
+  descricao_conversa_para_ia: string;
+  ativo: boolean;
+}
+
+export interface PreferenciasReativacao {
+  id_preferencia?: string;
+  maximo_tentativas_reativacoes_ia: number;
+  maximo_tempo_reativacoes_por_inatividade: number;
+  acao_apos_maximo_tentativas_reativacoes_ia: string;
+  acao_apos_maximo_tempo_reativacoes_por_inatividade: string;
+}
+
+export async function getPreferenciasReativacao(empresaId: string): Promise<PreferenciasReativacao> {
+  const supabase = await createClient();
+
+  const { data } = await supabase
+    .from('empresa_preferencias_ia')
+    .select(`
+      id_preferencia,
+      maximo_tentativas_reativacoes_ia,
+      maximo_tempo_reativacoes_por_inatividade,
+      acao_apos_maximo_tentativas_reativacoes_ia,
+      acao_apos_maximo_tempo_reativacoes_por_inatividade
+    `)
+    .eq('id_empresa', empresaId)
+    .single();
+
+  return (data as PreferenciasReativacao) ?? {
+    maximo_tentativas_reativacoes_ia: 10,
+    maximo_tempo_reativacoes_por_inatividade: 82800,
+    acao_apos_maximo_tentativas_reativacoes_ia: 'TRANSFERIR',
+    acao_apos_maximo_tempo_reativacoes_por_inatividade: 'TRANSFERIR',
+  };
+}
+
+export async function getTagsEmpresa(empresaId: string): Promise<Tag[]> {
+  const supabase = await createClient();
+
+  const { data } = await supabase
+    .from('tags')
+    .select('id_tag, nome, cor_hex')
+    .eq('id_empresa', empresaId)
+    .order('nome');
+
+  return (data || []) as Tag[];
+}
+
+export async function getDepartamentosEmpresa(empresaId: string): Promise<Departamento[]> {
+  const supabase = await createClient();
+
+  const { data } = await supabase
+    .from('empresa_upchat_transferencias_departamentos')
+    .select('id, departamento, descricao_conversa_para_ia, ativo')
+    .eq('id_empresa', empresaId)
+    .eq('ativo', true)
+    .order('departamento');
+
+  return (data || []) as Departamento[];
 }
 
 export async function getEmpresa(empresaId: string): Promise<Empresa | null> {
@@ -117,7 +190,18 @@ export async function getRegrasReativacao(empresaId: string): Promise<RegraReati
 
   const { data, error } = await supabase
     .from('regras_reativacao')
-    .select('*')
+    .select(`
+      id_regra,
+      sequencia,
+      tempo_espera_minutos,
+      tipo_acao,
+      mensagem_texto,
+      ativo,
+      id_tag,
+      id_transferencia_departamento,
+      tempo_inicio,
+      tempo_fim
+    `)
     .eq('id_empresa', empresaId)
     .order('sequencia', { ascending: true });
 

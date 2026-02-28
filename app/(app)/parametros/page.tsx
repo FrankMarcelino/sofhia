@@ -1,14 +1,19 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Building2, Server, Bot } from 'lucide-react';
+import { Building2, Server, Bot, RefreshCcw } from 'lucide-react';
 import { EmpresaForm } from '@/components/parametros/empresa-form';
 import { UpChatConfigForm } from '@/components/parametros/upchat-config';
 import { PreferenciasIAForm } from '@/components/parametros/preferencias-ia';
+import { ReativacaoContent } from '@/components/parametros/reativacao-content';
 import {
   getEmpresa,
   getUpChatConfig,
   getPreferenciasIA,
+  getRegrasReativacao,
+  getPreferenciasReativacao,
+  getTagsEmpresa,
+  getDepartamentosEmpresa,
 } from '@/lib/queries/parametros';
 
 async function getParametrosData() {
@@ -20,7 +25,6 @@ async function getParametrosData() {
     redirect('/login');
   }
 
-  // Buscar dados do usuário
   const { data: userData } = await supabase
     .from('usuarios_sofhia')
     .select('id, id_empresa')
@@ -34,25 +38,48 @@ async function getParametrosData() {
       empresa: null,
       upChatConfig: null,
       preferenciasIA: null,
+      regrasReativacao: [],
+      preferenciasReativacao: null,
+      tags: [],
+      departamentos: [],
+      empresaId: '',
     };
   }
 
-  // Buscar dados em paralelo
-  const [empresa, upChatConfig, preferenciasIA] = await Promise.all([
-    getEmpresa(empresaId),
-    getUpChatConfig(empresaId),
-    getPreferenciasIA(empresaId),
-  ]);
+  const [empresa, upChatConfig, preferenciasIA, regrasReativacao, preferenciasReativacao, tags, departamentos] =
+    await Promise.all([
+      getEmpresa(empresaId),
+      getUpChatConfig(empresaId),
+      getPreferenciasIA(empresaId),
+      getRegrasReativacao(empresaId),
+      getPreferenciasReativacao(empresaId),
+      getTagsEmpresa(empresaId),
+      getDepartamentosEmpresa(empresaId),
+    ]);
 
   return {
     empresa,
     upChatConfig,
     preferenciasIA,
+    regrasReativacao,
+    preferenciasReativacao,
+    tags,
+    departamentos,
+    empresaId,
   };
 }
 
 export default async function ParametrosPage() {
-  const { empresa, upChatConfig, preferenciasIA } = await getParametrosData();
+  const {
+    empresa,
+    upChatConfig,
+    preferenciasIA,
+    regrasReativacao,
+    preferenciasReativacao,
+    tags,
+    departamentos,
+    empresaId,
+  } = await getParametrosData();
 
   return (
     <div className="w-full max-w-5xl mx-auto">
@@ -68,7 +95,7 @@ export default async function ParametrosPage() {
 
       {/* Tabs */}
       <Tabs defaultValue="empresa" className="space-y-6">
-        <TabsList className="grid grid-cols-3 w-full max-w-lg">
+        <TabsList className="grid grid-cols-4 w-full max-w-2xl">
           <TabsTrigger value="empresa" className="gap-2">
             <Building2 className="h-4 w-4" />
             Empresa
@@ -80,6 +107,10 @@ export default async function ParametrosPage() {
           <TabsTrigger value="ia" className="gap-2">
             <Bot className="h-4 w-4" />
             IA
+          </TabsTrigger>
+          <TabsTrigger value="reativacao" className="gap-2">
+            <RefreshCcw className="h-4 w-4" />
+            Reativação
           </TabsTrigger>
         </TabsList>
 
@@ -93,6 +124,16 @@ export default async function ParametrosPage() {
 
         <TabsContent value="ia">
           <PreferenciasIAForm preferencias={preferenciasIA} />
+        </TabsContent>
+
+        <TabsContent value="reativacao">
+          <ReativacaoContent
+            regras={regrasReativacao}
+            preferencias={preferenciasReativacao!}
+            tags={tags}
+            departamentos={departamentos}
+            empresaId={empresaId}
+          />
         </TabsContent>
       </Tabs>
     </div>
