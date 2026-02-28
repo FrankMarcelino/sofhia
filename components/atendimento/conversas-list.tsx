@@ -159,7 +159,7 @@ export function ConversasList({
         ) : (
           <div className="divide-y divide-border">
             {conversasFiltradas.map((conversa) => {
-              const status = statusConfig[conversa.status_conversa] || statusConfig.conversando;
+              const status = statusConfig[conversa.status_conversa] ?? statusConfig.ia_conversando;
               const isSelected = conversaSelecionada === conversa.id_conversa;
 
               return (
