@@ -4,12 +4,15 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { useToast } from '@/hooks/use-toast';
 import { createClient } from '@/lib/supabase/client';
 import { ExtracaoFormDialog } from './extracao-form-dialog';
+import { AgentCard } from '@/components/neurocore/editor/agent-card';
 import { Plus, Pencil, Trash2, Braces, Bot } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { Agente, Extracao } from '@/lib/queries/neurocore';
+import type { Agente as AgenteTipo } from '@/types/agents';
 
 const TIPO_LABEL: Record<string, string> = {
   string: 'Texto',
@@ -100,29 +103,20 @@ export function ExtracoesContent({ agentes, extracoesByAgente: initial }: Extrac
   return (
     <div className="space-y-6">
 
-      {/* Seletor de agente (só aparece se houver mais de um) */}
-      {agentes.length > 1 && (
-        <div className="flex items-center gap-3 flex-wrap">
-          <span className="text-sm font-medium text-muted-foreground shrink-0">Agente:</span>
-          <div className="flex gap-2 flex-wrap">
-            {agentes.map((a) => (
-              <button
-                key={a.id_agente}
-                onClick={() => setAgenteIdSelecionado(a.id_agente)}
-                className={cn(
-                  'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors',
-                  agenteIdSelecionado === a.id_agente
-                    ? 'bg-primary text-white border-primary shadow-sm'
-                    : 'bg-muted/50 text-muted-foreground border-border hover:bg-muted hover:text-foreground'
-                )}
-              >
-                <Bot className="h-3.5 w-3.5" />
-                {a.nome_agente}
-              </button>
-            ))}
-          </div>
+      {/* Seletor de agente — mesmo padrão do Editor de Agentes */}
+      <ScrollArea className="w-full whitespace-nowrap">
+        <div className="flex items-center justify-center gap-4 py-4">
+          {agentes.map((a) => (
+            <AgentCard
+              key={a.id_agente}
+              agente={a as unknown as AgenteTipo}
+              isSelected={a.id_agente === agenteIdSelecionado}
+              onClick={() => setAgenteIdSelecionado(a.id_agente)}
+            />
+          ))}
         </div>
-      )}
+        <ScrollBar orientation="horizontal" />
+      </ScrollArea>
 
       {/* Card de extrações */}
       <Card>
