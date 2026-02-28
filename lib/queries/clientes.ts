@@ -11,6 +11,7 @@ export interface ConversaSimples {
   id_conversa: string;
   created_at: string;
   status_conversa: string;
+  encerrar_motivo: string | null;
   conversas_tags: { tags: TagSimples }[];
 }
 
@@ -70,6 +71,7 @@ export async function getPessoas(
         id_conversa,
         created_at,
         status_conversa,
+        encerrar_motivo,
         conversas_tags(
           tags(id_tag, nome, cor_hex)
         )
