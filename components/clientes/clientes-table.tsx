@@ -26,15 +26,23 @@ import { ConversaHistoricoSheet } from './conversa-historico-sheet';
 import type { Pessoa, TagSimples } from '@/lib/queries/clientes';
 import { cn } from '@/lib/utils';
 
-// Returns up to `limit` unique tags from the person's most recent conversations
-function getTagsPessoa(pessoa: Pessoa, limit = 5): TagSimples[] {
+// ─── Tag helpers ───────────────────────────────────────────────────────────────
+
+function resolveTag(raw: unknown): TagSimples | null {
+  if (!raw) return null;
+  const t = Array.isArray(raw) ? raw[0] : raw;
+  return t ?? null;
+}
+
+// Used only for display — up to 5 from most recent conversations
+function getTagsDisplay(pessoa: Pessoa, limit = 5): TagSimples[] {
   const sorted = [...(pessoa.conversas ?? [])].sort(
     (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
   );
   const map = new Map<string, TagSimples>();
-  for (const conversa of sorted) {
-    for (const ct of (conversa.conversas_tags ?? [])) {
-      const tag = Array.isArray(ct.tags) ? ct.tags[0] : ct.tags;
+  for (const conv of sorted) {
+    for (const ct of (conv.conversas_tags ?? [])) {
+      const tag = resolveTag(ct.tags);
       if (tag && !map.has(tag.id_tag)) {
         map.set(tag.id_tag, tag);
         if (map.size >= limit) return Array.from(map.values());
@@ -44,14 +52,29 @@ function getTagsPessoa(pessoa: Pessoa, limit = 5): TagSimples[] {
   return Array.from(map.values());
 }
 
+// Used for filter check — scans ALL conversations, short-circuits on first match
+function pessoaTemTag(pessoa: Pessoa, idTag: string): boolean {
+  for (const conv of (pessoa.conversas ?? [])) {
+    for (const ct of (conv.conversas_tags ?? [])) {
+      const tag = resolveTag(ct.tags);
+      if (tag?.id_tag === idTag) return true;
+    }
+  }
+  return false;
+}
+
+// ─── Props ─────────────────────────────────────────────────────────────────────
+
 interface ClientesTableProps {
   clientes: Pessoa[];
   empresaId: string;
   total: number;
-  tags?: TagSimples[];
+  tags?: TagSimples[]; // company-level tags from server (used as fallback for filter)
 }
 
-export function ClientesTable({ clientes: initial, empresaId }: ClientesTableProps) {
+// ─── Component ─────────────────────────────────────────────────────────────────
+
+export function ClientesTable({ clientes: initial, empresaId, tags: serverTags = [] }: ClientesTableProps) {
   const { toast } = useToast();
   const [clientes, setClientes] = useState<Pessoa[]>(initial);
   const [busca, setBusca] = useState('');
@@ -61,20 +84,25 @@ export function ClientesTable({ clientes: initial, empresaId }: ClientesTablePro
   const [deletando, setDeletando] = useState<string | null>(null);
   const [historicoAberto, setHistoricoAberto] = useState<Pessoa | null>(null);
 
-  // Derive available filter tags from the loaded client data (reliable regardless of RLS)
+  // Derive available filter tags from loaded conversation data.
+  // Falls back to company-level tags so the filter is always visible.
   const availableTags = useMemo(() => {
     const map = new Map<string, TagSimples>();
+    // seed with company tags (so filter shows even before conversation data loads)
+    for (const t of serverTags) map.set(t.id_tag, t);
+    // overlay with tags actually present in loaded clients
     for (const c of clientes) {
       for (const conv of (c.conversas ?? [])) {
         for (const ct of (conv.conversas_tags ?? [])) {
-          const tag = Array.isArray(ct.tags) ? ct.tags[0] : ct.tags;
+          const tag = resolveTag(ct.tags);
           if (tag) map.set(tag.id_tag, tag);
         }
       }
     }
     return Array.from(map.values()).sort((a, b) => a.nome.localeCompare(b.nome));
-  }, [clientes]);
+  }, [clientes, serverTags]);
 
+  // Filtered list — uses pessoaTemTag (checks ALL conversations, no limit)
   const filtrados = clientes.filter((c) => {
     if (busca) {
       const q = busca.toLowerCase();
@@ -85,10 +113,7 @@ export function ClientesTable({ clientes: initial, empresaId }: ClientesTablePro
         c.cidade?.toLowerCase().includes(q);
       if (!match) return false;
     }
-    if (tagFiltro) {
-      const tagsCliente = getTagsPessoa(c);
-      if (!tagsCliente.some((t) => t.id_tag === tagFiltro)) return false;
-    }
+    if (tagFiltro && !pessoaTemTag(c, tagFiltro)) return false;
     return true;
   });
 
@@ -107,7 +132,6 @@ export function ClientesTable({ clientes: initial, empresaId }: ClientesTablePro
 
   const handleDelete = async (id: string) => {
     if (!confirm('Tem certeza que deseja excluir este cliente? Esta ação não pode ser desfeita.')) return;
-
     setDeletando(id);
     try {
       const supabase = createClient();
@@ -128,9 +152,11 @@ export function ClientesTable({ clientes: initial, empresaId }: ClientesTablePro
     return parts.length ? parts.join(' - ') : null;
   };
 
+  const toggleTag = (id: string) => setTagFiltro((prev) => (prev === id ? null : id));
+
   return (
     <>
-      {/* Toolbar */}
+      {/* ── Toolbar ─────────────────────────────────────────────── */}
       <div className="flex items-center justify-between gap-4 mb-4">
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -147,50 +173,63 @@ export function ClientesTable({ clientes: initial, empresaId }: ClientesTablePro
         </Button>
       </div>
 
-      {/* Tag filter chips */}
+      {/* ── Tag filter bar ───────────────────────────────────────── */}
       {availableTags.length > 0 && (
-        <div className="flex items-center gap-2 flex-wrap mb-4">
+        <div className="flex items-center gap-2 flex-wrap mb-5 p-3 rounded-lg bg-muted/40 border border-border/50">
           <Tag className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-          <span className="text-xs text-muted-foreground">Filtrar por tag:</span>
-          {availableTags.map((tag) => (
-            <button
-              key={tag.id_tag}
-              type="button"
-              onClick={() => setTagFiltro(tagFiltro === tag.id_tag ? null : tag.id_tag)}
-              className={cn(
-                'text-xs px-2.5 py-1 rounded-full font-medium border transition-all',
-                tagFiltro === tag.id_tag
-                  ? 'text-white border-transparent shadow-sm'
-                  : 'bg-background hover:opacity-80 border-border text-foreground'
-              )}
-              style={
-                tagFiltro === tag.id_tag ? { backgroundColor: tag.cor_hex || '#6b7280' } : undefined
-              }
-            >
-              {tag.nome}
-            </button>
-          ))}
+          <span className="text-xs font-medium text-muted-foreground mr-1">Tags:</span>
+
+          {availableTags.map((tag) => {
+            const active = tagFiltro === tag.id_tag;
+            return (
+              <button
+                key={tag.id_tag}
+                type="button"
+                onClick={() => toggleTag(tag.id_tag)}
+                className={cn(
+                  'flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full font-medium',
+                  'border transition-all duration-150 cursor-pointer select-none',
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1',
+                  active
+                    ? 'text-white border-transparent shadow-md scale-[0.96]'
+                    : 'bg-background border-border/70 text-foreground hover:shadow-sm hover:border-border active:scale-[0.96]'
+                )}
+                style={active ? { backgroundColor: tag.cor_hex || '#6b7280' } : undefined}
+              >
+                {/* Colored dot when inactive */}
+                {!active && (
+                  <span
+                    className="inline-block h-2 w-2 rounded-full shrink-0"
+                    style={{ backgroundColor: tag.cor_hex || '#6b7280' }}
+                  />
+                )}
+                {tag.nome}
+                {/* × icon when active */}
+                {active && <X className="h-3 w-3 ml-0.5 opacity-80 shrink-0" />}
+              </button>
+            );
+          })}
+
           {tagFiltro && (
             <button
               type="button"
               onClick={() => setTagFiltro(null)}
-              className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+              className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer ml-1"
             >
-              <X className="h-3 w-3" />
-              Limpar
+              Limpar filtro
             </button>
           )}
         </div>
       )}
 
-      {/* Result count */}
+      {/* ── Result count ─────────────────────────────────────────── */}
       <div className="mb-3 text-sm text-muted-foreground">
         {busca || tagFiltro
           ? `${filtrados.length} resultado${filtrados.length !== 1 ? 's' : ''} encontrado${filtrados.length !== 1 ? 's' : ''}`
           : `${clientes.length} cliente${clientes.length !== 1 ? 's' : ''} cadastrado${clientes.length !== 1 ? 's' : ''}`}
       </div>
 
-      {/* Client list */}
+      {/* ── Client list ──────────────────────────────────────────── */}
       {filtrados.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-16 text-center">
@@ -208,7 +247,7 @@ export function ClientesTable({ clientes: initial, empresaId }: ClientesTablePro
       ) : (
         <div className="space-y-2">
           {filtrados.map((cliente) => {
-            const tagsCliente = getTagsPessoa(cliente);
+            const tagsCliente = getTagsDisplay(cliente);
             const totalConversas = (cliente.conversas ?? []).length;
             const loc = formatLocation(cliente);
 
@@ -259,25 +298,35 @@ export function ClientesTable({ clientes: initial, empresaId }: ClientesTablePro
                           </p>
                         )}
 
-                        {/* Tags + conversation count */}
+                        {/* Tags das conversas + contador */}
                         {(tagsCliente.length > 0 || totalConversas > 0) && (
-                          <div className="flex items-center gap-2 flex-wrap mt-2">
-                            {tagsCliente.map((tag) => (
-                              <span
-                                key={tag.id_tag}
-                                className="text-xs px-2 py-0.5 rounded-full font-medium text-white cursor-pointer hover:opacity-80 transition-opacity"
-                                style={{ backgroundColor: tag.cor_hex || '#6b7280' }}
-                                onClick={() => setTagFiltro(tag.id_tag)}
-                                title={`Filtrar por ${tag.nome}`}
-                              >
-                                {tag.nome}
-                              </span>
-                            ))}
+                          <div className="flex items-center gap-1.5 flex-wrap mt-2">
+                            {tagsCliente.map((tag) => {
+                              const isActive = tagFiltro === tag.id_tag;
+                              return (
+                                <button
+                                  key={tag.id_tag}
+                                  type="button"
+                                  onClick={() => toggleTag(tag.id_tag)}
+                                  title={isActive ? 'Remover filtro' : `Filtrar por ${tag.nome}`}
+                                  className={cn(
+                                    'text-xs px-2 py-0.5 rounded-full font-medium text-white',
+                                    'cursor-pointer transition-all duration-150 select-none',
+                                    isActive
+                                      ? 'ring-2 ring-offset-1 ring-white/70 opacity-100 shadow-sm'
+                                      : 'opacity-85 hover:opacity-100 hover:shadow-sm'
+                                  )}
+                                  style={{ backgroundColor: tag.cor_hex || '#6b7280' }}
+                                >
+                                  {tag.nome}
+                                </button>
+                              );
+                            })}
                             {totalConversas > 0 && (
                               <button
                                 type="button"
                                 onClick={() => setHistoricoAberto(cliente)}
-                                className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors group"
+                                className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors cursor-pointer group"
                               >
                                 <MessageSquare className="h-3 w-3 group-hover:text-primary" />
                                 {totalConversas} conversa{totalConversas !== 1 ? 's' : ''}
@@ -329,7 +378,7 @@ export function ClientesTable({ clientes: initial, empresaId }: ClientesTablePro
         </div>
       )}
 
-      {/* Formulário de cliente */}
+      {/* Formulário */}
       <ClienteFormDialog
         open={formOpen}
         onOpenChange={(v) => { setFormOpen(v); if (!v) setClienteEditando(null); }}
@@ -338,7 +387,7 @@ export function ClientesTable({ clientes: initial, empresaId }: ClientesTablePro
         onSuccess={handleSuccess}
       />
 
-      {/* Sheet de histórico de conversas */}
+      {/* Sheet de histórico */}
       <ConversaHistoricoSheet
         pessoa={historicoAberto}
         open={!!historicoAberto}
