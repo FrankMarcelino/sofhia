@@ -70,24 +70,24 @@ export function AtendimentoWrapper({ conversas }: AtendimentoWrapperProps) {
   }, [conversaSelecionada]);
 
   return (
-    <section className="grid grid-cols-5 gap-6 h-full">
+    <section className="grid grid-cols-5 gap-6 h-full overflow-hidden">
       {/* Left Column - Conversas List (2/5 width) */}
-      <div className="col-span-2 h-full">
+      <div className="col-span-2 flex flex-col min-h-0 overflow-hidden">
         <ConversasList
           conversas={conversas}
           conversaSelecionada={conversaSelecionada}
           onSelectConversa={setConversaSelecionada}
-          className="h-full"
+          className="flex-1 min-h-0"
         />
       </div>
 
       {/* Right Column - Chat Viewer (3/5 width) */}
-      <div className="col-span-3 h-full">
+      <div className="col-span-3 flex flex-col min-h-0 overflow-hidden">
         <ChatViewer
           interacoes={interacoes}
           nomeCliente={conversaAtual?.pessoa?.nome || undefined}
           nomeAgente={conversaAtual?.agente?.nome_agente || undefined}
-          className="h-full"
+          className="flex-1 min-h-0"
         />
       </div>
     </section>

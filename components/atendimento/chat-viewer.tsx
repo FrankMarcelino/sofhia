@@ -97,7 +97,7 @@ export function ChatViewer({
 }: ChatViewerProps) {
   if (interacoes.length === 0) {
     return (
-      <Card className={cn('shadow-sm h-full flex flex-col', className)}>
+      <Card className={cn('shadow-sm flex flex-col', className)}>
         <CardHeader>
           <CardTitle className="text-lg font-bold flex items-center gap-2">
             <MessageSquare className="h-5 w-5" />
@@ -125,7 +125,7 @@ export function ChatViewer({
   }, {} as Record<string, Interacao[]>);
 
   return (
-    <Card className={cn('shadow-sm h-full flex flex-col', className)}>
+    <Card className={cn('shadow-sm flex flex-col', className)}>
       <CardHeader className="flex flex-row items-center justify-between pb-3">
         <div>
           <CardTitle className="text-lg font-bold flex items-center gap-2">

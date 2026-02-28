@@ -74,7 +74,7 @@ export function ConversasList({
   }, [conversas, statusFilter, searchTerm]);
 
   return (
-    <Card className={cn('shadow-sm h-full flex flex-col', className)}>
+    <Card className={cn('shadow-sm flex flex-col', className)}>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between mb-3">
           <CardTitle className="text-lg font-bold flex items-center gap-2">
