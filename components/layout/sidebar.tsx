@@ -18,6 +18,7 @@ import {
   ChevronRight,
   Braces,
   History,
+  ArrowRightLeft,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -97,6 +98,11 @@ const menuItems = [
         label: 'Financeiro',
         href: '/financeiro',
         icon: DollarSign,
+      },
+      {
+        label: 'Transferências',
+        href: '/transferencias',
+        icon: ArrowRightLeft,
       },
       {
         label: 'Parâmetros',

@@ -55,6 +55,7 @@ export async function updateSession(request: NextRequest) {
     '/atendimento',
     '/financeiro',
     '/parametros',
+    '/transferencias',
   ];
 
   const isProtectedPath = protectedPaths.some((path) =>

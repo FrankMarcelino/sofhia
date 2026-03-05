@@ -33,6 +33,7 @@ const ROUTE_LABELS: Record<string, string> = {
   clientes: 'Clientes',
   conversas: 'Conversas',
   relatorios: 'Relatórios',
+  transferencias: 'Transferências',
   financeiro: 'Financeiro',
   parametros: 'Parâmetros',
 };
