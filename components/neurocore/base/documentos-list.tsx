@@ -116,6 +116,11 @@ export function DocumentosList({
   };
 
   const handleStatusChange = async (doc: Documento, newStatus: 'RASCUNHO' | 'PUBLICADO' | 'ARQUIVADO') => {
+    if (newStatus === 'PUBLICADO' && !doc.id_dominio) {
+      toast({ title: 'Não é possível publicar', description: 'Atribua um domínio ao documento antes de publicá-lo.', variant: 'destructive' });
+      return;
+    }
+
     try {
       const supabase = createClient();
       const { error } = await supabase
@@ -251,7 +256,9 @@ export function DocumentosList({
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="RASCUNHO">Rascunho</SelectItem>
-                        <SelectItem value="PUBLICADO">Publicado</SelectItem>
+                        <SelectItem value="PUBLICADO" disabled={!doc.id_dominio}>
+                          Publicado
+                        </SelectItem>
                         <SelectItem value="ARQUIVADO">Arquivado</SelectItem>
                       </SelectContent>
                     </Select>

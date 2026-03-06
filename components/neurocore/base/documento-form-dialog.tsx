@@ -94,6 +94,10 @@ export function DocumentoFormDialog({
       toast({ title: 'Atenção', description: 'Preencha o conteúdo do documento.', variant: 'destructive' });
       return;
     }
+    if (formData.status_publicacao === 'PUBLICADO' && !formData.id_dominio) {
+      toast({ title: 'Não é possível publicar', description: 'Selecione um domínio antes de publicar o documento.', variant: 'destructive' });
+      return;
+    }
 
     setIsLoading(true);
 
@@ -214,7 +218,9 @@ export function DocumentoFormDialog({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="RASCUNHO">Rascunho</SelectItem>
-                  <SelectItem value="PUBLICADO">Publicado</SelectItem>
+                  <SelectItem value="PUBLICADO" disabled={!formData.id_dominio}>
+                    Publicado
+                  </SelectItem>
                   <SelectItem value="ARQUIVADO">Arquivado</SelectItem>
                 </SelectContent>
               </Select>
