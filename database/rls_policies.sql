@@ -57,6 +57,7 @@ ALTER TABLE public.tags_gatilhos ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.configuracoes_upchat ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.empresa_preferencias_ia ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.regras_reativacao ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.empresa_upchat_transferencias_departamentos ENABLE ROW LEVEL SECURITY;
 
 -- Tabelas de Experimentos
 ALTER TABLE public.experimentos_ab ENABLE ROW LEVEL SECURITY;
@@ -259,6 +260,11 @@ CREATE POLICY "usuarios_veem_regras_reativacao_empresa" ON public.regras_reativa
   FOR SELECT
   USING (id_empresa = public.user_empresa_id());
 
+DROP POLICY IF EXISTS "usuarios_veem_transf_dept_empresa" ON public.empresa_upchat_transferencias_departamentos;
+CREATE POLICY "usuarios_veem_transf_dept_empresa" ON public.empresa_upchat_transferencias_departamentos
+  FOR SELECT
+  USING (id_empresa = public.user_empresa_id());
+
 -- Experimentos
 DROP POLICY IF EXISTS "usuarios_veem_experimentos_empresa" ON public.experimentos_ab;
 CREATE POLICY "usuarios_veem_experimentos_empresa" ON public.experimentos_ab
@@ -360,6 +366,11 @@ CREATE POLICY "usuarios_criam_preferencias_ia_empresa" ON public.empresa_prefere
 
 DROP POLICY IF EXISTS "usuarios_criam_regras_reativacao_empresa" ON public.regras_reativacao;
 CREATE POLICY "usuarios_criam_regras_reativacao_empresa" ON public.regras_reativacao
+  FOR INSERT
+  WITH CHECK (id_empresa = public.user_empresa_id());
+
+DROP POLICY IF EXISTS "usuarios_criam_transf_dept_empresa" ON public.empresa_upchat_transferencias_departamentos;
+CREATE POLICY "usuarios_criam_transf_dept_empresa" ON public.empresa_upchat_transferencias_departamentos
   FOR INSERT
   WITH CHECK (id_empresa = public.user_empresa_id());
 
@@ -564,6 +575,12 @@ CREATE POLICY "usuarios_atualizam_movimentacoes_empresa" ON public.carteiras_mov
   USING (id_empresa = public.user_empresa_id())
   WITH CHECK (id_empresa = public.user_empresa_id());
 
+DROP POLICY IF EXISTS "usuarios_atualizam_transf_dept_empresa" ON public.empresa_upchat_transferencias_departamentos;
+CREATE POLICY "usuarios_atualizam_transf_dept_empresa" ON public.empresa_upchat_transferencias_departamentos
+  FOR UPDATE
+  USING (id_empresa = public.user_empresa_id())
+  WITH CHECK (id_empresa = public.user_empresa_id());
+
 -- ============================================================================
 -- PARTE 6: POLÍTICAS DE DELETE (Exclusão)
 -- ============================================================================
@@ -658,6 +675,11 @@ CREATE POLICY "usuarios_deletam_gatilhos_empresa" ON public.tags_gatilhos
 
 DROP POLICY IF EXISTS "usuarios_deletam_regras_reativacao_empresa" ON public.regras_reativacao;
 CREATE POLICY "usuarios_deletam_regras_reativacao_empresa" ON public.regras_reativacao
+  FOR DELETE
+  USING (id_empresa = public.user_empresa_id());
+
+DROP POLICY IF EXISTS "usuarios_deletam_transf_dept_empresa" ON public.empresa_upchat_transferencias_departamentos;
+CREATE POLICY "usuarios_deletam_transf_dept_empresa" ON public.empresa_upchat_transferencias_departamentos
   FOR DELETE
   USING (id_empresa = public.user_empresa_id());
 
